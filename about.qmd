@@ -19,4 +19,8 @@ about:
 
 ---
 
-About this blog
+Welcome to my blog!
+
+In this site, you will find my contributions and highlights of my writings on Mathematics and Computer Science.
+
+If you are interested in this field, feel free to connect with me and I would love to hear from you! See the article on contributing posts or my contact for additional details.
