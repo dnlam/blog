@@ -3,7 +3,7 @@ title: "Collaborative Filtering"
 # author: "Harlow Malloc"
 date: "2022-08-06"
 categories: [recommendation, code]
-image: "image.jpg"
+image: "collab_filtering.png"
 format:
   html:
     code-fold: true

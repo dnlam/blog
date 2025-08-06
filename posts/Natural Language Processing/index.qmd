@@ -3,7 +3,7 @@ title: "Natural Language Processing"
 # author: "Harlow Malloc"
 date: "2022-03-29"
 categories: [NLP, code]
-image: "image.jpg"
+image: "NLP.png"
 format:
   html:
     code-fold: true
