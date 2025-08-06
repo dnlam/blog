@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "blog"
+  title: "Lam Dinh"
   navbar:
     right:
       - about.qmd
