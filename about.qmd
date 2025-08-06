@@ -4,12 +4,12 @@ image: profile.jpg
 about:
   template: jolla
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
+    - icon: email
+      text: Email
+      href: nlam.dinh@gmail.com
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/lam-dinh-34a66a160/
     - icon: github
       text: Github
       href: https://github.com
