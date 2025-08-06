@@ -4,27 +4,27 @@
     "href": "index.html",
     "title": "My blog posts about Maths, AI/ML",
     "section": "",
-    "text": "Collaborative Filtering\n\n\n\nrecommendation\n\ncode\n\n\n\n\n\n\n\n\n\nAug 6, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nAug 3, 2025\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
+    "text": "Collaborative Filtering\n\n\n\nrecommendation\n\ncode\n\n\n\n\n\n\n\n\n\nAug 6, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nNatural Language Processing\n\n\n\nNLP\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2022\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/Collaborative Filtering/index.html",
-    "href": "posts/Collaborative Filtering/index.html",
-    "title": "Collaborative Filtering",
+    "objectID": "posts/Natural Language Processing/index.html",
+    "href": "posts/Natural Language Processing/index.html",
+    "title": "Natural Language Processing",
     "section": "",
-    "text": "General context\nWhen we think about Netflix, we might have watched lots of movies that are science_fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing recommendation approach, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.\nThis approach is called collaborative filtering. The key foundation idea is that of latent factors which decides what kinds of movies you want to watch."
+    "text": "Objectives\nIn this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (info). Relying on the pretrained language model, we are going to fine-tuning it to classify the reviews and it works as sentiment analysis.\nBased on a language model which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.\nWe will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImdB language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About me",
     "section": "",
-    "text": "About this blog"
+    "text": "Welcome to my blog!\nIn this site, you will find my contributions and highlights of my writings on Mathematics and Computer Science.\nIf you are interested in this field, feel free to connect with me and I would love to hear from you! See the article on contributing posts or my contact for additional details."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/Collaborative Filtering/index.html",
+    "href": "posts/Collaborative Filtering/index.html",
+    "title": "Collaborative Filtering",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "text": "General context\nWhen we think about Netflix, we might have watched lots of movies that are science fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing recommendation approach, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.\nThis approach is called collaborative filtering. The key foundation idea is that of latent factors which decides what kinds of movies you want to watch.\n\n\nData set\nIndeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called MovieLen which contains tens millions of movies ranking.\n\n\nCode\nfrom fastai.collab import *\nfrom fastai.tabular.all import *\n\n# path = untar_data(URLs.ML_100k)"
   }
 ]

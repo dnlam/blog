@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-08-06">
+<meta name="dcterms.date" content="2022-03-29">
 
-<title>Collaborative Filtering – Lam Dinh</title>
+<title>Natural Language Processing – Lam Dinh</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,41 +20,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -155,9 +120,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Collaborative Filtering</h1>
+      <h1 class="title">Natural Language Processing</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">recommendation</div>
+                <div class="quarto-category">NLP</div>
                 <div class="quarto-category">code</div>
               </div>
                   </div>
@@ -170,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 6, 2025</p>
+        <p class="date">March 29, 2022</p>
       </div>
     </div>
     
@@ -189,23 +154,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="general-context" class="level1">
-<h1>General context</h1>
-<p>When we think about Netflix, we might have watched lots of movies that are science fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing <code>recommendation approach</code>, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.</p>
-<p>This approach is called <code>collaborative filtering</code>. The key foundation idea is that of <code>latent factors</code> which decides what kinds of movies you want to watch.</p>
-</section>
-<section id="data-set" class="level1">
-<h1>Data set</h1>
-<p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
-<div id="5bf848d5" class="cell" data-execution_count="1">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.collab <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.tabular.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># path = untar_data(URLs.ML_100k)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
+<section id="objectives" class="level1">
+<h1>Objectives</h1>
+<p>In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the pretrained language model, we are going to fine-tuning it to classify the reviews and it works as sentiment analysis.</p>
+<p>Based on a <code>language model</code> which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.</p>
+<p>We will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImdB language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. <img src="https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1" class="img-fluid"></p>
 
 
 </section>
