@@ -6,13 +6,17 @@ website:
   navbar:
     right:
       - about.qmd
-      - icon: github
-        href: https://github.com/
+      # - icon: github
+      #   href: https://github.com/
       - icon: linkedin
-        text: LinkedIn
+        # text: LinkedIn
         href: https://www.linkedin.com/in/lam-dinh-34a66a160/
-      # - icon: twitter
-      #   href: https://twitter.com
+      - icon: globe
+        # text: Website
+        href: https://dnlam.github.io
+      - icon: envelope
+        # text: Email
+        href: mailto:nlam.dinh@gmail.com
 format:
   html:
     theme:

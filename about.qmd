@@ -4,15 +4,18 @@ image: profile.jpg
 about:
   template: jolla
   links:
-    # - icon: email
-    #   text: Email
-    #   href: nlam.dinh@gmail.com
+    - icon: globe
+      text: Website
+      href: https://dnlam.github.io
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/lam-dinh-34a66a160/
-    - icon: github
-      text: Github
-      href: https://github.com
+    # - icon: github
+    #   text: Github
+    #   href: https://github.com
+    - icon: envelope
+      text: Email
+      href: mailto:nlam.dinh@gmail.com
 
 ---
 
