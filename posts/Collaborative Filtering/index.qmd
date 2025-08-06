@@ -1,0 +1,12 @@
+---
+title: "Collaborative Filtering"
+# author: "Harlow Malloc"
+date: "2025-08-06"
+categories: [recommendation, code]
+image: "image.jpg"
+---
+
+# General context
+When we think about Netflix,  we might have watched lots of movies that are science_fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing ```recommendation approach```, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.
+
+This approach is called ```collaborative filtering```. The key foundation idea is that of ```latent factors``` which decides what kinds of movies you want to watch.
