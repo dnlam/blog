@@ -4,14 +4,14 @@
     "href": "index.html",
     "title": "My blog posts about Maths, AI/ML",
     "section": "",
-    "text": "Post With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nAug 6, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nAug 3, 2025\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
+    "text": "Collaborative Filtering\n\n\n\nrecommendation\n\ncode\n\n\n\n\n\n\n\n\n\nAug 6, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nAug 3, 2025\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "posts/Collaborative Filtering/index.html",
+    "href": "posts/Collaborative Filtering/index.html",
+    "title": "Collaborative Filtering",
     "section": "",
-    "text": "This is a post with executable code."
+    "text": "General context\nWhen we think about Netflix, we might have watched lots of movies that are science_fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing recommendation approach, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.\nThis approach is called collaborative filtering. The key foundation idea is that of latent factors which decides what kinds of movies you want to watch."
   },
   {
     "objectID": "about.html",
