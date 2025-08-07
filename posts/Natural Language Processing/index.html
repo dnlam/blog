@@ -123,6 +123,7 @@ ul.task-list li input[type="checkbox"] {
       <h1 class="title">Natural Language Processing</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">NLP</div>
+                <div class="quarto-category">transfer learning</div>
                 <div class="quarto-category">code</div>
               </div>
                   </div>
@@ -247,7 +248,7 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/dnlam\.github\.io\/blog\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
