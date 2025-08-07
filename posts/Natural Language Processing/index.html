@@ -156,9 +156,10 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="objectives" class="level1">
 <h1>Objectives</h1>
-<p>In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the pretrained language model, we are going to fine-tuning it to classify the reviews and it works as sentiment analysis.</p>
+<p>In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.</p>
 <p>Based on a <code>language model</code> which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.</p>
-<p>We will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImdB language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. <img src="https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1" class="img-fluid"></p>
+<p>We will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. <img src="https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1" id="fig-transfer-learning" class="img-fluid" data-fig-caption="Transfer learning workflow for movie classifier." alt="Transfer learning workflow for movie classifier"></p>
+<p>As shown in <strong>?@fig-transfer-learning</strong>,</p>
 
 
 </section>

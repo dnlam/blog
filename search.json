@@ -11,7 +11,7 @@
     "href": "posts/Natural Language Processing/index.html",
     "title": "Natural Language Processing",
     "section": "",
-    "text": "Objectives\nIn this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (info). Relying on the pretrained language model, we are going to fine-tuning it to classify the reviews and it works as sentiment analysis.\nBased on a language model which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.\nWe will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImdB language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier."
+    "text": "Objectives\nIn this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (info). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.\nBased on a language model which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.\nWe will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. \nAs shown in ?@fig-transfer-learning,"
   },
   {
     "objectID": "about.html",
