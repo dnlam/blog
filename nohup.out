@@ -1,0 +1,27 @@
+From github.com:dnlam/blog
+ * branch            gh-pages   -> FETCH_HEAD
+[1m[34mRendering for publish:
+[39m[22m
+[1m[34m[1/4] about.qmd[39m[22m
+[1m[34m[2/4] posts/natural-language-processing/index.qmd[39m[22m
+[1m[34m[3/4] posts/collaborative-filtering/index.qmd[39m[22m
+[1m[34m[4/4] index.qmd[39m[22m
+
+Preparing worktree (resetting branch 'gh-pages'; was at 860bc05)
+branch 'gh-pages' set up to track 'origin/gh-pages'.
+HEAD is now at 860bc05 Built site for gh-pages
+[gh-pages a94aab7] Built site for gh-pages
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+origin	git@github.com:dnlam/blog.git (fetch)
+origin	git@github.com:dnlam/blog.git (push)
+To github.com:dnlam/blog.git
+   860bc05..a94aab7  HEAD -> gh-pages
+
+[33mNOTE: GitHub Pages sites use caching so you might need to click the refresh
+button within your web browser to see changes after deployment.
+[39m
+[✓] Published to https://dnlam.github.io/blog/
+
+[33mNOTE: GitHub Pages deployments normally take a few minutes (your site updates
+will be visible once the deploy completes)
+[39m

@@ -191,7 +191,7 @@ Then we will do training (fit_one_cycle instead of fine_tuning) because we will 
 #| eval: true
 #| warning: false
 #| message: false
-# learn.fit_one_cycle(1,2e-2)
+learn.fit_one_cycle(1,2e-2)
 ```
 
 After few minutes, we got the accuracy of prediction using transfer learning which is about 29 percent.
@@ -222,9 +222,9 @@ learn.model.load_state_dict(state_dict, strict=False)
 After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let's see the improvement of the accuracy.
 
 ```{python}
-# learn.unfreeze()
+learn.unfreeze()
 
-# learn.fit_one_cycle(10,2e-3)
+learn.fit_one_cycle(10,2e-3)
 ```
 
 Then, we save our model except the last activation function layer. To do that, we can save it with `save_encoder`
