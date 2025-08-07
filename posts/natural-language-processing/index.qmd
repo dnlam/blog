@@ -205,7 +205,7 @@ In order to intermediately save the pre-trained model, we can easily do it with 
 import torch
 model_save_path = learn.path/'models'/'one_epoch_training_torch.pth'
 torch.save(learn.model.state_dict(), model_save_path)
-print(f"Model saved to: {model_save_path}")
+# print(f"Model saved to: {model_save_path}")
 ```
 
 ```{python}
@@ -217,7 +217,7 @@ import torch
 model_load_path = learn.path/'models'/'one_epoch_training_torch.pth'
 state_dict = torch.load(model_load_path, weights_only=False)
 learn.model.load_state_dict(state_dict, strict=False)
-print(f"Model loaded from: {model_load_path}")
+# print(f"Model loaded from: {model_load_path}")
 ```
 After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let's see the improvement of the accuracy.
 
@@ -264,7 +264,7 @@ print("\n".join(preds))
 ## Creating the classifier DataLoaders
 
 
-Previously, we built a language model to predict the next word of a document given the pre text. Now, we are going to move to the classifer which predict the sentiment of a document.
+Previously, we built a language model to predict the next word of a document given the pre text. Now, we are going to move to the classifier which predict the sentiment of a document.
 
 ```{python}
 dls_clas = DataBlock(
