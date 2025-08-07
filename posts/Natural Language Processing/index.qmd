@@ -52,6 +52,7 @@ Basically, tokenization convert the text into list of words. Firstly, we will gr
 #| message: false
 from fastai.text.all import *
 path = untar_data(URLs.IMDB)
+# path.ls()
 ```
 
 ```{python}
@@ -154,6 +155,10 @@ The batch size is 64x72. 64 is the default batch size and 72 is the default sequ
 By default, `fastai` handles tokenization and numericalization automatically when `TextBlock` is passed to `DataBlock`. 
 
 ```{python}
+import shutil
+shutil.rmtree('/content/train/train_tok/')
+
+
 get_imdb = partial(get_text_files, folders=['train', 'test', 'unsup'])
 
 dls_lm = DataBlock(
