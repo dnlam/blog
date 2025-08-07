@@ -4,14 +4,21 @@
     "href": "index.html",
     "title": "My blog posts about Maths, AI/ML",
     "section": "",
-    "text": "Collaborative Filtering\n\n\n\nrecommendation\n\ncode\n\n\n\n\n\n\n\n\n\nAug 6, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nNatural Language Processing\n\n\n\nNLP\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2022\n\n\n\n\n\nNo matching items"
+    "text": "Collaborative Filtering\n\n\n\nrecommendation\n\ncode\n\n\n\n\n\n\n\n\n\nAug 6, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nNatural Language Processing\n\n\n\nNLP\n\ntransfer learning\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2022\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/Natural Language Processing/index.html",
-    "href": "posts/Natural Language Processing/index.html",
+    "objectID": "posts/natural-language-processing/index.html",
+    "href": "posts/natural-language-processing/index.html",
     "title": "Natural Language Processing",
     "section": "",
-    "text": "Objectives\nIn this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (info). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.\nBased on a language model which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.\nWe will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. \nAs shown in ?@fig-transfer-learning,"
+    "text": "In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (info). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.\nBased on a language model which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.\n\n\n\n\n\n\nFigure 1: Transfer learning workflow for movie classifier\n\n\n\nAs shown in Figure 1, we will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with our classifier."
+  },
+  {
+    "objectID": "posts/natural-language-processing/index.html#tokenization",
+    "href": "posts/natural-language-processing/index.html#tokenization",
+    "title": "Natural Language Processing",
+    "section": "Tokenization",
+    "text": "Tokenization\nBasically, tokenization convert the text into list of words. Firstly, we will grab our IMDb dataset and try out the tokenizer with all the text files.\n\n\nCode\nfrom fastai.text.all import *\npath = untar_data(URLs.IMDB)\n\n\n\n\nCode\nfiles = get_text_files(path,folders=['train','test','unsup'])\n\n\nThe default English word tokenizer that FastAI used is called SpaCy which uses a sophisticated riles engine for particular words and URLs. Rather than directly using SpacyTokenizer, we are going to use WordTokenizer which always points to fastai’s current default word tokenizer.\n\n\nCode\ntxt = files[0].open().read()\ntxt[:60]\nspacy = WordTokenizer()\ntoks = first(spacy([txt]))\n\nprint(coll_repr(toks,30))\n\n\n(#140) ['I','read','the','running','man','from','Kings','books','as','Bachman','and','I','felt','for','the','main','character','John','and','his','family','.','This','movie','could','have','been','SO','much','more'...]\n\n\n\nSub-word tokenization\nIn additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps: - Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab - Tokenize the corpus using this vocab of sub-word units\nFor example, we will first look into 2000 movie reviews:\n\n\nCode\ntxts = L(o.open().read() for o in files[:2000])\ndef subword(sz):\n    sp = SubwordTokenizer(vocab_sz=sz)\n    sp.setup(txts)\n    return ' '.join(first(sp([txt]))[:40])\nsubword(1000)\n\n\n\n\n\n\n\n\n\n'▁I ▁read ▁the ▁r un n ing ▁man ▁from ▁K ing s ▁book s ▁as ▁B ach man ▁and ▁I ▁felt ▁for ▁the ▁main ▁character ▁John ▁and ▁his ▁family . ▁This ▁movie ▁could ▁have ▁been ▁S O ▁much ▁more .'\n\n\nThen, the long underscore is when we replace the space and we can know where the sentences actually start and stop.\n\n\nCode\nsubword(10000)\n\n\n\n\n\n\n\n\n\n'▁I ▁read ▁the ▁running ▁man ▁from ▁King s ▁books ▁as ▁B ach man ▁and ▁I ▁felt ▁for ▁the ▁main ▁character ▁John ▁and ▁his ▁family . ▁This ▁movie ▁could ▁have ▁been ▁SO ▁much ▁more . ▁The ▁trouble ? ▁It ▁was ▁set'"
   },
   {
     "objectID": "about.html",
@@ -21,8 +28,8 @@
     "text": "Welcome to my blog!\nIn this site, you will find my contributions and highlights of my writings on Mathematics and Computer Science.\nIf you are interested in this field, feel free to connect with me and I would love to hear from you! See the article on contributing posts or my contact for additional details."
   },
   {
-    "objectID": "posts/Collaborative Filtering/index.html",
-    "href": "posts/Collaborative Filtering/index.html",
+    "objectID": "posts/collaborative-filtering/index.html",
+    "href": "posts/collaborative-filtering/index.html",
     "title": "Collaborative Filtering",
     "section": "",
     "text": "General context\nWhen we think about Netflix, we might have watched lots of movies that are science fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing recommendation approach, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.\nThis approach is called collaborative filtering. The key foundation idea is that of latent factors which decides what kinds of movies you want to watch.\n\n\nData set\nIndeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called MovieLen which contains tens millions of movies ranking.\n\n\nCode\nfrom fastai.collab import *\nfrom fastai.tabular.all import *\n\n# path = untar_data(URLs.ML_100k)"

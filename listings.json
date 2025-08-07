@@ -2,8 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Collaborative Filtering/index.html",
-      "/posts/Natural Language Processing/index.html"
+      "/posts/collaborative-filtering/index.html",
+      "/posts/natural-language-processing/index.html"
     ]
   }
 ]

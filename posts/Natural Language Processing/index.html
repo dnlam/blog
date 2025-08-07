@@ -158,8 +158,18 @@ ul.task-list li input[type="checkbox"] {
 <h1>Objectives</h1>
 <p>In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.</p>
 <p>Based on a <code>language model</code> which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.</p>
-<p>We will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier. <img src="https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1" id="fig-transfer-learning" class="img-fluid" data-fig-caption="Transfer learning workflow for movie classifier." alt="Transfer learning workflow for movie classifier"></p>
-<p>As shown in <strong>?@fig-transfer-learning</strong>,</p>
+<p>We will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an ImDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterwards, we end up with our classifier.</p>
+<div id="fig-transfer-learning" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-cap="Transfer learning workflow for movie classifier.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-transfer-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1" class="img-fluid figure-img" data-fig-cap="Transfer learning workflow for movie classifier.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-transfer-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Transfer learning workflow for movie classifier
+</figcaption>
+</figure>
+</div>
+<p>As shown in <a href="#fig-transfer-learning" class="quarto-xref">Figure&nbsp;1</a>,</p>
 
 
 </section>
@@ -237,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/dnlam\.github\.io\/blog\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
