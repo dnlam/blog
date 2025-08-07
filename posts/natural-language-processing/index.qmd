@@ -101,6 +101,11 @@ def subword(sz):
 Then, the long underscore is when we replace the space and we can know where the sentences actually start and stop. 
 
 ```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
 subword(10000)
 ```
 
@@ -110,6 +115,11 @@ If we use a larger vocab, then most common English words will end up in the voca
 In order to numericalize, we need to call ```setup``` first to create the vocab. 
 
 ```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
 tkn = Tokenizer(spacy)
 toks300 = txts[:300].map(tkn)
 toks300[0]
@@ -155,9 +165,6 @@ The batch size is 64x72. 64 is the default batch size and 72 is the default sequ
 By default, `fastai` handles tokenization and numericalization automatically when `TextBlock` is passed to `DataBlock`. 
 
 ```{python}
-import shutil
-shutil.rmtree('/content/train/train_tok/')
-
 
 get_imdb = partial(get_text_files, folders=['train', 'test', 'unsup'])
 
@@ -179,25 +186,45 @@ metrics=[accuracy, Perplexity()]).to_fp16()
 Then we will do training (fit_one_cycle instead of fine_tuning) because we will be saving the intermediate model results during the training process.
 
 ```{python}
-learn.fit_one_cycle(1,2e-2)
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+# learn.fit_one_cycle(1,2e-2)
 ```
 
 After few minutes, we got the accuracy of prediction using transfer learning which is about 29 percent.
 In order to intermediately save the pre-trained model, we can easily do it with PyTorch, and it will create a file in `learn.path/models`. Afterward, we can load the content of the file without any difficulty.
 
 ```{python}
-learn.save('one_epoch_training')
+# Option 1: Save with FastAI
+# learn.save('one_epoch_training')
+
+# Option 2: Save with PyTorch
+import torch
+model_save_path = learn.path/'models'/'one_epoch_training_torch.pth'
+torch.save(learn.model.state_dict(), model_save_path)
+print(f"Model saved to: {model_save_path}")
 ```
 
 ```{python}
-learn.load('one_epoch_training')
+# Option 1: Use FastAI's load method
+# learn.load('one_epoch_training', strict=False)
+
+# Option 2: Use PyTorch to load the saved model
+import torch
+model_load_path = learn.path/'models'/'one_epoch_training_torch.pth'
+state_dict = torch.load(model_load_path, weights_only=False)
+learn.model.load_state_dict(state_dict, strict=False)
+print(f"Model loaded from: {model_load_path}")
 ```
 After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let's see the improvement of the accuracy.
 
 ```{python}
-learn.unfreeze()
+# learn.unfreeze()
 
-learn.fit_one_cycle(10,2e-3)
+# learn.fit_one_cycle(10,2e-3)
 ```
 
 Then, we save our model except the last activation function layer. To do that, we can save it with `save_encoder`
@@ -206,3 +233,49 @@ Then, we save our model except the last activation function layer. To do that, w
 learn.save_encoder('finetuned')
 ```
 In this step, we have fine tuned the language model. Now, we will fine tune this language model using the IMDb sentiment labels.
+
+## Text generation
+
+We can self create some random words and we can create sentences and each contains 40 words and we will predict the content of those with a kind of randomization.
+
+```{python}
+#| echo: true
+#| output: true
+#| eval: true  
+#| warning: false
+#| message: false
+
+TEXT = "I liked this movie so"
+
+N_WORDS = 40
+
+N_SENTENCES = 2
+
+preds = [learn.predict(TEXT, N_WORDS, temperature=0.75) for _ in range(N_SENTENCES)]
+```
+
+
+
+Let's see the generation of new inventing words
+```{python}
+print("\n".join(preds))
+```
+
+## Creating the classifier DataLoaders
+
+
+Previously, we built a language model to predict the next word of a document given the pre text. Now, we are going to move to the classifer which predict the sentiment of a document.
+
+```{python}
+dls_clas = DataBlock(
+    blocks=(TextBlock.from_folder(path, vocab=dls_lm.vocab),CategoryBlock),
+    get_y = parent_label,
+    get_items=partial(get_text_files, folders=['train', 'test']),
+    splitter=GrandparentSplitter(valid_name='test')
+).dataloaders(path, path=path, bs=128, seq_len=72)
+```
+
+Let's see some example of data set.
+```{python}
+dls_clas.show_batch(max_n=5)
+```
