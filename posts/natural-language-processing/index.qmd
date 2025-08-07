@@ -275,7 +275,7 @@ dls_clas = DataBlock(
 ).dataloaders(path, path=path, bs=128, seq_len=72)
 ```
 
-Let's see some example of data set.
+Let's see some example of data set:
 ```{python}
 dls_clas.show_batch(max_n=5)
 ```
