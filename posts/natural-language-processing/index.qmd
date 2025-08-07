@@ -1,0 +1,133 @@
+---
+title: "Natural Language Processing"
+# author: "Harlow Malloc"
+date: "2022-03-29"
+categories: [NLP, transfer learning, code]
+image: "NLP.png"
+format:
+  html:
+    code-fold: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+crossref:
+  fig-title: "Figure"
+  eq-title: "Equation"
+  tbl-title: "Table"
+jupyter: python3
+---
+
+# Objectives
+In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning ([info](https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d)). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis. 
+
+Based on a `language model` which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.
+
+
+![Transfer learning workflow for movie classifier](https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1){#fig-transfer-learning fig-cap="Transfer learning workflow for movie classifier."}
+
+As shown in @fig-transfer-learning, we will start with the Wikipedia language model with a subset which we called Wikitext103. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with our classifier. 
+
+
+# Text Preprocessing
+
+In order to build a language model with many complexities such as different sentence lengths in long documents, we can build a neural network model to deal with that issue. We apprehended that categorical variables (words) can be used as independent variables for a neural network (using embedding matrix).  Then, we could do the same thing with text.
+
+First, we concatenate all the documents in our dataset into a big long string and split it into words. Our independent variables will be the sequence of words starting with the first word and ending with the second last, and our dependent variable would be the sequence of words starting with the second word and ending with the last words. 
+
+In our vocab, it might exist the very common words and new words. For new words, because we don't have any pre-knowledge, so we will just initialize the corresponding row with a random vector. 
+
+These above steps can be listed as below:
+- Tokenization: convert the text into a list of words
+- Numericalization: make a list of all the unique words which appear, and convert each word into a number, by looking up its index in the vocab.
+- Language model data loader creation : handle creating dependant variables
+- Language model creation: handle input list by using recurrent neural network.
+
+## Tokenization
+Basically, tokenization convert the text into list of words. Firstly, we will grab our IMDb dataset and try out the tokenizer with all the text files.
+
+```{python}
+#| echo: true
+#| output: false
+#| eval: true
+#| warning: false
+#| message: false
+from fastai.text.all import *
+path = untar_data(URLs.IMDB)
+```
+
+```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+files = get_text_files(path,folders=['train','test','unsup'])
+```
+
+The default English word tokenizer that FastAI used is called `SpaCy` which uses a sophisticated riles engine for particular words and URLs. Rather than directly using ```SpacyTokenizer```, we are going to use ```WordTokenizer``` which always points to fastai's current default word tokenizer. 
+```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+txt = files[0].open().read()
+txt[:60]
+spacy = WordTokenizer()
+toks = first(spacy([txt]))
+
+print(coll_repr(toks,30))
+```
+
+### Sub-word tokenization
+In additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps:
+- Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab
+- Tokenize the corpus using this vocab of sub-word units
+
+For example, we will first look into 2000 movie reviews:
+```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+txts = L(o.open().read() for o in files[:2000])
+def subword(sz):
+    sp = SubwordTokenizer(vocab_sz=sz)
+    sp.setup(txts)
+    return ' '.join(first(sp([txt]))[:40])
+```
+
+Then, the long underscore is when we replace the space and we can know where the sentences actually start and stop. 
+
+```{python}
+subword(10000)
+```
+
+If we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence. So, there is a compromise to take into account when choosing sub-word vocab: A larger vocab means more fewer tokens per sentence which means faster training, less memory, less state for the model to remember, but it comes to the downside of larger embedding matrix and requiring more data to learn.
+
+## Numericalization
+In order to numericalize, we need to call ```setup``` first to create the vocab. 
+
+```{python}
+tkn = Tokenizer(spacy)
+toks300 = txts[:300].map(tkn)
+toks300[0]
+num = Numericalize()
+num.setup(toks300)
+coll_repr(num.vocab,20)
+```
+
+The results return our rule tokens first, and it is followed by word appearances, in frequency order.
+Once we created our Numerical object, we can use it as if it were a function.
+
+```{python}
+nums = num(toks)[:20]
+nums
+```
+
+
+```{python}
+' '.join(num.vocab[o] for o in nums)
+```
+
+Now, we have already had numerical data, we need to put them in batches for our model.
