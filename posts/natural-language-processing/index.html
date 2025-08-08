@@ -218,7 +218,7 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <section id="tokenization" class="level2">
 <h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
 <p>Basically, tokenization convert the text into list of words. Firstly, we will grab our IMDb dataset and try out the tokenizer with all the text files.</p>
-<div id="7d77b953" class="cell" data-message="false" data-execution_count="1">
+<div id="50bb5370" class="cell" data-message="false" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
@@ -226,14 +226,14 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># path.ls()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="5aa057a5" class="cell" data-message="false" data-execution_count="2">
+<div id="87ef9c3a" class="cell" data-message="false" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> get_text_files(path,folders<span class="op">=</span>[<span class="st">'train'</span>,<span class="st">'test'</span>,<span class="st">'unsup'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The default English word tokenizer that FastAI used is called <code>SpaCy</code> which uses a sophisticated riles engine for particular words and URLs. Rather than directly using <code>SpacyTokenizer</code>, we are going to use <code>WordTokenizer</code> which always points to fastai’s current default word tokenizer.</p>
-<div id="3db471e0" class="cell" data-message="false" data-execution_count="3">
+<div id="91cf0cb8" class="cell" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> files[<span class="dv">0</span>].<span class="bu">open</span>().read()</span>
@@ -251,7 +251,7 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <h3 class="anchored" data-anchor-id="sub-word-tokenization">Sub-word tokenization</h3>
 <p>In additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps: - Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab - Tokenize the corpus using this vocab of sub-word units</p>
 <p>For example, we will first look into 2000 movie reviews:</p>
-<div id="505c7c32" class="cell" data-message="false" data-execution_count="4">
+<div id="cbba00c0" class="cell" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(o.<span class="bu">open</span>().read() <span class="cf">for</span> o <span class="kw">in</span> files[:<span class="dv">2000</span>])</span>
@@ -262,7 +262,7 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 </details>
 </div>
 <p>Then, the long underscore is when we replace the space and we can know where the sentences actually start and stop.</p>
-<div id="b97db3af" class="cell" data-execution_count="5">
+<div id="2c3b960f" class="cell" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subword(<span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -288,9 +288,6 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <div class="cell-output cell-output-display">
 
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>sentencepiece_trainer.cc(178) LOG(INFO) Running command: --input=tmp/texts.out --vocab_size=10000 --model_prefix=tmp/spm --character_coverage=0.99999 --model_type=unigram --unk_id=9 --pad_id=-1 --bos_id=-1 --eos_id=-1 --minloglevel=2 --user_defined_symbols=▁xxunk,▁xxpad,▁xxbos,▁xxeos,▁xxfld,▁xxrep,▁xxwrep,▁xxup,▁xxmaj --hard_vocab_limit=false</code></pre>
-</div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>'▁Whil e ▁the ▁premise ▁of ▁the ▁film ▁is ▁pretty ▁lame ▁( O ll ie ▁is ▁diagnos ed ▁with ▁" hor no pho b ia ") , ▁the ▁film ▁is ▁an ▁a mi able ▁and ▁enjoyable ▁little ▁flick . ▁It \''</code></pre>
 </div>
@@ -301,36 +298,36 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <section id="numericalization" class="level2">
 <h2 class="anchored" data-anchor-id="numericalization">Numericalization</h2>
 <p>In order to numericalize, we need to call <code>setup</code> first to create the vocab.</p>
-<div id="35eb564d" class="cell" data-execution_count="6">
+<div id="dfeb48d7" class="cell" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>toks300 <span class="op">=</span> txts[:<span class="dv">300</span>].<span class="bu">map</span>(tkn)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>toks300[<span class="dv">0</span>]</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> Numericalize()</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>num.setup(toks300)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab,<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>toks300 <span class="op">=</span> txts[:<span class="dv">300</span>].<span class="bu">map</span>(tkn)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>toks300[<span class="dv">0</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> Numericalize()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>num.setup(toks300)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab,<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>"(#2976) ['xxunk','xxpad','xxbos','xxeos','xxfld','xxrep','xxwrep','xxup','xxmaj','the',',','.','and','a','of','to','is','in','it','i'...]"</code></pre>
 </div>
 </div>
 <p>The results return our rule tokens first, and it is followed by word appearances, in frequency order. Once we created our Numerical object, we can use it as if it were a function.</p>
-<div id="936c0275" class="cell" data-execution_count="7">
+<div id="105e5ab7" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks)[:<span class="dv">20</span>]</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nums</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks)[:<span class="dv">20</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>nums</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>TensorText([   0,    9,  938,   14,    9,   30,   16,  173, 1227,   35,    0,
               16,    0,   27,   23,    0,   23,   33,   10,    9])</code></pre>
 </div>
 </div>
-<div id="5078c847" class="cell" data-execution_count="8">
+<div id="f4e2a97e" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">' '</span>.join(num.vocab[o] <span class="cf">for</span> o <span class="kw">in</span> nums)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">' '</span>.join(num.vocab[o] <span class="cf">for</span> o <span class="kw">in</span> nums)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>'xxunk the premise of the film is pretty lame ( xxunk is xxunk with " xxunk " ) , the'</code></pre>
@@ -342,13 +339,13 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <p>Recalling the batch creation for the images when we have to reshape all the images to be same size before grouping them together in a single tensor for the efficient calculation purposes. It is a little bit different when dealing with texts because it is not desirable to resize the text length. Also, we want the model read texts in order so that it can efficiently predict what the next word is. This suggests that each new batch should begin precisely where the previous one left off.</p>
 <p>So, the text stream will be cut into a certain number of batches (with batch size) with preserving the order of the tokens. Because we want the model to read continuous rows of the text.</p>
 <p>To recap, at every epoch, we shuffle our collection of documents and concatenate them into a stream of tokens. Then, that stream will be cut into a batch of fixed size consecutive mini stream. The model will read these mini streams in order and it will produce the same activation.</p>
-<div id="eaedb7bd" class="cell" data-execution_count="9">
+<div id="d8c0b264" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nums300 <span class="op">=</span> toks300.<span class="bu">map</span>(num)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>dl <span class="op">=</span> LMDataLoader(nums300)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>x,y <span class="op">=</span> first(dl)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>x.shape, y.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nums300 <span class="op">=</span> toks300.<span class="bu">map</span>(num)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>dl <span class="op">=</span> LMDataLoader(nums300)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>x,y <span class="op">=</span> first(dl)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>x.shape, y.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>(torch.Size([64, 72]), torch.Size([64, 72]))</code></pre>
@@ -363,86 +360,378 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 <section id="create-a-language-model-using-datablock" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-language-model-using-datablock">Create a language model using DataBlock</h2>
 <p>By default, <code>fastai</code> handles tokenization and numericalization automatically when <code>TextBlock</code> is passed to <code>DataBlock</code>.</p>
-<div id="fad30710" class="cell" data-execution_count="10">
+<div id="79cadfc5" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_imdb <span class="op">=</span> partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>, <span class="st">'unsup'</span>])</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>dls_lm <span class="op">=</span> DataBlock(</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>blocks<span class="op">=</span>TextBlock.from_folder(path, is_lm<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>get_items<span class="op">=</span>get_imdb, splitter<span class="op">=</span>RandomSplitter(<span class="fl">0.1</span>)).dataloaders(path, path<span class="op">=</span>path, bs<span class="op">=</span><span class="dv">128</span>, seq_len<span class="op">=</span><span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_imdb <span class="op">=</span> partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>, <span class="st">'unsup'</span>])</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>dls_lm <span class="op">=</span> DataBlock(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>blocks<span class="op">=</span>TextBlock.from_folder(path, is_lm<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>get_items<span class="op">=</span>get_imdb, splitter<span class="op">=</span>RandomSplitter(<span class="fl">0.1</span>)).dataloaders(path, path<span class="op">=</span>path, bs<span class="op">=</span><span class="dv">128</span>, seq_len<span class="op">=</span><span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="fine-tuning-the-language-model" class="level2">
 <h2 class="anchored" data-anchor-id="fine-tuning-the-language-model">Fine-tuning the language model</h2>
 <p>Then, we are going to create a learner which is going to learn and predict the next word of a movie review. It will take the data from data loader, pretrained model (AWD_LSTM), Dropout technique and metrics into account.</p>
-<div id="025a8bd6" class="cell" data-execution_count="11">
+<div id="1c612b5c" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> language_model_learner(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dls_lm, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.3</span>,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>metrics<span class="op">=</span>[accuracy, Perplexity()]).to_fp16()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> language_model_learner(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>dls_lm, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>metrics<span class="op">=</span>[accuracy, Perplexity()]).to_fp16()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Then we will do training (fit_one_cycle instead of fine_tuning) because we will be saving the intermediate model results during the training process.</p>
-<div id="5250b364" class="cell" data-execution_count="12">
+<div id="56d6a516" class="cell" data-message="false" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.fit_one_cycle(1,2e-2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>,<span class="fl">2e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">perplexity</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>4.005774</td>
+<td>3.901640</td>
+<td>0.300593</td>
+<td>49.483521</td>
+<td>2:38:18</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <p>After few minutes, we got the accuracy of prediction using transfer learning which is about 29 percent. In order to intermediately save the pre-trained model, we can easily do it with PyTorch, and it will create a file in <code>learn.path/models</code>. Afterward, we can load the content of the file without any difficulty.</p>
-<div id="ddde10a7" class="cell" data-execution_count="13">
+<div id="ea5b12e5" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Save with FastAI</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.save('one_epoch_training')</span></span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Save with FastAI</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.save('one_epoch_training')</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Save with PyTorch</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>model_save_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>torch.save(learn.model.state_dict(), model_save_path)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Model saved to: {model_save_path}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="43205b4c" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Use FastAI's load method</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.load('one_epoch_training', strict=False)</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Save with PyTorch</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Use PyTorch to load the saved model</span></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>model_save_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>torch.save(learn.model.state_dict(), model_save_path)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Model saved to: </span><span class="sc">{</span>model_save_path<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>model_load_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>state_dict <span class="op">=</span> torch.load(model_load_path, weights_only<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>learn.model.load_state_dict(state_dict, strict<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Model loaded from: {model_load_path}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Model saved to: /home/ldinh/.fastai/data/imdb/models/one_epoch_training_torch.pth</code></pre>
-</div>
-</div>
-<div id="2fe41fa9" class="cell" data-execution_count="14">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Use FastAI's load method</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.load('one_epoch_training', strict=False)</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Use PyTorch to load the saved model</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>model_load_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>state_dict <span class="op">=</span> torch.load(model_load_path, weights_only<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>learn.model.load_state_dict(state_dict, strict<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Model loaded from: </span><span class="sc">{</span>model_load_path<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Model loaded from: /home/ldinh/.fastai/data/imdb/models/one_epoch_training_torch.pth</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>&lt;All keys matched successfully&gt;</code></pre>
 </div>
 </div>
 <p>After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let’s see the improvement of the accuracy.</p>
-<div id="52a15c58" class="cell" data-execution_count="15">
+<div id="ab8abd02" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.unfreeze()</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.fit_one_cycle(10,2e-3)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">10</span>,<span class="fl">2e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ldinh/perso/.venv/lib64/python3.12/site-packages/fastai/callback/fp16.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()
+/home/ldinh/perso/.venv/lib64/python3.12/site-packages/torch/amp/autocast_mode.py:266: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/home/ldinh/perso/.venv/lib64/python3.12/site-packages/fastai/callback/fp16.py:47: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()
+/home/ldinh/perso/.venv/lib64/python3.12/site-packages/torch/amp/grad_scaler.py:136: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">perplexity</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>3.764500</td>
+<td>3.760669</td>
+<td>0.316729</td>
+<td>42.977158</td>
+<td>2:18:55</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>3.708819</td>
+<td>3.698286</td>
+<td>0.323979</td>
+<td>40.378021</td>
+<td>2:32:35</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>3.633408</td>
+<td>3.652018</td>
+<td>0.329161</td>
+<td>38.552387</td>
+<td>2:33:59</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>3.566183</td>
+<td>3.620933</td>
+<td>0.332817</td>
+<td>37.372433</td>
+<td>2:25:56</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>3.496074</td>
+<td>3.599054</td>
+<td>0.335281</td>
+<td>36.563614</td>
+<td>2:30:27</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>3.428904</td>
+<td>3.582709</td>
+<td>0.337807</td>
+<td>35.970840</td>
+<td>2:28:41</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>3.363692</td>
+<td>3.573828</td>
+<td>0.339434</td>
+<td>35.652794</td>
+<td>2:19:28</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>3.301039</td>
+<td>3.571042</td>
+<td>0.340221</td>
+<td>35.553623</td>
+<td>2:15:53</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>3.259397</td>
+<td>3.574479</td>
+<td>0.340391</td>
+<td>35.676033</td>
+<td>2:27:58</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>3.213290</td>
+<td>3.579186</td>
+<td>0.340240</td>
+<td>35.844360</td>
+<td>2:36:59</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <p>Then, we save our model except the last activation function layer. To do that, we can save it with <code>save_encoder</code></p>
-<div id="864e9d81" class="cell" data-execution_count="16">
+<div id="9a3f52fd" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>learn.save_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>learn.save_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In this step, we have fine tuned the language model. Now, we will fine tune this language model using the IMDb sentiment labels.</p>
+</section>
+<section id="text-generation" class="level2">
+<h2 class="anchored" data-anchor-id="text-generation">Text generation</h2>
+<p>We can self create some random words and we can create sentences and each contains 40 words and we will predict the content of those with a kind of randomization.</p>
+<div id="8c64d3cc" class="cell" data-message="false" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>TEXT <span class="op">=</span> <span class="st">"I liked this movie so"</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>N_WORDS <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>N_SENTENCES <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> [learn.predict(TEXT, N_WORDS, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(N_SENTENCES)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<p>Let’s see the generation of new inventing words</p>
+<div id="d044d18b" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(preds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>i liked this movie so much , i did n't see it in the theater because i was in my 20s . i was in the first time in the theater when i was growing up . i also did n't like the fact that
+i liked this movie so much that i enjoyed it . It is a good movie . Get the DVD out of your library . This movie is a classic for any romantic movie fan . i recommend it . i</code></pre>
+</div>
+</div>
+</section>
+<section id="creating-the-classifier-dataloaders" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-classifier-dataloaders">Creating the classifier DataLoaders</h2>
+<p>Previously, we built a language model to predict the next word of a document given the pre text. Now, we are going to move to the classifier which predict the sentiment of a document.</p>
+<div id="c2bf8fd5" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dls_clas <span class="op">=</span> DataBlock(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    blocks<span class="op">=</span>(TextBlock.from_folder(path, vocab<span class="op">=</span>dls_lm.vocab),CategoryBlock),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    get_y <span class="op">=</span> parent_label,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    get_items<span class="op">=</span>partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>]),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    splitter<span class="op">=</span>GrandparentSplitter(valid_name<span class="op">=</span><span class="st">'test'</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>).dataloaders(path, path<span class="op">=</span>path, bs<span class="op">=</span><span class="dv">128</span>, seq_len<span class="op">=</span><span class="dv">72</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s see some example of data set:</p>
+<div id="a3bc3037" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dls_clas.show_batch(max_n<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">text</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>xxbos xxmaj match 1 : xxmaj tag xxmaj team xxmaj table xxmaj match xxmaj bubba xxmaj ray and xxmaj spike xxmaj dudley vs xxmaj eddie xxmaj guerrero and xxmaj chris xxmaj benoit xxmaj bubba xxmaj ray and xxmaj spike xxmaj dudley started things off with a xxmaj tag xxmaj team xxmaj table xxmaj match against xxmaj eddie xxmaj guerrero and xxmaj chris xxmaj benoit . xxmaj according to the rules of the match , both opponents have to go through tables in order to get the win . xxmaj benoit and xxmaj guerrero heated up early on by taking turns hammering first xxmaj spike and then xxmaj bubba xxmaj ray . a xxmaj german xxunk by xxmaj benoit to xxmaj bubba took the wind out of the xxmaj dudley brother . xxmaj spike tried to help his brother , but the referee restrained him while xxmaj benoit and xxmaj guerrero</td>
+<td>pos</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>xxbos xxmaj titanic directed by xxmaj james xxmaj cameron presents a fictional love story on the historical setting of the xxmaj titanic . xxmaj the plot is simple , xxunk , or not for those who love plots that twist and turn and keep you in suspense . xxmaj the end of the movie can be figured out within minutes of the start of the film , but the love story is an interesting one , however . xxmaj kate xxmaj winslett is wonderful as xxmaj rose , an aristocratic young lady betrothed by xxmaj cal ( billy xxmaj zane ) . xxmaj early on the voyage xxmaj rose meets xxmaj jack ( leonardo dicaprio ) , a lower class artist on his way to xxmaj america after winning his ticket aboard xxmaj titanic in a poker game . xxmaj if he wants something , he goes and gets it</td>
+<td>pos</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>xxbos xxmaj some have praised xxunk xxmaj lost xxmaj xxunk as a xxmaj disney adventure for adults . i do n't think so -- at least not for thinking adults . \n\n xxmaj this script suggests a beginning as a live - action movie , that struck someone as the type of crap you can not sell to adults anymore . xxmaj the " crack staff " of many older adventure movies has been done well before , ( think xxmaj the xxmaj dirty xxmaj dozen ) but xxunk represents one of the worse films in that motif . xxmaj the characters are weak . xxmaj even the background that each member trots out seems stock and awkward at best . xxmaj an xxup md / xxmaj medicine xxmaj man , a tomboy mechanic whose father always wanted sons , if we have not at least seen these before ,</td>
+<td>neg</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , steaming bowl of oatmeal . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain overconfidence on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an idyllic storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
+<td>neg</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>xxbos xxmaj berlin - born in 1942 xxmaj margarethe von xxmaj trotta was an actress and now she is a very important director and writer . xxmaj she has been described , perhaps even unfairly caricatured , as a director whose commitment to bringing a woman 's sensibility to the screen outweighs her artistic strengths . " rosenstrasse , " which has garnered mixed and even strange reviews ( the xxmaj new xxmaj york xxmaj times article was one of the most negatively aggressive reviews xxmaj i 've ever read in that paper ) is not a perfect film . xxmaj it is a fine movie and a testament to a rare xxunk of successful opposition to the genocidal xxmaj nazi regime by , of all peoples , generically powerless xxmaj germans demonstrating in a xxmaj berlin street . \n\n xxmaj co - writer von xxmaj trotta uses the actual</td>
+<td>pos</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 
 </section>
