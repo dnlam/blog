@@ -18,6 +18,9 @@ crossref:
   eq-title: "Equation"
   tbl-title: "Table"
 jupyter: python3
+execute:
+  cache: true
+  freeze: auto
 ---
 
 # Objectives
@@ -192,7 +195,7 @@ Then, we will perform intermediate model training by fitting the model in one tr
 ```{python}
 #| echo: true
 #| output: true
-#| eval: true
+#| eval: false
 #| warning: false
 #| message: false
 learn.fit_one_cycle(1,2e-2)
@@ -230,6 +233,7 @@ After loading the pre-saved model, we can unfreeze it and train it for few more 
 ```{python}
 #| warning: false
 #| message: false
+#| eval: false
 learn.unfreeze()
 
 learn.fit_one_cycle(10,2e-3)
