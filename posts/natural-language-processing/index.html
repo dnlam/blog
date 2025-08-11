@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Natural Language Processing</h1>
@@ -184,8 +184,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a></li>
+  <li><a href="#text-preprocessing" id="toc-text-preprocessing" class="nav-link" data-scroll-target="#text-preprocessing">Text Preprocessing</a>
+  <ul class="collapse">
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a>
+  <ul class="collapse">
+  <li><a href="#sub-word-tokenization" id="toc-sub-word-tokenization" class="nav-link" data-scroll-target="#sub-word-tokenization">Sub-word tokenization</a></li>
+  </ul></li>
+  <li><a href="#numericalization" id="toc-numericalization" class="nav-link" data-scroll-target="#numericalization">Numericalization</a>
+  <ul class="collapse">
+  <li><a href="#batches-of-texts" id="toc-batches-of-texts" class="nav-link" data-scroll-target="#batches-of-texts">Batches of texts</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#training-a-text-classifier" id="toc-training-a-text-classifier" class="nav-link" data-scroll-target="#training-a-text-classifier">Training a Text Classifier</a>
+  <ul class="collapse">
+  <li><a href="#create-a-language-model-using-datablock" id="toc-create-a-language-model-using-datablock" class="nav-link" data-scroll-target="#create-a-language-model-using-datablock">Create a language model using DataBlock</a></li>
+  <li><a href="#fine-tuning-the-language-model" id="toc-fine-tuning-the-language-model" class="nav-link" data-scroll-target="#fine-tuning-the-language-model">Fine-tuning the language model</a></li>
+  <li><a href="#text-generation" id="toc-text-generation" class="nav-link" data-scroll-target="#text-generation">Text generation</a></li>
+  <li><a href="#creating-the-classifier-dataloaders" id="toc-creating-the-classifier-dataloaders" class="nav-link" data-scroll-target="#creating-the-classifier-dataloaders">Creating the classifier DataLoaders</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
