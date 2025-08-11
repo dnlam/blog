@@ -9,6 +9,10 @@ format:
     code-fold: true
     fig-cap-location: bottom
     tbl-cap-location: top
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: "Contents"
 crossref:
   fig-title: "Figure"
   eq-title: "Equation"
@@ -175,7 +179,7 @@ get_items=get_imdb, splitter=RandomSplitter(0.1)).dataloaders(path, path=path, b
 
 ## Fine-tuning the language model
 
-Then, we are going to create a learner which is going to learn and predict the next word of a movie review. It will take the data from data loader, pretrained model (AWD_LSTM), Dropout technique and metrics into account.
+In this step, we are going to create a learner which is going to learn and predict the next word of a `movie review`. It will take the data from data loader, pretrained model (AWD_LSTM), accept dropout technique and take accuracy as well as perplexity metrics into account. Particularly, `accuracy` metric is used to evaluate how much time our model is correct when trying to predict the next word, while `perplexity` metric is used to track the (exponential) value of cross-entropy loss.
 
 ```{python}
 learn = language_model_learner(
@@ -183,7 +187,7 @@ dls_lm, AWD_LSTM, drop_mult=0.3,
 metrics=[accuracy, Perplexity()]).to_fp16()
 ```
 
-Then we will do training (fit_one_cycle instead of fine_tuning) because we will be saving the intermediate model results during the training process.
+Then, we will perform intermediate model training by fitting the model in one training cycle. 
 
 ```{python}
 #| echo: true
@@ -194,8 +198,8 @@ Then we will do training (fit_one_cycle instead of fine_tuning) because we will 
 learn.fit_one_cycle(1,2e-2)
 ```
 
-After few minutes, we got the accuracy of prediction using transfer learning which is about 29 percent.
-In order to intermediately save the pre-trained model, we can easily do it with PyTorch, and it will create a file in `learn.path/models`. Afterward, we can load the content of the file without any difficulty.
+After few minutes of training, we got the prediction accuracy which is around 29-30 percent.
+In order to reuse the pre-trained model, we can easily save the model with PyTorch. In this case, we are going to save only learnable parameters (i.e., weight and bias of a model via `state_dict`) and the updated parameters after one epoch training will be stored at `learn.path/'models'/'one_epoch_training_torch.pth'`.
 
 ```{python}
 # Option 1: Save with FastAI
@@ -208,6 +212,7 @@ torch.save(learn.model.state_dict(), model_save_path)
 # print(f"Model saved to: {model_save_path}")
 ```
 
+Once the trainable parameters are stored, we can later load those parameter to the compatible model for further training 
 ```{python}
 # Option 1: Use FastAI's load method
 # learn.load('one_epoch_training', strict=False)
@@ -219,24 +224,25 @@ state_dict = torch.load(model_load_path, weights_only=False)
 learn.model.load_state_dict(state_dict, strict=False)
 # print(f"Model loaded from: {model_load_path}")
 ```
+
 After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let's see the improvement of the accuracy.
 
 ```{python}
+#| warning: false
+#| message: false
 learn.unfreeze()
 
 learn.fit_one_cycle(10,2e-3)
 ```
-
-Then, we save our model except the last activation function layer. To do that, we can save it with `save_encoder`
+As we can see from the training process, the accuracy has improved progressively. At the end of ten cycle training, the accuracy has increased to around 35 percent. 
+To perform model finetuning, we save the model parameters except the last activation function layer. To do that, we can save it with `save_encoder`
 
 ```{python}
 learn.save_encoder('finetuned')
 ```
 In this step, we have fine tuned the language model. Now, we will fine tune this language model using the IMDb sentiment labels.
 
-## Text generation
-
-We can self create some random words and we can create sentences and each contains 40 words and we will predict the content of those with a kind of randomization.
+Although the model is pre-designed for next word prediction, we can also use this model to generate texts. For example, we can self-create a sentence with some words and we parses this sentence to the model to generate a new sentence which has one word longer than the parsed sentence. Leveraging this capability, we are going to create 40 new words from that randomized content.
 
 ```{python}
 #| echo: true
@@ -254,8 +260,6 @@ N_SENTENCES = 2
 preds = [learn.predict(TEXT, N_WORDS, temperature=0.75) for _ in range(N_SENTENCES)]
 ```
 
-
-
 Let's see the generation of new inventing words
 ```{python}
 print("\n".join(preds))
@@ -263,8 +267,7 @@ print("\n".join(preds))
 
 ## Creating the classifier DataLoaders
 
-
-Previously, we built a language model to predict the next word of a document given the pre text. Now, we are going to move to the classifier which predict the sentiment of a document.
+Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predict the sentiment of a document.
 
 ```{python}
 dls_clas = DataBlock(
