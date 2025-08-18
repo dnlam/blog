@@ -119,7 +119,7 @@ subword(10000)
 If we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence. So, there is a compromise to take into account when choosing sub-word vocab: A larger vocab means more fewer tokens per sentence which means faster training, less memory, less state for the model to remember, but it comes to the downside of larger embedding matrix and requiring more data to learn.
 
 ## Numericalization
-In order to numericalize, we need to call ```setup``` first to create the vocab. 
+In order to numericalize the tokens, we need to call ```setup``` first to create the vocab. 
 
 ```{python}
 #| echo: true
@@ -182,7 +182,7 @@ get_items=get_imdb, splitter=RandomSplitter(0.1)).dataloaders(path, path=path, b
 
 ## Fine-tuning the language model
 
-In this step, we are going to create a learner which is going to learn and predict the next word of a `movie review`. It will take the data from data loader, pretrained model (AWD_LSTM), accept dropout technique and take accuracy as well as perplexity metrics into account. Particularly, `accuracy` metric is used to evaluate how much time our model is correct when trying to predict the next word, while `perplexity` metric is used to track the (exponential) value of cross-entropy loss.
+In this step, we are going to create a learner which is going to learn and predict the next word of a `movie review`. It will take the data from data loader, pretrained model (``AWD_LSTM``), apply dropout technique and take accuracy as well as perplexity metrics into account. Particularly, `accuracy` metric is used to evaluate how the correctness when the model tries to predict the next word, while `perplexity` metric is used to track the (exponential) value of cross-entropy loss.
 
 ```{python}
 learn = language_model_learner(
@@ -195,7 +195,8 @@ Then, we will perform intermediate model training by fitting the model in one tr
 ```{python}
 #| echo: true
 #| output: true
-#| eval: false
+#| eval: true
+#| cache: true
 #| warning: false
 #| message: false
 learn.fit_one_cycle(1,2e-2)
@@ -231,9 +232,10 @@ learn.model.load_state_dict(state_dict, strict=False)
 After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let's see the improvement of the accuracy.
 
 ```{python}
+#| cache: true
 #| warning: false
 #| message: false
-#| eval: false
+#| eval: true
 learn.unfreeze()
 
 learn.fit_one_cycle(10,2e-3)
@@ -269,9 +271,10 @@ Let's see the generation of new inventing words
 print("\n".join(preds))
 ```
 
-## Creating the classifier DataLoaders
+## Fine-tuning the classification model
 
-Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predict the sentiment of a document.
+Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predicts the sentiment of a document.
+
 
 ```{python}
 dls_clas = DataBlock(
@@ -282,7 +285,3 @@ dls_clas = DataBlock(
 ).dataloaders(path, path=path, bs=128, seq_len=72)
 ```
 
-Let's see some example of data set:
-```{python}
-dls_clas.show_batch(max_n=5)
-```
