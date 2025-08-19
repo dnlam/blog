@@ -79,3 +79,29 @@ button within your web browser to see changes after deployment.
 [33mNOTE: GitHub Pages deployments normally take a few minutes (your site updates
 will be visible once the deploy completes)
 [39m
+From github.com:dnlam/blog
+ * branch            gh-pages   -> FETCH_HEAD
+[1m[34mRendering for publish:
+[39m[22m
+[1m[34m[1/4] about.qmd[39m[22m
+[1m[34m[2/4] posts/natural-language-processing/index.qmd[39m[22m
+
+Starting python3 kernel...Done
+
+Executing 'index.quarto_ipynb'
+  Cell 1/24: ''...Done
+  Cell 2/24: ''...Done
+  Cell 3/24: ''...Done
+  Cell 4/24: ''...Done
+  Cell 5/24: ''...sentencepiece_trainer.cc(178) LOG(INFO) Running command: --input=tmp/texts.out --vocab_size=10000 --model_prefix=tmp/spm --character_coverage=0.99999 --model_type=unigram --unk_id=9 --pad_id=-1 --bos_id=-1 --eos_id=-1 --minloglevel=2 --user_defined_symbols=▁xxunk,▁xxpad,▁xxbos,▁xxeos,▁xxfld,▁xxrep,▁xxwrep,▁xxup,▁xxmaj --hard_vocab_limit=false
+Done
+  Cell 6/24: ''...Done
+  Cell 7/24: ''...Done
+  Cell 8/24: ''...Done
+  Cell 9/24: ''...Done
+  Cell 10/24: ''...Done
+  Cell 11/24: ''...Done
+  Cell 12/24: ''...Done
+  Cell 13/24: ''...Done
+  Cell 14/24: ''...Done
+  Cell 15/24: ''...

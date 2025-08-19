@@ -1,8 +1,8 @@
 ---
 title: "Natural Language Processing"
-# author: "Harlow Malloc"
+# author: "Lam Dinh"
 date: "2022-03-29"
-categories: [NLP, transfer learning, code]
+categories: [NLP, language model, transfer learning, code]
 image: "NLP.png"
 format:
   html:
@@ -18,45 +18,45 @@ crossref:
   eq-title: "Equation"
   tbl-title: "Table"
 jupyter: python3
-execute:
-  cache: true
-  freeze: auto
 ---
 
 # Objectives
-In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning ([info](https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d)). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis. 
+In this notebook, we are going to deep dive into *natural language processing* (NLP) using Deep Learning ([info](https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d)). Relying on the *pretrained language model*, we are going to fine-tune it to classify the reviews, which works as *sentiment analysis*, to categorize user reviews as bad/good ones. 
 
-Based on a `language model` which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.
-
+Based on a `language model` which has been trained before, we will apply *transfer learning* method for this task to transform ``prediction`` problem into `classification` problem.
+::: {.callout-note}
+## Language model
+In this blog post, we refer `language model` as a model which predicts the next word in a sentence given the previous words. It is a *self-supervised learning* task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words.
+:::
 
 ![Transfer learning workflow for movie classifier](https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1){#fig-transfer-learning fig-cap="Transfer learning workflow for movie classifier."}
 
-As shown in @fig-transfer-learning, we will start with the Wikipedia language model with a subset which we called ``Wikitext103``. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with our classifier. 
+As shown in @fig-transfer-learning, we will start with the Wikipedia language model with a dataset which so-called [Wikitext103](https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/) ^[Merity, S., Xiong, C., Bradbury, J., & Socher, R. (2016). Pointer sentinel mixture models. arXiv preprint arXiv:1609.07843.]. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with fine-tuning the language model for classification problem to classify reviews for a movie is good/bad. 
 
 ::: {.callout-tip}
 ## Three-Step Transfer Learning Process
-1. **Pre-trained Model**: Start with Wikitext103 language model
-2. **Domain Adaptation**: Fine-tune on IMDb movie reviews  
-3. **Task-Specific**: Create sentiment classifier
+1. **Get Pre-trained Model**: Clone [Wikitext103](https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/) language model
+2. **Domain Adaptation**: Fine-tune `Wikitext103` which is based on Wiki texts with IMDb movie reviews.  
+3. **Create Task-Specific**: Refine the fine-tuned model for sentiment classification.
 :::
 
+# Work with Pre-trained model
+## Text Preprocessing
 
-# Text Preprocessing
+In order to build a language model with many complexities such as different sentence lengths in long documents, we can build a neural network model to deal with that issue. We apprehended that *categorical variables* (words) can be used as *independent variables* for a neural network (using *embedding matrix*).  Then, we could do the same thing with text.
 
-In order to build a language model with many complexities such as different sentence lengths in long documents, we can build a neural network model to deal with that issue. We apprehended that categorical variables (words) can be used as independent variables for a neural network (using embedding matrix).  Then, we could do the same thing with text.
+First, we concatenate all the documents in our dataset into a big long string and split it into words. Our *independent variables* will be the sequence of words starting with the first word and ending with the second last, and our *dependent variable* would be the sequence of words starting with the second word and ending with the last words. 
 
-First, we concatenate all the documents in our dataset into a big long string and split it into words. Our independent variables will be the sequence of words starting with the first word and ending with the second last, and our dependent variable would be the sequence of words starting with the second word and ending with the last words. 
-
-In our vocab, it might exist the very common words and new words. For new words, because we don't have any pre-knowledge, so we will just initialize the corresponding row with a random vector. 
+In our vocab, it might exist the very common words and new words. For *new words*, because we don't have any pre-knowledge, so we will just initialize the corresponding row with a *random vector*. 
 
 These above steps can be listed as below:
-- Tokenization: convert the text into a list of words
-- Numericalization: make a list of all the unique words which appear, and convert each word into a number, by looking up its index in the vocab.
-- Language model data loader creation : handle creating dependant variables
-- Language model creation: handle input list by using recurrent neural network.
+- **Tokenization**: convert the text into a list of words
+- **Numericalization**: make a list of all the unique words which appear, and convert each word into a number, by looking up its index in the vocab.
+- **Language model data loader**: handle creating dependant variables
+- **Language model**: handle input list by using *recurrent neural network*.
 
-## Tokenization
-Basically, tokenization convert the text into list of words. Firstly, we will grab our IMDb dataset and try out the tokenizer with all the text files.
+### Tokenization
+Basically, *tokenization* converts the text into list of words. Firstly, we will grab our *IMDb dataset* and try out the tokenizer with all the text files.
 
 ```{python}
 #| echo: true
@@ -93,7 +93,7 @@ toks = first(spacy([txt]))
 print(coll_repr(toks,30))
 ```
 
-### Sub-word tokenization
+#### Sub-word tokenization
 In additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps:
 - Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab
 - Tokenize the corpus using this vocab of sub-word units
@@ -125,7 +125,7 @@ subword(10000)
 
 If we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence. So, there is a compromise to take into account when choosing sub-word vocab: A larger vocab means more fewer tokens per sentence which means faster training, less memory, less state for the model to remember, but it comes to the downside of larger embedding matrix and requiring more data to learn.
 
-## Numericalization
+### Numericalization
 In order to numericalize the tokens, we need to call ```setup``` first to create the vocab. 
 
 ```{python}
@@ -157,7 +157,7 @@ nums
 
 Now, we have already had numerical data, we need to put them in batches for our model.
 
-### Batches of texts
+### Processing Batches of texts
 Recalling the batch creation for the images when we have to reshape all the images to be same size before grouping them together in a single tensor for the efficient calculation purposes. It is a little bit different when dealing with texts because it is not desirable to resize the text length. Also, we want the model read texts in order so that it can efficiently predict what the next word is. This suggests that each new batch should begin precisely where the previous one left off.
 
 So, the text stream will be cut into a certain number of batches (with batch size) with preserving the order of the tokens. Because we want the model to read continuous rows of the text.
@@ -174,7 +174,6 @@ x.shape, y.shape
 
 The batch size is 64x72. 64 is the default batch size and 72 is the default sequence length.
 
-# Training a Text Classifier
 ## Create a language model using DataBlock
 By default, `fastai` handles tokenization and numericalization automatically when `TextBlock` is passed to `DataBlock`. 
 
@@ -187,7 +186,7 @@ blocks=TextBlock.from_folder(path, is_lm=True),
 get_items=get_imdb, splitter=RandomSplitter(0.1)).dataloaders(path, path=path, bs=128, seq_len=80)
 ```
 
-## Fine-tuning the language model
+# Fine-tuning the language model
 
 In this step, we are going to create a learner which is going to learn and predict the next word of a `movie review`. It will take the data from data loader, pretrained model (``AWD_LSTM``), apply dropout technique and take accuracy as well as perplexity metrics into account. Particularly, `accuracy` metric is used to evaluate how the correctness when the model tries to predict the next word, while `perplexity` metric is used to track the (exponential) value of cross-entropy loss.
 
@@ -286,7 +285,7 @@ Let's see the generation of new inventing words
 print("\n".join(preds))
 ```
 
-## Fine-tuning the classification model
+# Create a classification model from fine-tuned model
 
 Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predicts the sentiment of a document.
 
@@ -311,7 +310,7 @@ For the characteristics of the input, we will apply padding here so that each ba
 - we use special padding token to expand the shortest texts to the same length as the target size in a batch.
 :::
 
-## Fine-tuning the classification model
+## Fine-tuning the model
 so far, we have `finetuned` encoder, which stores the trained parameter weights from previous step. Now, we are going to create a learner that load the `finetuned` encoder for fine-tuning. Then, we are going to fine-tune it over several epoch.
 ```{python}
 #| cache: true
@@ -354,3 +353,40 @@ learn.fit_one_cycle(1, slice(5e-3/(2.6**4),5e-3))
 learn.unfreeze()
 learn.fit_one_cycle(2, slice(1e-3/(2.6**4),1e-3))
 ```
+
+# Conclusion
+
+In this blog post, we have successfully demonstrated how to build an effective sentiment analysis system through fine-tuning a pre-trained model.
+
+## Key points
+
+- We started with the [Wikitext103](https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/) pretrained model and fine-tuned it on IMDb movie reviews, achieving approximately **35% accuracy** in next-word prediction after 10 epochs of training.
+
+- We implemented a text preprocessing pipeline for a language model including:
+  - **Tokenization**: Converting raw text into structured word sequences using SpaCy
+  - **Numericalization**: Mapping words to numerical representations for neural network processing
+  - **Batch Creation**: Organizing sequential text data for efficient model training
+
+
+- We achieved final *sentiment classification* through progressive layer unfreezing of fine-tuned model.
+
+## Technical Insights
+
+::: {.callout-important}
+## Key Technical Learnings
+- **Model Persistence**: Demonstrated both FastAI and PyTorch approaches for saving and loading model states
+- **Progressive Training**: Used gradual unfreezing technique to optimize classification performance
+:::
+
+## Future Directions
+
+This foundation opens several avenues for enhancement:
+
+1. **Model Architecture**: Experiment with transformer-based models (BERT, GPT)
+2. **Dataset Expansion**: Include additional movie review sources for robustness
+3. **Multi-class Classification**: Extend beyond binary sentiment to rating prediction
+4. **Real-time Deployment**: Package the model for production sentiment analysis
+
+## Final Thoughts
+
+This project demonstrates the power of *transfer learning* in NLP, showing how pretrained language models can be effectively adapted for specific downstream tasks. The combination of FastAI's high-level API with PyTorch's flexibility provides an excellent framework for both experimentation and production deployment.
