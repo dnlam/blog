@@ -191,23 +191,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a></li>
+  <li><a href="#work-with-pre-trained-model" id="toc-work-with-pre-trained-model" class="nav-link" data-scroll-target="#work-with-pre-trained-model">Work with Pre-trained model</a>
+  <ul class="collapse">
   <li><a href="#text-preprocessing" id="toc-text-preprocessing" class="nav-link" data-scroll-target="#text-preprocessing">Text Preprocessing</a>
   <ul class="collapse">
-  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a>
-  <ul class="collapse">
-  <li><a href="#sub-word-tokenization" id="toc-sub-word-tokenization" class="nav-link" data-scroll-target="#sub-word-tokenization">Sub-word tokenization</a></li>
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a></li>
+  <li><a href="#numericalization" id="toc-numericalization" class="nav-link" data-scroll-target="#numericalization">Numericalization</a></li>
+  <li><a href="#processing-batches-of-texts" id="toc-processing-batches-of-texts" class="nav-link" data-scroll-target="#processing-batches-of-texts">Processing Batches of texts</a></li>
   </ul></li>
-  <li><a href="#numericalization" id="toc-numericalization" class="nav-link" data-scroll-target="#numericalization">Numericalization</a>
-  <ul class="collapse">
-  <li><a href="#batches-of-texts" id="toc-batches-of-texts" class="nav-link" data-scroll-target="#batches-of-texts">Batches of texts</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#training-a-text-classifier" id="toc-training-a-text-classifier" class="nav-link" data-scroll-target="#training-a-text-classifier">Training a Text Classifier</a>
-  <ul class="collapse">
   <li><a href="#create-a-language-model-using-datablock" id="toc-create-a-language-model-using-datablock" class="nav-link" data-scroll-target="#create-a-language-model-using-datablock">Create a language model using DataBlock</a></li>
+  </ul></li>
   <li><a href="#fine-tuning-the-language-model" id="toc-fine-tuning-the-language-model" class="nav-link" data-scroll-target="#fine-tuning-the-language-model">Fine-tuning the language model</a></li>
-  <li><a href="#fine-tuning-the-classification-model" id="toc-fine-tuning-the-classification-model" class="nav-link" data-scroll-target="#fine-tuning-the-classification-model">Fine-tuning the classification model</a></li>
-  <li><a href="#fine-tuning-the-classification-model-1" id="toc-fine-tuning-the-classification-model-1" class="nav-link" data-scroll-target="#fine-tuning-the-classification-model-1">Fine-tuning the classification model</a></li>
+  <li><a href="#create-a-classification-model-from-fine-tuned-model" id="toc-create-a-classification-model-from-fine-tuned-model" class="nav-link" data-scroll-target="#create-a-classification-model-from-fine-tuned-model">Create a classification model from fine-tuned model</a>
+  <ul class="collapse">
+  <li><a href="#fine-tuning-the-model" id="toc-fine-tuning-the-model" class="nav-link" data-scroll-target="#fine-tuning-the-model">Fine-tuning the model</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points">Key points</a></li>
+  <li><a href="#technical-insights" id="toc-technical-insights" class="nav-link" data-scroll-target="#technical-insights">Technical Insights</a></li>
+  <li><a href="#future-directions" id="toc-future-directions" class="nav-link" data-scroll-target="#future-directions">Future Directions</a></li>
+  <li><a href="#final-thoughts" id="toc-final-thoughts" class="nav-link" data-scroll-target="#final-thoughts">Final Thoughts</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -225,8 +229,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="objectives" class="level1">
 <h1>Objectives</h1>
-<p>In this notebook, we are going to deep dive into natural language processing (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the pretrained language model, we are going to fine-tune it to classify the reviews, and it works as sentiment analysis.</p>
-<p>Based on a <code>language model</code> which has been trained to guess what the next word in the text is, we will apply transfer learning method for this NLP task.</p>
+<p>In this notebook, we are going to deep dive into <em>natural language processing</em> (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the <em>pretrained language model</em>, we are going to fine-tune it to classify the reviews, which works as <em>sentiment analysis</em>, to categorize user reviews as bad/good ones.</p>
+<p>Based on a <code>language model</code> which has been trained before, we will apply <em>transfer learning</em> method for this task to transform <code>prediction</code> problem into <code>classification</code> problem. ::: {.callout-note} ## Language model In this blog post, we refer <code>language model</code> as a model which predicts the next word in a sentence given the previous words. It is a <em>self-supervised learning</em> task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words. :::</p>
 <div id="fig-transfer-learning" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-cap="Transfer learning workflow for movie classifier.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-transfer-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -237,7 +241,7 @@ Figure&nbsp;1: Transfer learning workflow for movie classifier
 </figcaption>
 </figure>
 </div>
-<p>As shown in <a href="#fig-transfer-learning" class="quarto-xref">Figure&nbsp;1</a>, we will start with the Wikipedia language model with a subset which we called <code>Wikitext103</code>. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with our classifier.</p>
+<p>As shown in <a href="#fig-transfer-learning" class="quarto-xref">Figure&nbsp;1</a>, we will start with the Wikipedia language model with a dataset which so-called <a href="https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/">Wikitext103</a> <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Then, we are going to create an IMDb language model which predicts the next word of a movie reviews. This intermediate learning will help us to learn about IMDb-specific kinds of words like the name of actors and directors. Afterward, we end up with fine-tuning the language model for classification problem to classify reviews for a movie is good/bad.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -249,24 +253,26 @@ Three-Step Transfer Learning Process
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>Pre-trained Model</strong>: Start with Wikitext103 language model</li>
-<li><strong>Domain Adaptation</strong>: Fine-tune on IMDb movie reviews<br>
+<li><strong>Get Pre-trained Model</strong>: Clone <a href="https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/">Wikitext103</a> language model</li>
+<li><strong>Domain Adaptation</strong>: Fine-tune <code>Wikitext103</code> which is based on Wiki texts with IMDb movie reviews.<br>
 </li>
-<li><strong>Task-Specific</strong>: Create sentiment classifier</li>
+<li><strong>Create Task-Specific</strong>: Refine the fine-tuned model for sentiment classification.</li>
 </ol>
 </div>
 </div>
 </section>
-<section id="text-preprocessing" class="level1">
-<h1>Text Preprocessing</h1>
-<p>In order to build a language model with many complexities such as different sentence lengths in long documents, we can build a neural network model to deal with that issue. We apprehended that categorical variables (words) can be used as independent variables for a neural network (using embedding matrix). Then, we could do the same thing with text.</p>
-<p>First, we concatenate all the documents in our dataset into a big long string and split it into words. Our independent variables will be the sequence of words starting with the first word and ending with the second last, and our dependent variable would be the sequence of words starting with the second word and ending with the last words.</p>
-<p>In our vocab, it might exist the very common words and new words. For new words, because we don’t have any pre-knowledge, so we will just initialize the corresponding row with a random vector.</p>
-<p>These above steps can be listed as below: - Tokenization: convert the text into a list of words - Numericalization: make a list of all the unique words which appear, and convert each word into a number, by looking up its index in the vocab. - Language model data loader creation : handle creating dependant variables - Language model creation: handle input list by using recurrent neural network.</p>
-<section id="tokenization" class="level2">
-<h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
-<p>Basically, tokenization convert the text into list of words. Firstly, we will grab our IMDb dataset and try out the tokenizer with all the text files.</p>
-<div id="e7a0a5a9" class="cell" data-message="false" data-execution_count="1">
+<section id="work-with-pre-trained-model" class="level1">
+<h1>Work with Pre-trained model</h1>
+<section id="text-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="text-preprocessing">Text Preprocessing</h2>
+<p>In order to build a language model with many complexities such as different sentence lengths in long documents, we can build a neural network model to deal with that issue. We apprehended that <em>categorical variables</em> (words) can be used as <em>independent variables</em> for a neural network (using <em>embedding matrix</em>). Then, we could do the same thing with text.</p>
+<p>First, we concatenate all the documents in our dataset into a big long string and split it into words. Our <em>independent variables</em> will be the sequence of words starting with the first word and ending with the second last, and our <em>dependent variable</em> would be the sequence of words starting with the second word and ending with the last words.</p>
+<p>In our vocab, it might exist the very common words and new words. For <em>new words</em>, because we don’t have any pre-knowledge, so we will just initialize the corresponding row with a <em>random vector</em>.</p>
+<p>These above steps can be listed as below: - <strong>Tokenization</strong>: convert the text into a list of words - <strong>Numericalization</strong>: make a list of all the unique words which appear, and convert each word into a number, by looking up its index in the vocab. - <strong>Language model data loader</strong>: handle creating dependant variables - <strong>Language model</strong>: handle input list by using <em>recurrent neural network</em>.</p>
+<section id="tokenization" class="level3">
+<h3 class="anchored" data-anchor-id="tokenization">Tokenization</h3>
+<p>Basically, <em>tokenization</em> converts the text into list of words. Firstly, we will grab our <em>IMDb dataset</em> and try out the tokenizer with all the text files.</p>
+<div id="e7a0a5a9" class="cell" data-message="false" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
@@ -274,14 +280,14 @@ Three-Step Transfer Learning Process
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># path.ls()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="13e0fae8" class="cell" data-message="false" data-execution_count="2">
+<div id="13e0fae8" class="cell" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> get_text_files(path,folders<span class="op">=</span>[<span class="st">'train'</span>,<span class="st">'test'</span>,<span class="st">'unsup'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The default English word tokenizer that FastAI used is called <code>SpaCy</code> which uses a sophisticated riles engine for particular words and URLs. Rather than directly using <code>SpacyTokenizer</code>, we are going to use <code>WordTokenizer</code> which always points to fastai’s current default word tokenizer.</p>
-<div id="3df18bfe" class="cell" data-message="false" data-execution_count="3">
+<p>The default English word tokenizer that FastAI used is called <code>SpaCy</code> which uses a sophisticated rules engine for particular words and URLs. Rather than directly using <code>SpacyTokenizer</code>, we are going to use <code>WordTokenizer</code> which always points to fastai’s current default word tokenizer.</p>
+<div id="3df18bfe" class="cell" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> files[<span class="dv">0</span>].<span class="bu">open</span>().read()</span>
@@ -295,11 +301,11 @@ Three-Step Transfer Learning Process
 <pre><code>(#365) ['While','the','premise','of','the','film','is','pretty','lame','(','Ollie','is','diagnosed','with','"','hornophobia','"',')',',','the','film','is','an','amiable','and','enjoyable','little','flick','.','It'...]</code></pre>
 </div>
 </div>
-<section id="sub-word-tokenization" class="level3">
-<h3 class="anchored" data-anchor-id="sub-word-tokenization">Sub-word tokenization</h3>
+<section id="sub-word-tokenization" class="level4">
+<h4 class="anchored" data-anchor-id="sub-word-tokenization">Sub-word tokenization</h4>
 <p>In additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps: - Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab - Tokenize the corpus using this vocab of sub-word units</p>
 <p>For example, we will first look into 2000 movie reviews:</p>
-<div id="82ed3d54" class="cell" data-message="false" data-execution_count="4">
+<div id="82ed3d54" class="cell" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(o.<span class="bu">open</span>().read() <span class="cf">for</span> o <span class="kw">in</span> files[:<span class="dv">2000</span>])</span>
@@ -310,7 +316,7 @@ Three-Step Transfer Learning Process
 </details>
 </div>
 <p>Then, the long underscore is when we replace the space and we can know where the sentences actually start and stop.</p>
-<div id="86aecee7" class="cell" data-message="false" data-execution_count="5">
+<div id="86aecee7" class="cell" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subword(<span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -343,10 +349,10 @@ Three-Step Transfer Learning Process
 <p>If we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence. So, there is a compromise to take into account when choosing sub-word vocab: A larger vocab means more fewer tokens per sentence which means faster training, less memory, less state for the model to remember, but it comes to the downside of larger embedding matrix and requiring more data to learn.</p>
 </section>
 </section>
-<section id="numericalization" class="level2">
-<h2 class="anchored" data-anchor-id="numericalization">Numericalization</h2>
+<section id="numericalization" class="level3">
+<h3 class="anchored" data-anchor-id="numericalization">Numericalization</h3>
 <p>In order to numericalize the tokens, we need to call <code>setup</code> first to create the vocab.</p>
-<div id="e9bc3170" class="cell" data-message="false" data-execution_count="6">
+<div id="e9bc3170" class="cell" data-message="false" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
@@ -361,7 +367,7 @@ Three-Step Transfer Learning Process
 </div>
 </div>
 <p>The results return our rule tokens first, and it is followed by word appearances, in frequency order. Once we created our Numerical object, we can use it as if it were a function.</p>
-<div id="ed391997" class="cell" data-execution_count="7">
+<div id="ed391997" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks)[:<span class="dv">20</span>]</span>
@@ -372,7 +378,7 @@ Three-Step Transfer Learning Process
               16,    0,   27,   23,    0,   23,   33,   10,    9])</code></pre>
 </div>
 </div>
-<div id="73da4d1c" class="cell" data-execution_count="8">
+<div id="73da4d1c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">' '</span>.join(num.vocab[o] <span class="cf">for</span> o <span class="kw">in</span> nums)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -382,12 +388,13 @@ Three-Step Transfer Learning Process
 </div>
 </div>
 <p>Now, we have already had numerical data, we need to put them in batches for our model.</p>
-<section id="batches-of-texts" class="level3">
-<h3 class="anchored" data-anchor-id="batches-of-texts">Batches of texts</h3>
+</section>
+<section id="processing-batches-of-texts" class="level3">
+<h3 class="anchored" data-anchor-id="processing-batches-of-texts">Processing Batches of texts</h3>
 <p>Recalling the batch creation for the images when we have to reshape all the images to be same size before grouping them together in a single tensor for the efficient calculation purposes. It is a little bit different when dealing with texts because it is not desirable to resize the text length. Also, we want the model read texts in order so that it can efficiently predict what the next word is. This suggests that each new batch should begin precisely where the previous one left off.</p>
 <p>So, the text stream will be cut into a certain number of batches (with batch size) with preserving the order of the tokens. Because we want the model to read continuous rows of the text.</p>
 <p>To recap, at every epoch, we shuffle our collection of documents and concatenate them into a stream of tokens. Then, that stream will be cut into a batch of fixed size consecutive mini stream. The model will read these mini streams in order and it will produce the same activation.</p>
-<div id="e9b9d42b" class="cell" data-execution_count="9">
+<div id="e9b9d42b" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nums300 <span class="op">=</span> toks300.<span class="bu">map</span>(num)</span>
@@ -402,13 +409,10 @@ Three-Step Transfer Learning Process
 <p>The batch size is 64x72. 64 is the default batch size and 72 is the default sequence length.</p>
 </section>
 </section>
-</section>
-<section id="training-a-text-classifier" class="level1">
-<h1>Training a Text Classifier</h1>
 <section id="create-a-language-model-using-datablock" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-language-model-using-datablock">Create a language model using DataBlock</h2>
 <p>By default, <code>fastai</code> handles tokenization and numericalization automatically when <code>TextBlock</code> is passed to <code>DataBlock</code>.</p>
-<div id="90b5ab90" class="cell" data-execution_count="10">
+<div id="90b5ab90" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_imdb <span class="op">=</span> partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>, <span class="st">'unsup'</span>])</span>
@@ -419,10 +423,11 @@ Three-Step Transfer Learning Process
 </details>
 </div>
 </section>
-<section id="fine-tuning-the-language-model" class="level2">
-<h2 class="anchored" data-anchor-id="fine-tuning-the-language-model">Fine-tuning the language model</h2>
+</section>
+<section id="fine-tuning-the-language-model" class="level1">
+<h1>Fine-tuning the language model</h1>
 <p>In this step, we are going to create a learner which is going to learn and predict the next word of a <code>movie review</code>. It will take the data from data loader, pretrained model (<code>AWD_LSTM</code>), apply dropout technique and take accuracy as well as perplexity metrics into account. Particularly, <code>accuracy</code> metric is used to evaluate how the correctness when the model tries to predict the next word, while <code>perplexity</code> metric is used to track the (exponential) value of cross-entropy loss.</p>
-<div id="bd4a4a3e" class="cell" data-execution_count="11">
+<div id="bd4a4a3e" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> language_model_learner(</span>
@@ -431,7 +436,7 @@ Three-Step Transfer Learning Process
 </details>
 </div>
 <p>Then, we will perform intermediate model training by fitting the model in one training cycle.</p>
-<div id="510ea153" class="cell" data-cache="true" data-message="false" data-execution_count="12">
+<div id="510ea153" class="cell" data-cache="true" data-message="false" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>,<span class="fl">2e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -480,7 +485,7 @@ Three-Step Transfer Learning Process
 </div>
 </div>
 <p>After few minutes of training, we got the prediction accuracy which is around 29-30 percent. In order to reuse the pre-trained model, we can easily save the model with PyTorch. In this case, we are going to save only learnable parameters (i.e., weight and bias of a model via <code>state_dict</code>) and the updated parameters after one epoch training will be stored at <code>learn.path/'models'/'one_epoch_training_torch.pth'</code>.</p>
-<div id="2ab141ff" class="cell" data-cache="true" data-execution_count="13">
+<div id="2ab141ff" class="cell" data-cache="true" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Save with FastAI</span></span>
@@ -507,7 +512,7 @@ Implementation Note: PyTorch Model Loading
 <p>When using <code>torch.load()</code>, be cautious about the <code>weights_only</code> parameter. For security reasons, consider using <code>weights_only=True</code> when loading models from untrusted sources to prevent execution of arbitrary code.</p>
 </div>
 </div>
-<div id="c9a40d4d" class="cell" data-cache="true" data-execution_count="14">
+<div id="c9a40d4d" class="cell" data-cache="true" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Use FastAI's load method</span></span>
@@ -525,7 +530,7 @@ Implementation Note: PyTorch Model Loading
 </div>
 </div>
 <p>After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let’s see the improvement of the accuracy.</p>
-<div id="64cfa83e" class="cell" data-cache="true" data-message="false" data-execution_count="15">
+<div id="64cfa83e" class="cell" data-cache="true" data-message="false" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
@@ -648,7 +653,7 @@ Implementation Note: PyTorch Model Loading
 </div>
 </div>
 <p>As we can see from the training process, the accuracy has improved progressively. At the end of ten cycle training, the accuracy has increased to around 35 percent. To perform model finetuning, we save the model parameters except the last activation function layer. To do that, we can save it with <code>save_encoder</code></p>
-<div id="1e5b6014" class="cell" data-cache="true" data-execution_count="16">
+<div id="1e5b6014" class="cell" data-cache="true" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn.save_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -656,7 +661,7 @@ Implementation Note: PyTorch Model Loading
 </div>
 <p>In this step, we have fine tuned the language model. Now, we will fine tune this language model using the IMDb sentiment labels.</p>
 <p>Although the model is pre-designed for next word prediction, we can also use this model to generate texts. For example, we can self-create a sentence with some words and we parses this sentence to the model to generate a new sentence which has one word longer than the parsed sentence. Leveraging this capability, we are going to create 40 new words from that randomized content.</p>
-<div id="15d0f41a" class="cell" data-message="false" data-execution_count="17">
+<div id="15d0f41a" class="cell" data-message="false" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>TEXT <span class="op">=</span> <span class="st">"I liked this movie so"</span></span>
@@ -711,7 +716,7 @@ Implementation Note: PyTorch Model Loading
 </div>
 </div>
 <p>Let’s see the generation of new inventing words</p>
-<div id="6efcd3a4" class="cell" data-execution_count="18">
+<div id="6efcd3a4" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(preds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -722,10 +727,10 @@ i liked this movie so much . Although it is not a " straight to DVD " movie , it
 </div>
 </div>
 </section>
-<section id="fine-tuning-the-classification-model" class="level2">
-<h2 class="anchored" data-anchor-id="fine-tuning-the-classification-model">Fine-tuning the classification model</h2>
+<section id="create-a-classification-model-from-fine-tuned-model" class="level1">
+<h1>Create a classification model from fine-tuned model</h1>
 <p>Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predicts the sentiment of a document.</p>
-<div id="5d27eb44" class="cell" data-cache="true" data-execution_count="19">
+<div id="5d27eb44" class="cell" data-cache="true" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dls_clas <span class="op">=</span> DataBlock(</span>
@@ -750,18 +755,17 @@ Create training batch for sentiment classification
 <p>It is important to say that we need to collate all the items in a batch into a single tensor, and a tensor has a fixed size. Therefore, we need to pad/crop/squish our sequences to make the inputs have the same length. For the characteristics of the input, we will apply padding here so that each batch contains the documents with similar sizes, which is the largest size of the document in that batch. (every batch may not have similar sizes): - At first, we sort documents by length prior to each epoch. - we use special padding token to expand the shortest texts to the same length as the target size in a batch.</p>
 </div>
 </div>
-</section>
-<section id="fine-tuning-the-classification-model-1" class="level2">
-<h2 class="anchored" data-anchor-id="fine-tuning-the-classification-model-1">Fine-tuning the classification model</h2>
+<section id="fine-tuning-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="fine-tuning-the-model">Fine-tuning the model</h2>
 <p>so far, we have <code>finetuned</code> encoder, which stores the trained parameter weights from previous step. Now, we are going to create a learner that load the <code>finetuned</code> encoder for fine-tuning. Then, we are going to fine-tune it over several epoch.</p>
-<div id="6d56cda1" class="cell" data-cache="true" data-execution_count="20">
+<div id="6d56cda1" class="cell" data-cache="true" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> text_classifier_learner(dls_clas, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                                metrics<span class="op">=</span>accuracy).to_fp16()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="8c8f6570" class="cell" data-cache="true" data-execution_count="21">
+<div id="8c8f6570" class="cell" data-cache="true" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>learn.load_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -770,8 +774,8 @@ Create training batch for sentiment classification
 <pre><code>&lt;fastai.text.learner.TextLearner at 0x7f1c55cccbf0&gt;</code></pre>
 </div>
 </div>
-<p>As we are training a classification task, we only need to unfreeze several last layers of the encoder instead of unfreezing all the layers.</p>
-<div id="7cceeabf" class="cell" data-cache="true" data-message="false" data-execution_count="22">
+<p>As we are training a classification task, we only need to unfreeze several last layers of the encoder instead of unfreezing all the layers. By fitting the last layers first, we can adapt the model to the specific task without losing the general language understanding captured in the earlier layers. The result show that we achieve around 93 % accuracy, just with one cycle fitting.</p>
+<div id="7cceeabf" class="cell" data-cache="true" data-message="false" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">2</span>)</span>
@@ -818,8 +822,8 @@ Create training batch for sentiment classification
 </table>
 </div>
 </div>
-<p>We can also further unfreeze more layers and do training to see if the accuracy improves or not.</p>
-<div id="f276ba1f" class="cell" data-cache="true" data-message="false" data-execution_count="23">
+<p>We can also further unfreeze more layers and do training to see if the accuracy improves or not. It shows that the accuracy results have improved from 93% to approximately 94%.</p>
+<div id="f276ba1f" class="cell" data-cache="true" data-message="false" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">3</span>)</span>
@@ -866,7 +870,8 @@ Create training batch for sentiment classification
 </table>
 </div>
 </div>
-<div id="a54a1a91" class="cell" data-cache="true" data-message="false" data-execution_count="24">
+<p>As we can observe, the accuracy has improved with the unfreezing of more layers. Now, we unfreeze all layers and do some training. The accuracy results are further improved to approximately 95%.</p>
+<div id="a54a1a91" class="cell" data-cache="true" data-message="false" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
@@ -920,12 +925,68 @@ Create training batch for sentiment classification
 </table>
 </div>
 </div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In this blog post, we have successfully demonstrated how to build an effective sentiment analysis system through fine-tuning a pre-trained model.</p>
+<section id="key-points" class="level2">
+<h2 class="anchored" data-anchor-id="key-points">Key points</h2>
+<ul>
+<li><p>We started with the <a href="https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/">Wikitext103</a> pretrained model and fine-tuned it on IMDb movie reviews, achieving approximately <strong>35% accuracy</strong> in next-word prediction after 10 epochs of training.</p></li>
+<li><p>We implemented a text preprocessing pipeline for a language model including:</p>
+<ul>
+<li><strong>Tokenization</strong>: Converting raw text into structured word sequences using SpaCy</li>
+<li><strong>Numericalization</strong>: Mapping words to numerical representations for neural network processing</li>
+<li><strong>Batch Creation</strong>: Organizing sequential text data for efficient model training</li>
+</ul></li>
+<li><p>We achieved final <em>sentiment classification</em> through progressive layer unfreezing of fine-tuned model.</p></li>
+</ul>
+</section>
+<section id="technical-insights" class="level2">
+<h2 class="anchored" data-anchor-id="technical-insights">Technical Insights</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Technical Learnings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Model Persistence</strong>: Demonstrated both FastAI and PyTorch approaches for saving and loading model states</li>
+<li><strong>Progressive Training</strong>: Used gradual unfreezing technique to optimize classification performance</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="future-directions" class="level2">
+<h2 class="anchored" data-anchor-id="future-directions">Future Directions</h2>
+<p>This foundation opens several avenues for enhancement:</p>
+<ol type="1">
+<li><strong>Model Architecture</strong>: Experiment with transformer-based models (BERT, GPT)</li>
+<li><strong>Dataset Expansion</strong>: Include additional movie review sources for robustness</li>
+<li><strong>Multi-class Classification</strong>: Extend beyond binary sentiment to rating prediction</li>
+<li><strong>Real-time Deployment</strong>: Package the model for production sentiment analysis</li>
+</ol>
+</section>
+<section id="final-thoughts" class="level2">
+<h2 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h2>
+<p>This project demonstrates the power of <em>transfer learning</em> in NLP, showing how pretrained language models can be effectively adapted for specific downstream tasks. The combination of FastAI’s high-level API with PyTorch’s flexibility provides an excellent framework for both experimentation and production deployment.</p>
 
 
 </section>
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Merity, S., Xiong, C., Bradbury, J., &amp; Socher, R. (2016). Pointer sentinel mixture models. arXiv preprint arXiv:1609.07843.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
