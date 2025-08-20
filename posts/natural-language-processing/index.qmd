@@ -4,6 +4,7 @@ title: "Natural Language Processing"
 date: "2022-03-29"
 categories: [NLP, language model, transfer learning, code]
 image: "NLP.png"
+pdf-engine: pdflatex
 format:
   html:
     code-fold: true
@@ -18,6 +19,9 @@ crossref:
   eq-title: "Equation"
   tbl-title: "Table"
 jupyter: python3
+execute: 
+  cache: true
+  freeze: auto
 ---
 
 # Objectives
