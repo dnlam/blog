@@ -323,7 +323,7 @@ learn = text_classifier_learner(dls_clas, AWD_LSTM, drop_mult=0.5,
 learn.load_encoder('finetuned')
 ```
 
-As we are training a classification task, we only need to unfreeze several last layers of the encoder instead of unfreezing all the layers.
+As we are training a classification task, we only need to unfreeze several last layers of the encoder instead of unfreezing all the layers. By fitting the last layers first, we can adapt the model to the specific task without losing the general language understanding captured in the earlier layers. The result show that we achieve around 93 % accuracy, just with one cycle fitting. 
 
 ```{python}
 #| cache: true
@@ -334,7 +334,7 @@ learn.freeze_to(-2)
 learn.fit_one_cycle(1, slice(1e-2/(2.6**4),1e-2))
 ```
 
-We can also further  unfreeze more layers and do training to see if the accuracy improves or not.
+We can also further  unfreeze more layers and do training to see if the accuracy improves or not. It shows that the accuracy results have improved from 93% to approximately 94%.
 ```{python}
 #| cache: true
 #| warning: false
@@ -344,7 +344,7 @@ learn.freeze_to(-3)
 learn.fit_one_cycle(1, slice(5e-3/(2.6**4),5e-3))
 ```
 
-
+As we can observe, the accuracy has improved with the unfreezing of more layers. Now, we unfreeze all layers and do some training. The accuracy results are further improved to approximately 95%.
 ```{python}
 #| cache: true
 #| warning: false
