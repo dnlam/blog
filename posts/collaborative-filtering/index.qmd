@@ -25,11 +25,11 @@ execute:
 ---
 
 # Objectives
+In this blog, we are going to dive into ``collaborative filtering`` which is a part of recommendation algorithms used in Netflix.  Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By applying this technique, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked, which the others too.
+
 [``Collaborative Filtering``](https://www.ibm.com/think/topics/collaborative-filtering) is a ``recommendation system`` that recommends items to users based on how other users with similar preferences and behaviors have interacted with the same item. It is based on the principle that similar users share similar interests and behaviors. 
 Different to ``content-based filtering``, which recommends items based on the *features of the items themselves*, ``collaborative filtering`` relies on the *collective behavior of users* to make recommendations.
 
-
-In this blog, we are going to dive into ``collaborative filtering`` which is a part of recommendation algorithms used in Netflix.  Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By applying this technique, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked, which the others too.
 
 The key idea of ``content-based filtering`` is based on ```latent factors``` which decides what kinds of movies you want to watch.
 ## Latent Factors
