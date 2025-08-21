@@ -1,8 +1,8 @@
 ---
-title: "Collaborative Filtering"
+title: "Recommendation System with Collaborative Filtering"
 # author: "Lam Dinh"
 date: "2022-04-20"
-categories: [recommendation, code]
+categories: [Recommendation, Collaborative Filtering, Code]
 image: "collab_filtering.png"
 pdf-engine: pdflatex
 format:

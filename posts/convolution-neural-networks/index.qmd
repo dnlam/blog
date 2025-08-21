@@ -24,24 +24,3 @@
 #   freeze: auto
 ---
 
-<!-- # Objectives
-
-# Conclusion
-In this blog, 
-
-## Key points
-
-
-## Technical Insights
-
-::: {.callout-important}
-## Key Technical Learnings
-- 
-- 
-:::
-
-## Future Directions
-
-
-## Final Thoughts
- -->
