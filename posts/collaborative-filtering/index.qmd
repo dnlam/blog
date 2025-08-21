@@ -1,30 +1,77 @@
 ---
 title: "Collaborative Filtering"
-# author: "Harlow Malloc"
-date: "2022-08-06"
+# author: "Lam Dinh"
+date: "2022-04-20"
 categories: [recommendation, code]
 image: "collab_filtering.png"
+pdf-engine: pdflatex
 format:
   html:
     code-fold: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: "Contents"
+crossref:
+  fig-title: "Figure"
+  eq-title: "Equation"
+  tbl-title: "Table"
 jupyter: python3
+execute: 
+  cache: true
+  freeze: auto
 ---
 
-# General context
-When we think about Netflix,  we might have watched lots of movies that are science fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing ```recommendation approach```, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.
+# Objectives
+[``Collaborative Filtering``](https://www.ibm.com/think/topics/collaborative-filtering) is a ``recommendation system`` that recommends items to users based on how other users with similar preferences and behaviors have interacted with the same item. It is based on the principle that similar users share similar interests and behaviors. 
+Different to ``content-based filtering``, which recommends items based on the *features of the items themselves*, ``collaborative filtering`` relies on the *collective behavior of users* to make recommendations.
 
-This approach is called ```collaborative filtering```. The key foundation idea is that of ```latent factors``` which decides what kinds of movies you want to watch.
 
-# Data set
+In this blog, we are going to dive into ``collaborative filtering`` which is a part of recommendation algorithms used in Netflix.  Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By applying this technique, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked, which the others too.
+
+The key idea of ``content-based filtering`` is based on ```latent factors``` which decides what kinds of movies you want to watch.
+## Latent Factors
+
+# Build a Collaborative Filtering with Python 
+## Data preparation
 Indeed, we can not have access to Netflix's entire dataset of movie watching history, but there is a great dataset that we can yous, called `MovieLen` which contains tens millions of movies ranking.
 
 ```{python}
+#| echo: true
+#| output: false
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
 
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 from fastai.collab import *
 from fastai.tabular.all import *
 
-# path = untar_data(URLs.ML_100k)
+path = untar_data(URLs.ML_100k)
 ```
+
+
+# Conclusion
+In this blog, 
+
+## Key points
+
+
+## Technical Insights
+
+::: {.callout-important}
+## Key Technical Learnings
+- 
+- 
+
+## Future Directions
+
+
+## Final Thoughts
 
 
 

@@ -1,8 +1,8 @@
 ---
-title: "Natural Language Processing"
+title: "Fine-tuning a Language Model for Sentiment Classification"
 # author: "Lam Dinh"
 date: "2022-03-29"
-categories: [NLP, language model, transfer learning, code]
+categories: [NLP, Language Model, Transfer Learning, Code]
 image: "NLP.png"
 pdf-engine: pdflatex
 format:
@@ -82,7 +82,7 @@ path = untar_data(URLs.IMDB)
 files = get_text_files(path,folders=['train','test','unsup'])
 ```
 
-The default English word tokenizer that FastAI used is called `SpaCy` which uses a sophisticated riles engine for particular words and URLs. Rather than directly using ```SpacyTokenizer```, we are going to use ```WordTokenizer``` which always points to fastai's current default word tokenizer. 
+The default English word tokenizer that FastAI used is called `SpaCy` which uses a sophisticated rules engine for particular words and URLs. Rather than directly using ```SpacyTokenizer```, we are going to use ```WordTokenizer``` which always points to fastai's current default word tokenizer. 
 ```{python}
 #| echo: true
 #| output: true
