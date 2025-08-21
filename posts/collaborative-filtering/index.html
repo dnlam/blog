@@ -104,6 +104,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -186,7 +215,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a></li>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a>
+  <ul class="collapse">
+  <li><a href="#memory-based-method" id="toc-memory-based-method" class="nav-link" data-scroll-target="#memory-based-method">Memory-based method</a>
+  <ul class="collapse">
+  <li><a href="#finding-similar-users" id="toc-finding-similar-users" class="nav-link" data-scroll-target="#finding-similar-users">Finding similar users</a></li>
+  <li><a href="#calculate-rating-r" id="toc-calculate-rating-r" class="nav-link" data-scroll-target="#calculate-rating-r">Calculate Rating R</a></li>
+  </ul></li>
+  </ul></li>
   <li><a href="#build-a-collaborative-filtering-with-python" id="toc-build-a-collaborative-filtering-with-python" class="nav-link" data-scroll-target="#build-a-collaborative-filtering-with-python">Build a Collaborative Filtering with Python</a>
   <ul class="collapse">
   <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data preparation</a></li>
@@ -216,22 +252,107 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Objectives</h1>
 <p>In this blog, we are going to dive into <code>collaborative filtering</code> which is a part of recommendation algorithms used in Netflix. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By applying this technique, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked, which the others too.</p>
 <p><a href="https://www.ibm.com/think/topics/collaborative-filtering"><code>Collaborative Filtering</code></a> is a <code>recommendation system</code> that recommends items to users based on how other users with similar preferences and behaviors have interacted with the same item. It is based on the principle that similar users share similar interests and behaviors. Different to <code>content-based filtering</code>, which recommends items based on the <em>features of the items themselves</em>, <code>collaborative filtering</code> relies on the <em>collective behavior of users</em> to make recommendations.</p>
-<p>The key idea of <code>content-based filtering</code> is based on <code>latent factors</code> which decides what kinds of movies you want to watch. ## Latent Factors</p>
+<p>The key idea of <code>content-based filtering</code> is based on <code>latent factors</code> which decides what kinds of movies you want to watch. # How does it work? To recommend items to users based on their past behavior and preferences, collaborative filtering first needs to find <strong>similar users</strong>. It does this by analyzing user-item interactions and identifying patterns in user behavior. Then, it predicts the <strong>ratings</strong> of items that are not yet rated by the user. To do so, we need to deal with the following questions:</p>
+<ul>
+<li><p>How to measure user similarity?</p></li>
+<li><p>Given that the users behaviors are similar, how to give the rating for an item based on the ratings of others users?</p></li>
+<li><p>How to measure the accuracy of the rating since we don’t have the ground truth for the unseen items?</p></li>
+</ul>
+<p>To deal with two former questions, Collaborative filtering uses techniques such as <a href="https://dl.acm.org/doi/10.1145/371920.372071">user-item interactions</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, <a href="https://ieeexplore.ieee.org/document/4781121">similarity measures</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and <a href="https://ieeexplore.ieee.org/document/5197422">matrix factorization</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>To measure the accuracy of the rating, we can use metrics such as <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">root mean square error (RMSE)</a> or <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error (MAE)</a> to evaluate the performance of the recommendation system. <code>RMSE</code> predict ratings for a test dataset of user-item pairs whose rating values are already known. The difference between the known value and the predicted value would be the <strong>error</strong>. Square all the error values for the test set, find the average (or mean), and then take the square root of that average to get the <code>RMSE</code>. On the other hand, <code>MAE</code> measures the average magnitude of the errors in a set of predictions, without considering their direction. It’s the average over the test sample of the absolute differences between prediction and actual observation where all individual differences have equal weight.</p>
+<!-- These metrics compare the predicted ratings with the actual ratings to determine how well the system is performing. -->
+<p>There are four ways to generate recommendations in the family of collaborative filtering:</p>
+<ul>
+<li><p>Memory-based method</p></li>
+<li><p>Model-based method</p></li>
+<li><p>Hybrid method</p></li>
+<li><p>Deep-Learning method</p></li>
+</ul>
+<section id="memory-based-method" class="level2">
+<h2 class="anchored" data-anchor-id="memory-based-method">Memory-based method</h2>
+<p>Memory-based methods are based on statistical techniques to find similar users or items. It would find the rating <span class="math inline">\(\mathbf{R}\)</span> for user <span class="math inline">\(\mathbf{U}\)</span> and item <span class="math inline">\(\mathbf{I}\)</span> by:</p>
+<ul>
+<li><p>Finding similar users as user <span class="math inline">\(\mathbf{U}\)</span> based on their ratings for item <span class="math inline">\(\mathbf{I}\)</span> that they have rated.</p></li>
+<li><p>Calculate rating <span class="math inline">\(\mathbf{R}\)</span> based as a weighted sum of the ratings given by similar users to item <span class="math inline">\(\mathbf{I}\)</span>.</p></li>
+</ul>
+<section id="finding-similar-users" class="level3">
+<h3 class="anchored" data-anchor-id="finding-similar-users">Finding similar users</h3>
+<p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
+<div id="1b8ff7c5" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> spatial</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| #| fig-width: 6      # Width in inches</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4     # Height in inches  </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center # Center alignment</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>u_1 <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">3</span>]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>u_2 <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">4</span>] </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>u_3 <span class="op">=</span> [<span class="fl">1.5</span>, <span class="dv">4</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>u_4 <span class="op">=</span> [<span class="dv">4</span>, <span class="dv">5</span>]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="op">*</span>u_1, color<span class="op">=</span><span class="st">'red'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'User 1'</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="op">*</span>u_2, color<span class="op">=</span><span class="st">'blue'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'User 2'</span>) </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="op">*</span>u_3, color<span class="op">=</span><span class="st">'green'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'User 3'</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="op">*</span>u_4, color<span class="op">=</span><span class="st">'orange'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'User 4'</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize the plot</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Rating for Movie i₁'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Rating for Movie i₂'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'User Ratings in 2D Space</span><span class="ch">\n</span><span class="st">(Collaborative Filtering Example)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.legend(fontsize<span class="op">=</span><span class="dv">10</span>, loc<span class="op">=</span><span class="st">'lower right'</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Set axis limits with some padding</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="fl">0.5</span>, <span class="fl">4.5</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="fl">1.5</span>, <span class="fl">5.5</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Add background color for better visualization</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>plt.gca().set_facecolor(<span class="st">'#e7edf3ff'</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-2-output-1.png" width="458" height="278" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To define if the preferences of two users are similar, we can use similarity scores between users or items. The most common similarity measures used in memory-based methods are:</p>
+<ul>
+<li><p><strong>Cosine similarity</strong>: Measures the cosine of the angle between two vectors in a multi-dimensional space. It is commonly used to measure the similarity between users or items based on their ratings.</p></li>
+<li><p><strong>Pearson correlation</strong>: Measures the linear correlation between two variables. It is often used to find users with similar tastes by comparing their rating patterns.</p></li>
+<li><p><strong>Jaccard similarity</strong>: Measures the similarity between two sets by comparing the size of their intersection to the size of their union. It is useful for finding similar items based on user co-occurrence.</p></li>
+</ul>
+<p>To calculate similarity using <strong>Cosine similarity</strong>, we need a function that returns a <em>higher similarity or smaller distance</em> for a <em>lower angle</em> and a <em>lower similarity or larger distance</em> for a <em>higher angle</em>. The cosine of an angle is a function that decreases from 1 to -1 as the angle increases from 0 to 180. ::: {.callout-note} ## Centered Cosine Similarity In practice, we center the ratings by subtracting the mean rating of each user from their ratings. This helps to account for individual user biases (e.g., some users may rate all movies higher or lower than others, but they are considered as having the same preferences). The centered cosine similarity is then calculated using these mean-centered ratings. This approach is also used when there are a lot of missing values in the user rating vectors, and we need to place a common value to fill up the missing values. :::</p>
+</section>
+<section id="calculate-rating-r" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-rating-r">Calculate Rating R</h3>
+</section>
+</section>
 </section>
 <section id="build-a-collaborative-filtering-with-python" class="level1">
 <h1>Build a Collaborative Filtering with Python</h1>
 <section id="data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
-<div id="42ab70e0" class="cell" data-cache="true" data-message="false" data-execution_count="2">
+<div id="45087093" class="cell" data-cache="true" data-message="false" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ssl</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ssl._create_default_https_context <span class="op">=</span> ssl._create_unverified_context</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.collab <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.tabular.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> untar_data(URLs.ML_100k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ssl</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ssl._create_default_https_context <span class="op">=</span> ssl._create_unverified_context</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.collab <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.tabular.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> untar_data(URLs.ML_100k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -270,7 +391,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Herlocker, J. L., et al.&nbsp;(2004). Evaluating collaborative filtering recommender systems. ACM Transactions on Information Systems, 22(1), 5-53.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Bobadilla, J., et al.&nbsp;(2013). Recommender systems survey. Knowledge-based systems, 46, 109-132.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Koren, Y., Bell, R., &amp; Volinsky, C. (2009). Matrix factorization techniques for recommender systems. Computer, 42(8), 30-37.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
