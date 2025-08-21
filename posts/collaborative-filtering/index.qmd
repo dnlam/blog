@@ -32,7 +32,98 @@ Different to ``content-based filtering``, which recommends items based on the *f
 
 
 The key idea of ``content-based filtering`` is based on ```latent factors``` which decides what kinds of movies you want to watch.
-## Latent Factors
+# How does it work?
+To recommend items to users based on their past behavior and preferences, collaborative filtering first needs to find **similar users**. It does this by analyzing user-item interactions and identifying patterns in user behavior. Then, it predicts the **ratings** of items that are not yet rated by the user. To do so, we need to deal with the following questions:
+
+- How to measure user similarity?
+
+- Given that the users behaviors are similar, how to give the rating for an item based on the ratings of others users?
+
+- How to measure the accuracy of the rating since we don't have the ground truth for the unseen items?
+
+To deal with two former questions, Collaborative filtering uses techniques such as [user-item interactions](https://dl.acm.org/doi/10.1145/371920.372071)^[Herlocker, J. L., et al. (2004). Evaluating collaborative filtering recommender systems. ACM Transactions on Information Systems, 22(1), 5-53.], [similarity measures](https://ieeexplore.ieee.org/document/4781121)^[Bobadilla, J., et al. (2013). Recommender systems survey. Knowledge-based systems, 46, 109-132.], and [matrix factorization](https://ieeexplore.ieee.org/document/5197422)^[Koren, Y., Bell, R., & Volinsky, C. (2009). Matrix factorization techniques for recommender systems. Computer, 42(8), 30-37.]. 
+
+To measure the accuracy of the rating, we can use metrics such as [root mean square error (RMSE)](https://en.wikipedia.org/wiki/Root-mean-square_deviation) or [mean absolute error (MAE)](https://en.wikipedia.org/wiki/Mean_absolute_error) to evaluate the performance of the recommendation system. `RMSE`  predict ratings for a test dataset of user-item pairs whose rating values are already known. The difference between the known value and the predicted value would be the **error**. Square all the error values for the test set, find the average (or mean), and then take the square root of that average to get the ``RMSE``. On the other hand, `MAE` measures the average magnitude of the errors in a set of predictions, without considering their direction. It’s the average over the test sample of the absolute differences between prediction and actual observation where all individual differences have equal weight.
+
+<!-- These metrics compare the predicted ratings with the actual ratings to determine how well the system is performing. -->
+There are four ways to generate recommendations in the family of collaborative filtering:
+
+- Memory-based method
+
+- Model-based method
+
+- Hybrid method
+
+- Deep-Learning method
+
+## Memory-based method
+Memory-based methods are based on statistical techniques to find similar users or items. 
+It would find the rating $\mathbf{R}$ for user $\mathbf{U}$ and item $\mathbf{I}$ by:
+
+- Finding similar users as user $\mathbf{U}$ based on their ratings for item $\mathbf{I}$ that they have rated.
+
+- Calculate rating $\mathbf{R}$ based as a weighted sum of the ratings given by similar users to item $\mathbf{I}$.
+
+### Finding similar users
+For example, there are 4 user $u_1, u_2, u_3, u_4$ $\in \mathbf{U}$ have rated two movies $i_1, i_2$ $\in \mathbf{I}$ as follows:
+
+```{python}
+from scipy import spatial
+#| echo: true
+#| output: true
+#| eval: true
+#| #| fig-width: 6      # Width in inches
+#| fig-height: 4     # Height in inches  
+#| fig-align: center # Center alignment
+import matplotlib.pyplot as plt
+import numpy as np
+u_1 = [3, 3]
+u_2 = [2, 4] 
+u_3 = [1.5, 4]
+u_4 = [4, 5]
+
+# Create the plot
+plt.figure(figsize=(5, 3))
+plt.scatter(*u_1, color='red', s=100, label='User 1')
+plt.scatter(*u_2, color='blue', s=100, label='User 2') 
+plt.scatter(*u_3, color='green', s=100, label='User 3')
+plt.scatter(*u_4, color='orange', s=100, label='User 4')
+# Customize the plot
+plt.xlabel('Rating for Movie i₁', fontsize=12)
+plt.ylabel('Rating for Movie i₂', fontsize=12)
+plt.title('User Ratings in 2D Space\n(Collaborative Filtering Example)', fontsize=14, fontweight='bold')
+plt.grid(True, alpha=0.3)
+plt.legend(fontsize=10, loc='lower right')
+
+# Set axis limits with some padding
+plt.xlim(0.5, 4.5)
+plt.ylim(1.5, 5.5)
+
+# Add background color for better visualization
+plt.gca().set_facecolor('#e7edf3ff')
+
+plt.tight_layout()
+plt.show()
+
+```
+
+To define if the preferences of two users are similar, we can use similarity scores between users or items. The most common similarity measures used in memory-based methods are:
+
+- **Cosine similarity**: Measures the cosine of the angle between two vectors in a multi-dimensional space. It is commonly used to measure the similarity between users or items based on their ratings.
+
+- **Pearson correlation**: Measures the linear correlation between two variables. It is often used to find users with similar tastes by comparing their rating patterns.
+
+- **Jaccard similarity**: Measures the similarity between two sets by comparing the size of their intersection to the size of their union. It is useful for finding similar items based on user co-occurrence.
+
+To calculate similarity using **Cosine similarity**, we need a function that returns a *higher similarity or smaller distance* for a *lower angle* and a *lower similarity or larger distance* for a *higher angle*. The cosine of an angle is a function that decreases from 1 to -1 as the angle increases from 0 to 180.
+::: {.callout-note}
+## Centered Cosine Similarity
+In practice, we center the ratings by subtracting the mean rating of each user from their ratings. This helps to account for individual user biases (e.g., some users may rate all movies higher or lower than others, but they are considered as having the same preferences). The centered cosine similarity is then calculated using these mean-centered ratings.
+This approach is also used when there are a lot of missing values in the user rating vectors, and we need to place a common value to fill up the missing values.
+:::
+
+### Calculate Rating R
+
 
 # Build a Collaborative Filtering with Python 
 ## Data preparation
