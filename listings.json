@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/convolution-neural-networks/index.html",
       "/posts/collaborative-filtering/index.html",
       "/posts/natural-language-processing/index.html"
     ]

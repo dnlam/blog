@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2022-08-06">
+<meta name="dcterms.date" content="2022-04-20">
 
 <title>Collaborative Filtering – Lam Dinh</title>
 <style>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Collaborative Filtering</h1>
@@ -170,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 6, 2022</p>
+        <p class="date">April 20, 2022</p>
       </div>
     </div>
     
@@ -180,8 +180,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a></li>
+  <li><a href="#build-a-collaborative-filtering-with-python" id="toc-build-a-collaborative-filtering-with-python" class="nav-link" data-scroll-target="#build-a-collaborative-filtering-with-python">Build a Collaborative Filtering with Python</a>
+  <ul class="collapse">
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data preparation</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points">Key points</a></li>
+  <li><a href="#technical-insights" id="toc-technical-insights" class="nav-link" data-scroll-target="#technical-insights">Technical Insights</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -189,25 +209,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="general-context" class="level1">
-<h1>General context</h1>
-<p>When we think about Netflix, we might have watched lots of movies that are science fiction, action, horror etc. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By doing <code>recommendation approach</code>, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked.</p>
-<p>This approach is called <code>collaborative filtering</code>. The key foundation idea is that of <code>latent factors</code> which decides what kinds of movies you want to watch.</p>
+<section id="objectives" class="level1">
+<h1>Objectives</h1>
+<p><a href="https://www.ibm.com/think/topics/collaborative-filtering"><code>Collaborative Filtering</code></a> is a <code>recommendation system</code> that recommends items to users based on how other users with similar preferences and behaviors have interacted with the same item. It is based on the principle that similar users share similar interests and behaviors. Different to <code>content-based filtering</code>, which recommends items based on the <em>features of the items themselves</em>, <code>collaborative filtering</code> relies on the <em>collective behavior of users</em> to make recommendations.</p>
+<p>In this blog, we are going to dive into <code>collaborative filtering</code> which is a part of recommendation algorithms used in Netflix. Netflix may not know these particular properties of the films you watched, but it would be able to see that other people that watched the same movies could watch other movies that you are not watching yet. By applying this technique, Netflix can recommend us the contents of the movies that we have not watched before but relevant to what we liked, which the others too.</p>
+<p>The key idea of <code>content-based filtering</code> is based on <code>latent factors</code> which decides what kinds of movies you want to watch. ## Latent Factors</p>
 </section>
-<section id="data-set" class="level1">
-<h1>Data set</h1>
+<section id="build-a-collaborative-filtering-with-python" class="level1">
+<h1>Build a Collaborative Filtering with Python</h1>
+<section id="data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
-<div id="85d5857a" class="cell" data-execution_count="1">
+<div id="42ab70e0" class="cell" data-cache="true" data-message="false" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.collab <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.tabular.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># path = untar_data(URLs.ML_100k)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ssl</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ssl._create_default_https_context <span class="op">=</span> ssl._create_unverified_context</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.collab <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.tabular.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> untar_data(URLs.ML_100k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In this blog,</p>
+<section id="key-points" class="level2">
+<h2 class="anchored" data-anchor-id="key-points">Key points</h2>
+</section>
+<section id="technical-insights" class="level2">
+<h2 class="anchored" data-anchor-id="technical-insights">Technical Insights</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+## Key Technical Learnings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li></li>
+</ul>
+<section id="future-directions" class="level2">
+<h2 class="anchored" data-anchor-id="future-directions">Future Directions</h2>
+</section>
+<section id="final-thoughts" class="level2">
+<h2 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h2>
 
 
+</section>
+</div>
+</div>
+</section>
 </section>
 
 </main> <!-- /main -->
