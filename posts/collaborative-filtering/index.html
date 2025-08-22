@@ -222,6 +222,10 @@ window.Quarto = {
   <li><a href="#finding-similar-users-with-similarity-scores" id="toc-finding-similar-users-with-similarity-scores" class="nav-link" data-scroll-target="#finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</a></li>
   <li><a href="#calculate-rating" id="toc-calculate-rating" class="nav-link" data-scroll-target="#calculate-rating">Calculate Rating</a></li>
   </ul></li>
+  <li><a href="#model-based-method" id="toc-model-based-method" class="nav-link" data-scroll-target="#model-based-method">Model-based method</a>
+  <ul class="collapse">
+  <li><a href="#matrix-factorization" id="toc-matrix-factorization" class="nav-link" data-scroll-target="#matrix-factorization">Matrix Factorization</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#build-a-collaborative-filtering-with-python" id="toc-build-a-collaborative-filtering-with-python" class="nav-link" data-scroll-target="#build-a-collaborative-filtering-with-python">Build a Collaborative Filtering with Python</a>
   <ul class="collapse">
@@ -265,8 +269,8 @@ window.Quarto = {
 <ul>
 <li><p>Memory-based method</p></li>
 <li><p>Model-based method</p></li>
-<li><p>Hybrid method</p></li>
 <li><p>Deep-Learning method</p></li>
+<li><p>Hybrid method</p></li>
 </ul>
 <section id="memory-based-method" class="level2">
 <h2 class="anchored" data-anchor-id="memory-based-method">Memory-based method</h2>
@@ -330,6 +334,34 @@ user-user vs item-item collaborative filtering
 <p>The techniques, where the rating matrix is used to find similar users based on the ratings they give, is called <em>user-based</em> or <em>user-user collaborative filtering</em>. If you use the rating matrix to find <em>similar items</em> based on the ratings given to them by users, then the approach is called <em>item-based</em> or <em>item-item collaborative filtering</em>, which is developped by Amazon.</p>
 </div>
 </div>
+</section>
+</section>
+<section id="model-based-method" class="level2">
+<h2 class="anchored" data-anchor-id="model-based-method">Model-based method</h2>
+<p>The model-based collaborative filtering method learns a model from the user-item interactions and uses this model to make predictions. This approach can capture complex patterns in the data and is often more <strong>scalable</strong> than memory-based methods. Some common model-based techniques include:</p>
+<ul>
+<li><p><strong>Matrix Factorization</strong>: This technique decomposes the user-item interaction matrix into <em>lower-dimensional matrices</em> representing latent factors for users and items. The most popular matrix factorization method is <em>Singular Value Decomposition (SVD)</em>.</p></li>
+<li><p><strong>Deep Learning</strong>: Neural networks can be used to learn complex representations of users and items. Techniques like <em>autoencoders</em> and <em>recurrent neural networks (RNNs)</em> have been applied to collaborative filtering tasks.</p></li>
+</ul>
+<section id="matrix-factorization" class="level3">
+<h3 class="anchored" data-anchor-id="matrix-factorization">Matrix Factorization</h3>
+<p>When we have a large user-item matrix with many missing values, matrix factorization techniques can help us fill in the gaps. The idea is to factor the original matrix into <em>two lower-dimensional matrices</em>: one representing users and the other representing items. This allows us to capture <em>latent factors</em> that explain the observed ratings.</p>
+<div id="fig-matrix-factorization" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-factorization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="matrix_factor_example.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-factorization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Matrix Factorization Example (<a href="https://developers.google.com/machine-learning/recommendation/collaborative/matrix">Source: Google Developers</a>)
+</figcaption>
+</figure>
+</div>
+<p>As an example <a href="#fig-matrix-factorization" class="quarto-xref">Figure&nbsp;1</a>, a user-item matrix <span class="math inline">\(A \in \mathbb{R}^{m \times n}\)</span> can be factorized into two lower-dimensional matrices (embedding vectors) <span class="math inline">\(U \in \mathbb{R}^{m \times k}\)</span> and <span class="math inline">\(V \in \mathbb{R}^{k \times n}\)</span>, where <span class="math inline">\(k\)</span> is the number of <em>features</em> or <em>latent factors</em>, <span class="math inline">\(m\)</span> is the number of users, and <span class="math inline">\(n\)</span> is the number of items.</p>
+<p>Using embeddings for users and items, we can represent each user or item as a dense vector in a continuous space, capturing their latent characteristics via approximating the original user-item matrix <span class="math inline">\(A\)</span> as follows: <span class="math inline">\(A=U\times V^T\)</span></p>
+<p>To do that, we need to learn the user and item embeddings from the data. It is achieved by minimizing the difference between the original matrix and the product of the two lower-dimensional matrices. <span class="math display">\[
+\min_{U,V} ||A - U \cdot V^T||_F^2
+\]</span> This corresponds to minimizing the squared <a href="https://en.wikipedia.org/wiki/Matrix_norm#Frobenius_norm">Frobenius distance</a> between the original matrix and the reconstructed matrix.</p>
+<p>Instead of using techniques like Singular Value Decomposition (SVD) to solve the problem, which is not favorable when matrix <span class="math inline">\(A\)</span> is sparse, stochastic gradient descent (SGD) is a more feasible candidate.</p>
 </section>
 </section>
 </section>
