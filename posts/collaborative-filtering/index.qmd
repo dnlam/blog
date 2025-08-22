@@ -52,9 +52,9 @@ There are four ways to generate recommendations in the family of collaborative f
 
 - Model-based method
 
-- Hybrid method
-
 - Deep-Learning method
+
+- Hybrid method
 
 ## Memory-based method
 Memory-based methods are based on statistical techniques to find similar users or items. 
@@ -145,7 +145,32 @@ where the similar factor $S_u$, which would act as weights, should be the invers
 The techniques, where the rating matrix is used to find similar users based on the ratings they give, is called *user-based* or *user-user collaborative filtering*. If you use the rating matrix to find *similar items* based on the ratings given to them by users, then the approach is called *item-based* or *item-item collaborative filtering*, which is developped by Amazon.
 :::
 
-# Build a Collaborative Filtering with Python 
+## Model-based method
+The model-based collaborative filtering method learns a model from the user-item interactions and uses this model to make predictions. This approach can capture complex patterns in the data and is often more **scalable** than memory-based methods. Some common model-based techniques include:
+
+- **Matrix Factorization**: This technique decomposes the user-item interaction matrix into *lower-dimensional matrices* representing latent factors for users and items. The most popular matrix factorization method is *Singular Value Decomposition (SVD)*.
+
+- **Deep Learning**: Neural networks can be used to learn complex representations of users and items. Techniques like *autoencoders* and *recurrent neural networks (RNNs)* have been applied to collaborative filtering tasks.
+
+### Matrix Factorization
+
+When we have a large user-item matrix with many missing values, matrix factorization techniques can help us fill in the gaps. The idea is to factor the original matrix into *two lower-dimensional matrices*: one representing users and the other representing items. This allows us to capture *latent factors* that explain the observed ratings.
+
+![Matrix Factorization Example ([Source: Google Developers](https://developers.google.com/machine-learning/recommendation/collaborative/matrix))](matrix_factor_example.png){#fig-matrix-factorization fig-align="center"}
+
+As an example @fig-matrix-factorization, a user-item matrix $A \in \mathbb{R}^{m \times n}$ can be factorized into two lower-dimensional matrices (embedding vectors) $U \in \mathbb{R}^{m \times k}$ and $V \in \mathbb{R}^{k \times n}$, where $k$ is the number of *features* or *latent factors*, $m$ is the number of users, and $n$ is the number of items.
+
+Using embeddings for users and items, we can represent each user or item as a dense vector in a continuous space, capturing their latent characteristics via approximating the original user-item matrix $A$ as follows: $A=U\times V^T$
+
+To do that, we need to learn the user and item embeddings from the data. It is achieved by minimizing the difference between the original matrix and the product of the two lower-dimensional matrices.
+$$
+\min_{U,V} ||A - U \cdot V^T||_F^2
+$$
+This corresponds to minimizing the squared [Frobenius distance](https://en.wikipedia.org/wiki/Matrix_norm#Frobenius_norm) between the original matrix and the reconstructed matrix.
+
+Instead of using techniques like Singular Value Decomposition (SVD) to solve the problem, which is not favorable when matrix $A$ is sparse,  stochastic gradient descent (SGD) is a more feasible candidate.
+
+# Build a Collaborative Filtering with Python
 ## Data preparation
 Indeed, we can not have access to Netflix's entire dataset of movie watching history, but there is a great dataset that we can yous, called `MovieLen` which contains tens millions of movies ranking.
 
