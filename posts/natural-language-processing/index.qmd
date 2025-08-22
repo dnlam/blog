@@ -25,9 +25,10 @@ execute:
 ---
 
 # Objectives
-In this notebook, we are going to deep dive into *natural language processing* (NLP) using Deep Learning ([info](https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d)). Relying on the *pretrained language model*, we are going to fine-tune it to classify the reviews, which works as *sentiment analysis*, to categorize user reviews as bad/good ones. 
+In this blog, we are going to deep dive into *natural language processing* (NLP) using Deep Learning ([info](https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d)). Relying on the *pretrained language model*, we are going to fine-tune it to classify the reviews, which works as *sentiment analysis*, to categorize user reviews as bad/good ones. 
 
 Based on a `language model` which has been trained before, we will apply *transfer learning* method for this task to transform ``prediction`` problem into `classification` problem.
+
 ::: {.callout-note}
 ## Language model
 In this blog post, we refer `language model` as a model which predicts the next word in a sentence given the previous words. It is a *self-supervised learning* task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words.
