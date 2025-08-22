@@ -278,7 +278,7 @@ window.Quarto = {
 <section id="finding-similar-users-with-similarity-scores" class="level3">
 <h3 class="anchored" data-anchor-id="finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</h3>
 <p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
-<div id="4fd672f0" class="cell" data-fig-height="4" data-execution_count="1">
+<div id="4fd672f0" class="cell" data-fig-height="4" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -310,6 +310,26 @@ Centered Cosine Similarity
 </section>
 <section id="calculate-rating" class="level3">
 <h3 class="anchored" data-anchor-id="calculate-rating">Calculate Rating</h3>
+<p>There are multiple way to predict the rating of an item <span class="math inline">\(\mathbf{I}\)</span> for a user <span class="math inline">\(\mathbf{U}\)</span>, one simple way is to use the average of the ratings for that item given by similar users. The formula for calculating the predicted rating <span class="math inline">\(\hat{R}_{U,I}\)</span> for user <span class="math inline">\(\mathbf{U}\)</span> and item <span class="math inline">\(\mathbf{I}\)</span> is: <span class="math display">\[
+\mathbf{R_U} = \sum_{u =1}^n \frac{R_{u,I}}{n}
+\]</span> This formula shows that the average rating given by the n similar users is equal to the sum of the ratings given by them divided by the number of similar users, which is n.</p>
+<p>To weight higher score for the users that are more similar to user <span class="math inline">\(u\)</span>, we can use the following formula:</p>
+<p><span class="math display">\[
+\mathbf{R_U} = \frac{\sum_{u =1}^n R_{u,I}*S_U}{\sum_{u =1}^n S_U}
+\]</span> where the similar factor <span class="math inline">\(S_u\)</span>, which would act as weights, should be the inverse of the distance discussed above because less distance implies higher similarity. For example, you can subtract the cosine distance from 1 to get cosine similarity.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+user-user vs item-item collaborative filtering
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The techniques, where the rating matrix is used to find similar users based on the ratings they give, is called <em>user-based</em> or <em>user-user collaborative filtering</em>. If you use the rating matrix to find <em>similar items</em> based on the ratings given to them by users, then the approach is called <em>item-based</em> or <em>item-item collaborative filtering</em>, which is developped by Amazon.</p>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -318,7 +338,7 @@ Centered Cosine Similarity
 <section id="data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
-<div id="0129738f" class="cell" data-cache="true" data-message="false" data-execution_count="2">
+<div id="0129738f" class="cell" data-cache="true" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ssl</span>
