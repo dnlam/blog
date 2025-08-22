@@ -229,8 +229,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="objectives" class="level1">
 <h1>Objectives</h1>
-<p>In this notebook, we are going to deep dive into <em>natural language processing</em> (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the <em>pretrained language model</em>, we are going to fine-tune it to classify the reviews, which works as <em>sentiment analysis</em>, to categorize user reviews as bad/good ones.</p>
-<p>Based on a <code>language model</code> which has been trained before, we will apply <em>transfer learning</em> method for this task to transform <code>prediction</code> problem into <code>classification</code> problem. ::: {.callout-note} ## Language model In this blog post, we refer <code>language model</code> as a model which predicts the next word in a sentence given the previous words. It is a <em>self-supervised learning</em> task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words. :::</p>
+<p>In this blog, we are going to deep dive into <em>natural language processing</em> (NLP) using Deep Learning (<a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">info</a>). Relying on the <em>pretrained language model</em>, we are going to fine-tune it to classify the reviews, which works as <em>sentiment analysis</em>, to categorize user reviews as bad/good ones.</p>
+<p>Based on a <code>language model</code> which has been trained before, we will apply <em>transfer learning</em> method for this task to transform <code>prediction</code> problem into <code>classification</code> problem.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Language model
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this blog post, we refer <code>language model</code> as a model which predicts the next word in a sentence given the previous words. It is a <em>self-supervised learning</em> task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words.</p>
+</div>
+</div>
 <div id="fig-transfer-learning" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-cap="Transfer learning workflow for movie classifier.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-transfer-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
