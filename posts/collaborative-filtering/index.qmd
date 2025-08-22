@@ -64,17 +64,19 @@ It would find the rating $\mathbf{R}$ for user $\mathbf{U}$ and item $\mathbf{I}
 
 - Calculate rating $\mathbf{R}$ based as a weighted sum of the ratings given by similar users to item $\mathbf{I}$.
 
-### Finding similar users
+### Finding similar users with similarity scores
 For example, there are 4 user $u_1, u_2, u_3, u_4$ $\in \mathbf{U}$ have rated two movies $i_1, i_2$ $\in \mathbf{I}$ as follows:
 
 ```{python}
-from scipy import spatial
-#| echo: true
+#| echo: false
 #| output: true
 #| eval: true
 #| #| fig-width: 6      # Width in inches
 #| fig-height: 4     # Height in inches  
 #| fig-align: center # Center alignment
+
+
+from scipy import spatial
 import matplotlib.pyplot as plt
 import numpy as np
 u_1 = [3, 3]
@@ -116,13 +118,15 @@ To define if the preferences of two users are similar, we can use similarity sco
 - **Jaccard similarity**: Measures the similarity between two sets by comparing the size of their intersection to the size of their union. It is useful for finding similar items based on user co-occurrence.
 
 To calculate similarity using **Cosine similarity**, we need a function that returns a *higher similarity or smaller distance* for a *lower angle* and a *lower similarity or larger distance* for a *higher angle*. The cosine of an angle is a function that decreases from 1 to -1 as the angle increases from 0 to 180.
+
 ::: {.callout-note}
 ## Centered Cosine Similarity
 In practice, we center the ratings by subtracting the mean rating of each user from their ratings. This helps to account for individual user biases (e.g., some users may rate all movies higher or lower than others, but they are considered as having the same preferences). The centered cosine similarity is then calculated using these mean-centered ratings.
 This approach is also used when there are a lot of missing values in the user rating vectors, and we need to place a common value to fill up the missing values.
 :::
 
-### Calculate Rating R
+### Calculate Rating 
+
 
 
 # Build a Collaborative Filtering with Python 
