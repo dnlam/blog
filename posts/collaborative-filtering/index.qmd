@@ -127,7 +127,23 @@ This approach is also used when there are a lot of missing values in the user ra
 
 ### Calculate Rating 
 
+There are multiple way to predict the rating of an item $\mathbf{I}$ for a user $\mathbf{U}$, one simple way is to use the average of the ratings for that item given by similar users. The formula for calculating the predicted rating $\hat{R}_{U,I}$ for user $\mathbf{U}$ and item $\mathbf{I}$ is:
+$$
+\mathbf{R_U} = \sum_{u =1}^n \frac{R_{u,I}}{n}
+$$
+This formula shows that the average rating given by the n similar users is equal to the sum of the ratings given by them divided by the number of similar users, which is n.
 
+To weight higher score for the users that are more similar to user $u$, we can use the following formula:
+
+$$
+\mathbf{R_U} = \frac{\sum_{u =1}^n R_{u,I}*S_U}{\sum_{u =1}^n S_U}
+$$
+where the similar factor $S_u$, which would act as weights, should be the inverse of the distance discussed above because less distance implies higher similarity. For example, you can subtract the cosine distance from 1 to get cosine similarity.
+
+::: {.callout-note}
+## user-user vs item-item collaborative filtering
+The techniques, where the rating matrix is used to find similar users based on the ratings they give, is called *user-based* or *user-user collaborative filtering*. If you use the rating matrix to find *similar items* based on the ratings given to them by users, then the approach is called *item-based* or *item-item collaborative filtering*, which is developped by Amazon.
+:::
 
 # Build a Collaborative Filtering with Python 
 ## Data preparation

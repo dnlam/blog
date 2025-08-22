@@ -29,10 +29,12 @@ In this blog, we are going to deep dive into *natural language processing* (NLP)
 
 Based on a `language model` which has been trained before, we will apply *transfer learning* method for this task to transform ``prediction`` problem into `classification` problem.
 
+
 ::: {.callout-note}
 ## Language model
 In this blog post, we refer `language model` as a model which predicts the next word in a sentence given the previous words. It is a *self-supervised learning* task, where the model learns to predict the next word in a sentence based on the context provided by the preceding words.
 :::
+
 
 ![Transfer learning workflow for movie classifier](https://github.com/fastai/fastbook/blob/master/images/att_00027.png?raw=1){#fig-transfer-learning fig-cap="Transfer learning workflow for movie classifier."}
 
