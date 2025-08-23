@@ -46,15 +46,13 @@ To deal with two former questions, Collaborative filtering uses techniques such 
 To measure the accuracy of the rating, we can use metrics such as [root mean square error (RMSE)](https://en.wikipedia.org/wiki/Root-mean-square_deviation) or [mean absolute error (MAE)](https://en.wikipedia.org/wiki/Mean_absolute_error) to evaluate the performance of the recommendation system. `RMSE`  predict ratings for a test dataset of user-item pairs whose rating values are already known. The difference between the known value and the predicted value would be the **error**. Square all the error values for the test set, find the average (or mean), and then take the square root of that average to get the ``RMSE``. On the other hand, `MAE` measures the average magnitude of the errors in a set of predictions, without considering their direction. It’s the average over the test sample of the absolute differences between prediction and actual observation where all individual differences have equal weight.
 
 <!-- These metrics compare the predicted ratings with the actual ratings to determine how well the system is performing. -->
-There are four ways to generate recommendations in the family of collaborative filtering:
+# Collaborative Filtering Techniques
+There are several techniques in the family of collaborative filtering, which have been widely discussed:
 
 - Memory-based method
 
 - Model-based method
 
-- Deep-Learning method
-
-- Hybrid method
 
 ## Memory-based method
 Memory-based methods are based on statistical techniques to find similar users or items. 
@@ -169,6 +167,18 @@ $$
 This corresponds to minimizing the squared [Frobenius distance](https://en.wikipedia.org/wiki/Matrix_norm#Frobenius_norm) between the original matrix and the reconstructed matrix.
 
 Instead of using techniques like Singular Value Decomposition (SVD) to solve the problem, which is not favorable when matrix $A$ is sparse,  stochastic gradient descent (SGD) is a more feasible candidate.
+
+### Deep-Learning method
+Some disadvantages of matrix factorization for collaborative filtering are:
+
+- Relevancy of recommended item: By using dot product as a similarity measure, popular items are generally recommended for everyone, regardless their different preferences and behavior. 
+- Latents features are learned within user-item training set, and can not be captured beyond that.
+
+Deep neural network can deal with these problems by incorporating item features and user features.
+
+![Recommendation with DNN([Source: Google Developers](https://developers.google.com/machine-learning/recommendation/dnn/softmax))](dnn_cf.png.png){#fig-dnn fig-align="center"}
+
+Figure @fig-dnn shows a deep neural network architecture for collaborative filtering. The input layer consists of user and item features, which are then passed through several hidden layers to learn complex representations. The output layer use *soft-max* to illustrate the probability of interacting with an item.
 
 # Build a Collaborative Filtering with Python
 ## Data preparation
