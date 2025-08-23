@@ -225,6 +225,8 @@ ratings = ratings.merge(movies)
 ratings.head()
 ```
 
+## Model Training
+
 To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the *dot product* between the latent vectors.
 
 Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.
@@ -252,6 +254,32 @@ class DotProductBias(Module):
         return sigmoid_range(res, *self.y_range)
 ```
 
+or 
+
+```{python}
+#| echo: true
+#| output: false
+#| eval: false
+#| warning: false
+#| message: false
+#| cache: true
+class CollabNN(Module):
+    def __init__(self, user_sz, item_sz, y_range=(0,5.5), n_act=100):
+        self.user_factors = Embedding(*user_sz) 
+        self.item_factors = Embedding(*item_sz) 
+        self.layers = nn.Sequential(
+            nn.Linear(user_sz[1]+item_sz[1], n_act), 
+            nn.ReLU(),
+            nn.Linear(n_act, 1))
+        self.y_range = y_range
+
+    def forward(self, x):
+        embs = self.user_factors(x[:,0]),self.item_factors(x[:,1])
+        x = self.layers(torch.cat(embs, dim=1)) 
+        return sigmoid_range(x, *self.y_range)
+embs = get_emb_sz(dls)
+model = CollabNN(*embs)
+```
 Then, we can train the model by first creating data batches using DataLoader.
 We will use the `CollabDataLoaders` class from FastAI to create our data loaders. 
 ```{python}
@@ -306,23 +334,52 @@ learn.fit_one_cycle(5, 5e-3, wd=0.1)
 
 As we can see, the training is much better since overfitting has been reduced.
 
+## Model Testing
+Once the model has been trained, we can use that model to find the `similarity` between movies. For example, We 
+can use this to find the most similar movie to ``Silence of the Lambs`` using `cosine similarity`: 
+```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
+movie_factors = learn.model.i_weight.weight
+idx = dls.classes['title'].o2i['Silence of the Lambs, The (1991)']
+distances = nn.CosineSimilarity(dim=1)(movie_factors, movie_factors[idx][None]) 
+idx = distances.argsort(descending=True)[1]
+dls.classes['title'][idx]
+```
+
+
 # Conclusion
-In this blog, 
+In this blog, we explored collaborative filtering as a powerful recommendation system technique used by platforms like Netflix to suggest relevant content to users based on similar user preferences.
 
 ## Key points
 
+- Collaborative filtering relies on user-item interactions to make recommendations.
+
+- Matrix factorization techniques, such as SVD and neural collaborative filtering, can effectively capture latent factors.
+
+- Regularization techniques are essential to prevent overfitting and improve model generalization.
 
 ## Technical Insights
 
 ::: {.callout-important}
 ## Key Technical Learnings
-- 
-- 
+- Regularization Impact: Weight decay (0.1) dramatically improved validation performance, reducing overfitting in the collaborative filtering model.
+- Model Architecture: The use of a neural network with embedding layers allowed for better representation of users and items, capturing complex interactions.
+- Similarity Computation: Leveraging cosine similarity enabled effective identification of similar items, enhancing the recommendation process.
 :::
 ## Future Directions
 
+- Hybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality
+
+- Advanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior
+
+
 
 ## Final Thoughts
-
+Collaborative filtering remains a cornerstone of modern recommendation systems despite challenges like data sparsity and cold-start problems. As demonstrated in our implementation, even relatively simple models can produce meaningful recommendations when properly trained. The field continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions. 
 
 
