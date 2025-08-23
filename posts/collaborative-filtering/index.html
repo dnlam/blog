@@ -235,6 +235,8 @@ window.Quarto = {
   <li><a href="#build-a-collaborative-filtering-with-python" id="toc-build-a-collaborative-filtering-with-python" class="nav-link" data-scroll-target="#build-a-collaborative-filtering-with-python">Build a Collaborative Filtering with Python</a>
   <ul class="collapse">
   <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data preparation</a></li>
+  <li><a href="#model-training" id="toc-model-training" class="nav-link" data-scroll-target="#model-training">Model Training</a></li>
+  <li><a href="#model-testing" id="toc-model-testing" class="nav-link" data-scroll-target="#model-testing">Model Testing</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
   <ul class="collapse">
@@ -288,7 +290,7 @@ window.Quarto = {
 <section id="finding-similar-users-with-similarity-scores" class="level3">
 <h3 class="anchored" data-anchor-id="finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</h3>
 <p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
-<div id="4a4fe26c" class="cell" data-fig-height="4" data-execution_count="1">
+<div id="fdc43b7f" class="cell" data-fig-height="4" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -412,9 +414,12 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <section id="data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
+</section>
+<section id="model-training" class="level2">
+<h2 class="anchored" data-anchor-id="model-training">Model Training</h2>
 <p>To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the <em>dot product</em> between the latent vectors.</p>
 <p>Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.</p>
-<div id="43577ae5" class="cell" data-cache="true" data-message="false" data-execution_count="3">
+<div id="de379e18" class="cell" data-cache="true" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DotProductBias(Module):</span>
@@ -433,22 +438,44 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sigmoid_range(res, <span class="op">*</span><span class="va">self</span>.y_range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Then, we can train the model by first creating data batches using DataLoader. We will use the <code>CollabDataLoaders</code> class from FastAI to create our data loaders.</p>
-<div id="ec145640" class="cell" data-cache="true" data-message="false" data-execution_count="4">
+<p>or</p>
+<div id="d12d4281" class="cell" data-cache="true" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> CollabDataLoaders.from_df(ratings, item_name<span class="op">=</span><span class="st">'title'</span>, bs<span class="op">=</span><span class="dv">64</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n_users  <span class="op">=</span> <span class="bu">len</span>(dls.classes[<span class="st">'user'</span>]) </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_movies <span class="op">=</span> <span class="bu">len</span>(dls.classes[<span class="st">'title'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CollabNN(Module):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, user_sz, item_sz, y_range<span class="op">=</span>(<span class="dv">0</span>,<span class="fl">5.5</span>), n_act<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.user_factors <span class="op">=</span> Embedding(<span class="op">*</span>user_sz) </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.item_factors <span class="op">=</span> Embedding(<span class="op">*</span>item_sz) </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.layers <span class="op">=</span> nn.Sequential(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            nn.Linear(user_sz[<span class="dv">1</span>]<span class="op">+</span>item_sz[<span class="dv">1</span>], n_act), </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            nn.Linear(n_act, <span class="dv">1</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.y_range <span class="op">=</span> y_range</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        embs <span class="op">=</span> <span class="va">self</span>.user_factors(x[:,<span class="dv">0</span>]),<span class="va">self</span>.item_factors(x[:,<span class="dv">1</span>])</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.layers(torch.cat(embs, dim<span class="op">=</span><span class="dv">1</span>)) </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sigmoid_range(x, <span class="op">*</span><span class="va">self</span>.y_range)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>embs <span class="op">=</span> get_emb_sz(dls)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> CollabNN(<span class="op">*</span>embs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Then, we can train the model by first creating data batches using DataLoader. We will use the <code>CollabDataLoaders</code> class from FastAI to create our data loaders.</p>
+<div id="7fc999b6" class="cell" data-cache="true" data-message="false" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> CollabDataLoaders.from_df(ratings, item_name<span class="op">=</span><span class="st">'title'</span>, bs<span class="op">=</span><span class="dv">64</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_users  <span class="op">=</span> <span class="bu">len</span>(dls.classes[<span class="st">'user'</span>]) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>n_movies <span class="op">=</span> <span class="bu">len</span>(dls.classes[<span class="st">'title'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Let try to train the model which is based on <code>DotProductBias</code> in 5 epochs with learning rate of 0.005.</p>
-<div id="7004311d" class="cell" data-cache="true" data-message="false" data-execution_count="5">
+<div id="83635779" class="cell" data-cache="true" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MSELossFlat())</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MSELossFlat())</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -481,32 +508,32 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.873281</td>
-<td>0.968098</td>
+<td>0.839644</td>
+<td>0.939991</td>
 <td>00:06</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.601490</td>
-<td>0.928612</td>
+<td>0.560127</td>
+<td>0.917238</td>
 <td>00:05</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.430484</td>
-<td>0.953705</td>
+<td>0.418118</td>
+<td>0.943585</td>
 <td>00:05</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.307444</td>
-<td>0.961367</td>
+<td>0.316448</td>
+<td>0.956628</td>
 <td>00:05</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.304712</td>
-<td>0.961782</td>
+<td>0.302514</td>
+<td>0.956912</td>
 <td>00:05</td>
 </tr>
 </tbody>
@@ -532,12 +559,12 @@ Regularization Techniques
 </div>
 </div>
 <p>In <code>Weight Decay</code>, limiting our weights from growing too much is going to hinder the training of the model, but it will yield a state where it generalizes better. The updates of parameters are as follows: <code>parameters.grad += wd * 2 * parameter</code></p>
-<div id="02694a23" class="cell" data-cache="true" data-message="false" data-execution_count="6">
+<div id="e1a3d082" class="cell" data-cache="true" data-message="false" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MSELossFlat())</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">5e-3</span>, wd<span class="op">=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MSELossFlat())</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">5e-3</span>, wd<span class="op">=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -570,32 +597,32 @@ Regularization Techniques
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.866092</td>
-<td>0.978580</td>
+<td>0.931131</td>
+<td>0.954593</td>
 <td>00:05</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.686249</td>
-<td>0.905717</td>
+<td>0.683145</td>
+<td>0.906108</td>
 <td>00:05</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.542994</td>
-<td>0.889370</td>
+<td>0.518805</td>
+<td>0.876689</td>
 <td>00:05</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.452788</td>
-<td>0.870501</td>
+<td>0.450820</td>
+<td>0.862776</td>
 <td>00:05</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.436237</td>
-<td>0.867133</td>
+<td>0.434238</td>
+<td>0.857502</td>
 <td>00:05</td>
 </tr>
 </tbody>
@@ -604,12 +631,35 @@ Regularization Techniques
 </div>
 <p>As we can see, the training is much better since overfitting has been reduced.</p>
 </section>
+<section id="model-testing" class="level2">
+<h2 class="anchored" data-anchor-id="model-testing">Model Testing</h2>
+<p>Once the model has been trained, we can use that model to find the <code>similarity</code> between movies. For example, We can use this to find the most similar movie to <code>Silence of the Lambs</code> using <code>cosine similarity</code>:</p>
+<div id="100f83eb" class="cell" data-cache="true" data-message="false" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> collab_learner(dls, n_factors<span class="op">=</span><span class="dv">50</span>, y_range<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">5.5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>movie_factors <span class="op">=</span> learn.model.i_weight.weight</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> dls.classes[<span class="st">'title'</span>].o2i[<span class="st">'Silence of the Lambs, The (1991)'</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>distances <span class="op">=</span> nn.CosineSimilarity(dim<span class="op">=</span><span class="dv">1</span>)(movie_factors, movie_factors[idx][<span class="va">None</span>]) </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> distances.argsort(descending<span class="op">=</span><span class="va">True</span>)[<span class="dv">1</span>]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>dls.classes[<span class="st">'title'</span>][idx]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>'Arsenic and Old Lace (1944)'</code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>In this blog,</p>
+<p>In this blog, we explored collaborative filtering as a powerful recommendation system technique used by platforms like Netflix to suggest relevant content to users based on similar user preferences.</p>
 <section id="key-points" class="level2">
 <h2 class="anchored" data-anchor-id="key-points">Key points</h2>
+<ul>
+<li><p>Collaborative filtering relies on user-item interactions to make recommendations.</p></li>
+<li><p>Matrix factorization techniques, such as SVD and neural collaborative filtering, can effectively capture latent factors.</p></li>
+<li><p>Regularization techniques are essential to prevent overfitting and improve model generalization.</p></li>
+</ul>
 </section>
 <section id="technical-insights" class="level2">
 <h2 class="anchored" data-anchor-id="technical-insights">Technical Insights</h2>
@@ -619,21 +669,28 @@ Regularization Techniques
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-## Key Technical Learnings
+Key Technical Learnings
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li></li>
+<li>Regularization Impact: Weight decay (0.1) dramatically improved validation performance, reducing overfitting in the collaborative filtering model.</li>
+<li>Model Architecture: The use of a neural network with embedding layers allowed for better representation of users and items, capturing complex interactions.</li>
+<li>Similarity Computation: Leveraging cosine similarity enabled effective identification of similar items, enhancing the recommendation process.</li>
 </ul>
 </div>
 </div>
 </section>
 <section id="future-directions" class="level2">
 <h2 class="anchored" data-anchor-id="future-directions">Future Directions</h2>
+<ul>
+<li><p>Hybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality</p></li>
+<li><p>Advanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior</p></li>
+</ul>
 </section>
 <section id="final-thoughts" class="level2">
 <h2 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h2>
+<p>Collaborative filtering remains a cornerstone of modern recommendation systems despite challenges like data sparsity and cold-start problems. As demonstrated in our implementation, even relatively simple models can produce meaningful recommendations when properly trained. The field continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions.</p>
 
 
 </section>
