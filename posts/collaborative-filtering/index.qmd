@@ -176,13 +176,58 @@ Some disadvantages of matrix factorization for collaborative filtering are:
 
 Deep neural network can deal with these problems by incorporating item features and user features.
 
-![Recommendation with DNN([Source: Google Developers](https://developers.google.com/machine-learning/recommendation/dnn/softmax))](dnn_cf.png.png){#fig-dnn fig-align="center"}
+![Recommendation with DNN([Source: Google Developers](https://developers.google.com/machine-learning/recommendation/dnn/softmax))](dnn_cf.png){#fig-dnn fig-align="center"}
 
-Figure @fig-dnn shows a deep neural network architecture for collaborative filtering. The input layer consists of user and item features, which are then passed through several hidden layers to learn complex representations. The output layer use *soft-max* to illustrate the probability of interacting with an item.
+Figure @fig-dnn shows a deep neural network architecture for collaborative filtering. The input layer consists of user and item features, which are then passed through several hidden layers to learn complex representations. The output layer use *soft-max* to illustrate the probability of a user interacting with an item.
+
 
 # Build a Collaborative Filtering with Python
+In this section, we will use DNN to build a collaborative filtering model. It includes 3 steps:
+
+- Initialize random parameters of latent features for each user and item. 
+
+- Calculate the prediction by taking the *dot product* of user and item embeddings to see how much an user likes/dislike an item.
+
+- Update the user and item embeddings based on the prediction error using backpropagation of *Mean Squared Loss*. 
+
+![Initialization of random parameters for user and item embeddings](latent_factor_ini.png){#fig-latent fig-align="center"}
+
 ## Data preparation
 Indeed, we can not have access to Netflix's entire dataset of movie watching history, but there is a great dataset that we can yous, called `MovieLen` which contains tens millions of movies ranking.
+
+```{python}
+#| echo: false
+#| output: false
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
+import torch
+import torch.nn as nn
+from torch.nn import Embedding
+import torch.nn.functional as F
+from fastai.tabular.all import *
+from fastai.vision.all import *
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+from fastai.collab import *
+from fastai.tabular.all import *
+
+path = untar_data(URLs.ML_100k)
+
+ratings = pd.read_csv(path/'u.data', delimiter='\t', header=None, 
+                      names=['user','movie','rating','timestamp'])
+ratings.head()
+movies = pd.read_csv(path/'u.item',  delimiter='|', encoding='latin-1', 
+                     usecols=(0,1), names=('movie','title'), header=None)
+movies.head()
+ratings = ratings.merge(movies) 
+ratings.head()
+```
+
+To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the *dot product* between the latent vectors.
+
+Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.
 
 ```{python}
 #| echo: true
@@ -191,16 +236,33 @@ Indeed, we can not have access to Netflix's entire dataset of movie watching his
 #| warning: false
 #| message: false
 #| cache: true
+class DotProductBias(Module):
+    def __init__(self, n_users, n_movies, n_factors, y_range=(0,5.5)):
+        self.user_factors = Embedding(n_users, n_factors) 
+        self.user_bias = Embedding(n_users, 1) 
+        self.movie_factors = Embedding(n_movies, n_factors) 
+        self.movie_bias = Embedding(n_movies, 1) 
+        self.y_range = y_range
 
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
-from fastai.collab import *
-from fastai.tabular.all import *
-
-path = untar_data(URLs.ML_100k)
+    def forward(self, x):
+        users = self.user_factors(x[:,0])
+        movies = self.movie_factors(x[:,1])
+        res = (users * movies).sum(dim=1, keepdim=True)
+        res += self.user_bias(x[:,0]) + self.movie_bias(x[:,1]) 
+        return sigmoid_range(res, *self.y_range)
 ```
 
+```{python}
+dls = CollabDataLoaders.from_df(ratings, item_name='title', bs=64)
+n_users  = len(dls.classes['user']) 
+n_movies = len(dls.classes['title'])
+```
 
+```{python}
+model = DotProductBias(n_users, n_movies, n_factors=50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3)
+```
 # Conclusion
 In this blog, 
 
