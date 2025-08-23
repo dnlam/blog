@@ -215,7 +215,8 @@ window.Quarto = {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives">Objectives</a></li>
+  <li><a href="#collaborative-filtering-techniques" id="toc-collaborative-filtering-techniques" class="nav-link" data-scroll-target="#collaborative-filtering-techniques">Collaborative Filtering Techniques</a>
   <ul class="collapse">
   <li><a href="#memory-based-method" id="toc-memory-based-method" class="nav-link" data-scroll-target="#memory-based-method">Memory-based method</a>
   <ul class="collapse">
@@ -225,6 +226,7 @@ window.Quarto = {
   <li><a href="#model-based-method" id="toc-model-based-method" class="nav-link" data-scroll-target="#model-based-method">Model-based method</a>
   <ul class="collapse">
   <li><a href="#matrix-factorization" id="toc-matrix-factorization" class="nav-link" data-scroll-target="#matrix-factorization">Matrix Factorization</a></li>
+  <li><a href="#deep-learning-method" id="toc-deep-learning-method" class="nav-link" data-scroll-target="#deep-learning-method">Deep-Learning method</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#build-a-collaborative-filtering-with-python" id="toc-build-a-collaborative-filtering-with-python" class="nav-link" data-scroll-target="#build-a-collaborative-filtering-with-python">Build a Collaborative Filtering with Python</a>
@@ -265,12 +267,13 @@ window.Quarto = {
 <p>To deal with two former questions, Collaborative filtering uses techniques such as <a href="https://dl.acm.org/doi/10.1145/371920.372071">user-item interactions</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, <a href="https://ieeexplore.ieee.org/document/4781121">similarity measures</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and <a href="https://ieeexplore.ieee.org/document/5197422">matrix factorization</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>To measure the accuracy of the rating, we can use metrics such as <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">root mean square error (RMSE)</a> or <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error (MAE)</a> to evaluate the performance of the recommendation system. <code>RMSE</code> predict ratings for a test dataset of user-item pairs whose rating values are already known. The difference between the known value and the predicted value would be the <strong>error</strong>. Square all the error values for the test set, find the average (or mean), and then take the square root of that average to get the <code>RMSE</code>. On the other hand, <code>MAE</code> measures the average magnitude of the errors in a set of predictions, without considering their direction. It’s the average over the test sample of the absolute differences between prediction and actual observation where all individual differences have equal weight.</p>
 <!-- These metrics compare the predicted ratings with the actual ratings to determine how well the system is performing. -->
-<p>There are four ways to generate recommendations in the family of collaborative filtering:</p>
+</section>
+<section id="collaborative-filtering-techniques" class="level1">
+<h1>Collaborative Filtering Techniques</h1>
+<p>There are several techniques in the family of collaborative filtering, which have been widely discussed:</p>
 <ul>
 <li><p>Memory-based method</p></li>
 <li><p>Model-based method</p></li>
-<li><p>Deep-Learning method</p></li>
-<li><p>Hybrid method</p></li>
 </ul>
 <section id="memory-based-method" class="level2">
 <h2 class="anchored" data-anchor-id="memory-based-method">Memory-based method</h2>
@@ -362,6 +365,26 @@ Figure&nbsp;1: Matrix Factorization Example (<a href="https://developers.google.
 \min_{U,V} ||A - U \cdot V^T||_F^2
 \]</span> This corresponds to minimizing the squared <a href="https://en.wikipedia.org/wiki/Matrix_norm#Frobenius_norm">Frobenius distance</a> between the original matrix and the reconstructed matrix.</p>
 <p>Instead of using techniques like Singular Value Decomposition (SVD) to solve the problem, which is not favorable when matrix <span class="math inline">\(A\)</span> is sparse, stochastic gradient descent (SGD) is a more feasible candidate.</p>
+</section>
+<section id="deep-learning-method" class="level3">
+<h3 class="anchored" data-anchor-id="deep-learning-method">Deep-Learning method</h3>
+<p>Some disadvantages of matrix factorization for collaborative filtering are:</p>
+<ul>
+<li>Relevancy of recommended item: By using dot product as a similarity measure, popular items are generally recommended for everyone, regardless their different preferences and behavior.</li>
+<li>Latents features are learned within user-item training set, and can not be captured beyond that.</li>
+</ul>
+<p>Deep neural network can deal with these problems by incorporating item features and user features.</p>
+<div id="fig-dnn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dnn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="dnn_cf.png.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dnn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Recommendation with DNN(<a href="https://developers.google.com/machine-learning/recommendation/dnn/softmax">Source: Google Developers</a>)
+</figcaption>
+</figure>
+</div>
+<p>Figure <a href="#fig-dnn" class="quarto-xref">Figure&nbsp;2</a> shows a deep neural network architecture for collaborative filtering. The input layer consists of user and item features, which are then passed through several hidden layers to learn complex representations. The output layer use <em>soft-max</em> to illustrate the probability of interacting with an item.</p>
 </section>
 </section>
 </section>
