@@ -344,6 +344,7 @@ can use this to find the most similar movie to ``Silence of the Lambs`` using `c
 #| warning: false
 #| message: false
 #| cache: true
+learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
 movie_factors = learn.model.i_weight.weight
 idx = dls.classes['title'].o2i['Silence of the Lambs, The (1991)']
 distances = nn.CosineSimilarity(dim=1)(movie_factors, movie_factors[idx][None]) 
