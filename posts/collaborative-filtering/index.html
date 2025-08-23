@@ -288,7 +288,7 @@ window.Quarto = {
 <section id="finding-similar-users-with-similarity-scores" class="level3">
 <h3 class="anchored" data-anchor-id="finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</h3>
 <p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
-<div id="add99d12" class="cell" data-fig-height="4" data-execution_count="1">
+<div id="4a4fe26c" class="cell" data-fig-height="4" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -414,7 +414,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <p>Indeed, we can not have access to Netflix’s entire dataset of movie watching history, but there is a great dataset that we can yous, called <code>MovieLen</code> which contains tens millions of movies ranking.</p>
 <p>To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the <em>dot product</em> between the latent vectors.</p>
 <p>Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.</p>
-<div id="89369ecf" class="cell" data-cache="true" data-message="false" data-execution_count="3">
+<div id="43577ae5" class="cell" data-cache="true" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DotProductBias(Module):</span>
@@ -433,7 +433,8 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sigmoid_range(res, <span class="op">*</span><span class="va">self</span>.y_range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="1d91a0c0" class="cell" data-execution_count="4">
+<p>Then, we can train the model by first creating data batches using DataLoader. We will use the <code>CollabDataLoaders</code> class from FastAI to create our data loaders.</p>
+<div id="ec145640" class="cell" data-cache="true" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> CollabDataLoaders.from_df(ratings, item_name<span class="op">=</span><span class="st">'title'</span>, bs<span class="op">=</span><span class="dv">64</span>)</span>
@@ -441,7 +442,8 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_movies <span class="op">=</span> <span class="bu">len</span>(dls.classes[<span class="st">'title'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="26a10ef1" class="cell" data-execution_count="5">
+<p>Let try to train the model which is based on <code>DotProductBias</code> in 5 epochs with learning rate of 0.005.</p>
+<div id="7004311d" class="cell" data-cache="true" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
@@ -479,38 +481,128 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.873820</td>
-<td>0.947940</td>
-<td>00:07</td>
+<td>0.873281</td>
+<td>0.968098</td>
+<td>00:06</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.564568</td>
-<td>0.925257</td>
+<td>0.601490</td>
+<td>0.928612</td>
 <td>00:05</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.432568</td>
-<td>0.952020</td>
+<td>0.430484</td>
+<td>0.953705</td>
 <td>00:05</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.316632</td>
-<td>0.959194</td>
-<td>00:06</td>
+<td>0.307444</td>
+<td>0.961367</td>
+<td>00:05</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.294775</td>
-<td>0.959150</td>
-<td>00:06</td>
+<td>0.304712</td>
+<td>0.961782</td>
+<td>00:05</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<p>As we can see from the training results, while training loss reduces with each epoch, the validation loss increases, indicating overfitting. It is obvious that the model is not generalizing well to unseen data. To tackle with this issue, we can apply regularization techniques such as <code>weight decay</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Regularization Techniques
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Weight Decay</strong>: This technique adds a penalty on the size of the weights to the loss function, discouraging overly complex models.</li>
+<li><strong>Dropout</strong>: Randomly dropping units during training to prevent co-adaptation.</li>
+<li><strong>Early Stopping</strong>: Monitoring validation loss and stopping training when it starts to increase.</li>
+</ul>
+</div>
+</div>
+<p>In <code>Weight Decay</code>, limiting our weights from growing too much is going to hinder the training of the model, but it will yield a state where it generalizes better. The updates of parameters are as follows: <code>parameters.grad += wd * 2 * parameter</code></p>
+<div id="02694a23" class="cell" data-cache="true" data-message="false" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MSELossFlat())</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">5e-3</span>, wd<span class="op">=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.866092</td>
+<td>0.978580</td>
+<td>00:05</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.686249</td>
+<td>0.905717</td>
+<td>00:05</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.542994</td>
+<td>0.889370</td>
+<td>00:05</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0.452788</td>
+<td>0.870501</td>
+<td>00:05</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.436237</td>
+<td>0.867133</td>
+<td>00:05</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>As we can see, the training is much better since overfitting has been reduced.</p>
 </section>
 </section>
 <section id="conclusion" class="level1">
