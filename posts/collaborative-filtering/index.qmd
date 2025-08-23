@@ -252,17 +252,60 @@ class DotProductBias(Module):
         return sigmoid_range(res, *self.y_range)
 ```
 
+Then, we can train the model by first creating data batches using DataLoader.
+We will use the `CollabDataLoaders` class from FastAI to create our data loaders. 
 ```{python}
+#| echo: true
+#| output: false
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
 dls = CollabDataLoaders.from_df(ratings, item_name='title', bs=64)
 n_users  = len(dls.classes['user']) 
 n_movies = len(dls.classes['title'])
 ```
 
+Let try to train the model which is based on `DotProductBias` in 5 epochs with learning rate of 0.005.
+
 ```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
 model = DotProductBias(n_users, n_movies, n_factors=50)
 learn = Learner(dls, model, loss_func=MSELossFlat())
 learn.fit_one_cycle(5, 5e-3)
 ```
+
+As we can see from the training results, while training loss reduces with each epoch, the validation loss increases, indicating overfitting. It is obvious that the model is not generalizing well to unseen data. 
+To tackle with this issue, we can apply regularization techniques such as ``weight decay``.
+
+::: {.callout-note}
+## Regularization Techniques
+- **Weight Decay**: This technique adds a penalty on the size of the weights to the loss function, discouraging overly complex models.
+- **Dropout**: Randomly dropping units during training to prevent co-adaptation.
+- **Early Stopping**: Monitoring validation loss and stopping training when it starts to increase.
+:::
+
+In `Weight Decay`, limiting our weights from growing too much is going to hinder the training of the model, but it will yield a state where it generalizes better. The updates of parameters are as follows: `parameters.grad += wd * 2 * parameter`
+
+```{python}
+#| echo: true
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
+model = DotProductBias(n_users, n_movies, n_factors=50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3, wd=0.1)
+```
+
+As we can see, the training is much better since overfitting has been reduced.
+
 # Conclusion
 In this blog, 
 
