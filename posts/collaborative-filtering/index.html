@@ -290,7 +290,7 @@ window.Quarto = {
 <section id="finding-similar-users-with-similarity-scores" class="level3">
 <h3 class="anchored" data-anchor-id="finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</h3>
 <p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
-<div id="fdc43b7f" class="cell" data-fig-height="4" data-execution_count="1">
+<div id="fdc43b7f" class="cell" data-fig-height="4" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -419,7 +419,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <h2 class="anchored" data-anchor-id="model-training">Model Training</h2>
 <p>To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the <em>dot product</em> between the latent vectors.</p>
 <p>Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.</p>
-<div id="de379e18" class="cell" data-cache="true" data-message="false" data-execution_count="3">
+<div id="de379e18" class="cell" data-cache="true" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DotProductBias(Module):</span>
@@ -439,7 +439,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>or</p>
-<div id="d12d4281" class="cell" data-cache="true" data-message="false" data-execution_count="4">
+<div id="d12d4281" class="cell" data-cache="true" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CollabNN(Module):</span>
@@ -461,7 +461,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>Then, we can train the model by first creating data batches using DataLoader. We will use the <code>CollabDataLoaders</code> class from FastAI to create our data loaders.</p>
-<div id="7fc999b6" class="cell" data-cache="true" data-message="false" data-execution_count="5">
+<div id="7fc999b6" class="cell" data-cache="true" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> CollabDataLoaders.from_df(ratings, item_name<span class="op">=</span><span class="st">'title'</span>, bs<span class="op">=</span><span class="dv">64</span>)</span>
@@ -470,7 +470,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>Let try to train the model which is based on <code>DotProductBias</code> in 5 epochs with learning rate of 0.005.</p>
-<div id="83635779" class="cell" data-cache="true" data-message="false" data-execution_count="6">
+<div id="83635779" class="cell" data-cache="true" data-message="false" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
@@ -559,7 +559,7 @@ Regularization Techniques
 </div>
 </div>
 <p>In <code>Weight Decay</code>, limiting our weights from growing too much is going to hinder the training of the model, but it will yield a state where it generalizes better. The updates of parameters are as follows: <code>parameters.grad += wd * 2 * parameter</code></p>
-<div id="e1a3d082" class="cell" data-cache="true" data-message="false" data-execution_count="7">
+<div id="e1a3d082" class="cell" data-cache="true" data-message="false" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
@@ -634,7 +634,7 @@ Regularization Techniques
 <section id="model-testing" class="level2">
 <h2 class="anchored" data-anchor-id="model-testing">Model Testing</h2>
 <p>Once the model has been trained, we can use that model to find the <code>similarity</code> between movies. For example, We can use this to find the most similar movie to <code>Silence of the Lambs</code> using <code>cosine similarity</code>:</p>
-<div id="100f83eb" class="cell" data-cache="true" data-message="false" data-execution_count="8">
+<div id="100f83eb" class="cell" data-cache="true" data-message="false" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> collab_learner(dls, n_factors<span class="op">=</span><span class="dv">50</span>, y_range<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">5.5</span>))</span>
@@ -686,11 +686,12 @@ Key Technical Learnings
 <ul>
 <li><p>Hybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality</p></li>
 <li><p>Advanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior</p></li>
+<li><p>Cold Start Problem: Collaborative filtering can lead to some problems like cold start for new items that are added to the list. Until someone rates them, they don’t get recommended.</p></li>
 </ul>
 </section>
 <section id="final-thoughts" class="level2">
 <h2 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h2>
-<p>Collaborative filtering remains a cornerstone of modern recommendation systems despite challenges like data sparsity and cold-start problems. As demonstrated in our implementation, even relatively simple models can produce meaningful recommendations when properly trained. The field continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions.</p>
+<p>Collaborative filtering continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions. For practical applications, the balance between model complexity, computational efficiency, and recommendation quality remains crucial. As recommendation systems become more integrated into our digital experiences, the techniques explored in this blog will continue to play a vital role in connecting users with relevant content.</p>
 
 
 </section>

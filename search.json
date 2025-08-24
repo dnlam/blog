@@ -137,14 +137,14 @@
     "href": "posts/collaborative-filtering/index.html#future-directions",
     "title": "Recommendation System with Collaborative Filtering",
     "section": "Future Directions",
-    "text": "Future Directions\n\nHybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality\nAdvanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior"
+    "text": "Future Directions\n\nHybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality\nAdvanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior\nCold Start Problem: Collaborative filtering can lead to some problems like cold start for new items that are added to the list. Until someone rates them, they don’t get recommended."
   },
   {
     "objectID": "posts/collaborative-filtering/index.html#final-thoughts",
     "href": "posts/collaborative-filtering/index.html#final-thoughts",
     "title": "Recommendation System with Collaborative Filtering",
     "section": "Final Thoughts",
-    "text": "Final Thoughts\nCollaborative filtering remains a cornerstone of modern recommendation systems despite challenges like data sparsity and cold-start problems. As demonstrated in our implementation, even relatively simple models can produce meaningful recommendations when properly trained. The field continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions."
+    "text": "Final Thoughts\nCollaborative filtering continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions. For practical applications, the balance between model complexity, computational efficiency, and recommendation quality remains crucial. As recommendation systems become more integrated into our digital experiences, the techniques explored in this blog will continue to play a vital role in connecting users with relevant content."
   },
   {
     "objectID": "posts/collaborative-filtering/index.html#footnotes",
