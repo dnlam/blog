@@ -378,9 +378,10 @@ In this blog, we explored collaborative filtering as a powerful recommendation s
 
 - Advanced Neural Architectures: Exploring transformer-based models for capturing sequential patterns in user behavior
 
+- Cold Start Problem: Collaborative filtering can lead to some problems like cold start for new items that are added to the list. Until someone rates them, they don’t get recommended.
 
 
 ## Final Thoughts
-Collaborative filtering remains a cornerstone of modern recommendation systems despite challenges like data sparsity and cold-start problems. As demonstrated in our implementation, even relatively simple models can produce meaningful recommendations when properly trained. The field continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions. 
+Collaborative filtering continues to evolve with deep learning approaches that capture increasingly complex patterns in user-item interactions. For practical applications, the balance between model complexity, computational efficiency, and recommendation quality remains crucial. As recommendation systems become more integrated into our digital experiences, the techniques explored in this blog will continue to play a vital role in connecting users with relevant content.
 
 
