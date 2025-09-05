@@ -1,26 +1,26 @@
 ---
-# title: "Convolution Neural Networks for classifications"
-# # author: "Lam Dinh"
-# date: "2022-03-29"
-# categories: [NLP, language model, transfer learning, code]
-# image: "NLP.png"
-# pdf-engine: pdflatex
-# format:
-#   html:
-#     code-fold: true
-#     fig-cap-location: bottom
-#     tbl-cap-location: top
-#     toc: true
-#     toc-depth: 3
-#     toc-location: left
-#     toc-title: "Contents"
-# crossref:
-#   fig-title: "Figure"
-#   eq-title: "Equation"
-#   tbl-title: "Table"
-# jupyter: python3
-# execute: 
-#   cache: true
-#   freeze: auto
+title: "Building modern Convolution Neural Networks"
+# author: "Lam Dinh"
+date: "2022-05-10"
+categories: [CNN, code]
+image: "NLP.png"
+pdf-engine: pdflatex
+format:
+  html:
+    code-fold: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: "Contents"
+crossref:
+  fig-title: "Figure"
+  eq-title: "Equation"
+  tbl-title: "Table"
+jupyter: python3
+execute: 
+  cache: true
+  freeze: auto
 ---
 
