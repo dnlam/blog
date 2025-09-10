@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.34">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-6ebe3c5a90dca8b9f7c106914dcbe581.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-1688d9e1630bd0bcb1ec498477fd8fb7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -285,7 +285,7 @@ Three-Step Transfer Learning Process
 <section id="tokenization" class="level3">
 <h3 class="anchored" data-anchor-id="tokenization">Tokenization</h3>
 <p>Basically, <em>tokenization</em> converts the text into list of words. Firstly, we will grab our <em>IMDb dataset</em> and try out the tokenizer with all the text files.</p>
-<div id="e7a0a5a9" class="cell" data-message="false" data-execution_count="2">
+<div id="4b09d33f" class="cell" data-message="false" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
@@ -293,14 +293,14 @@ Three-Step Transfer Learning Process
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># path.ls()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="13e0fae8" class="cell" data-message="false" data-execution_count="3">
+<div id="5130dcea" class="cell" data-message="false" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> get_text_files(path,folders<span class="op">=</span>[<span class="st">'train'</span>,<span class="st">'test'</span>,<span class="st">'unsup'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The default English word tokenizer that FastAI used is called <code>SpaCy</code> which uses a sophisticated rules engine for particular words and URLs. Rather than directly using <code>SpacyTokenizer</code>, we are going to use <code>WordTokenizer</code> which always points to fastai’s current default word tokenizer.</p>
-<div id="3df18bfe" class="cell" data-message="false" data-execution_count="4">
+<div id="0adf3805" class="cell" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> files[<span class="dv">0</span>].<span class="bu">open</span>().read()</span>
@@ -311,14 +311,14 @@ Three-Step Transfer Learning Process
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(toks,<span class="dv">30</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>(#365) ['While','the','premise','of','the','film','is','pretty','lame','(','Ollie','is','diagnosed','with','"','hornophobia','"',')',',','the','film','is','an','amiable','and','enjoyable','little','flick','.','It'...]</code></pre>
+<pre><code>(#230) ['Cinematically',',','this','film','stinks','.','So','does','a','lot','of','the','acting','.','But','I','&lt;','br','/&gt;&lt;br',"/&gt;don't",'care','.','If','there','is','a','strong','representation','of','what'...]</code></pre>
 </div>
 </div>
 <section id="sub-word-tokenization" class="level4">
 <h4 class="anchored" data-anchor-id="sub-word-tokenization">Sub-word tokenization</h4>
 <p>In additions to word tokenizer, sub-word tokenizer is really useful for languages which the spaces are not necessary for separations of components in a sentence (e.g: Chinese). To handle this, we will do 2 steps: - Analyze a corpus of documents to find the most commonly occurring groups of letters which form the vocab - Tokenize the corpus using this vocab of sub-word units</p>
 <p>For example, we will first look into 2000 movie reviews:</p>
-<div id="82ed3d54" class="cell" data-message="false" data-execution_count="5">
+<div id="0c0d2a37" class="cell" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(o.<span class="bu">open</span>().read() <span class="cf">for</span> o <span class="kw">in</span> files[:<span class="dv">2000</span>])</span>
@@ -329,7 +329,7 @@ Three-Step Transfer Learning Process
 </details>
 </div>
 <p>Then, the long underscore is when we replace the space and we can know where the sentences actually start and stop.</p>
-<div id="86aecee7" class="cell" data-message="false" data-execution_count="6">
+<div id="ff245f64" class="cell" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subword(<span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -356,7 +356,7 @@ Three-Step Transfer Learning Process
 
 </div>
 <div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>'▁Whil e ▁the ▁premise ▁of ▁the ▁film ▁is ▁pretty ▁lame ▁( O ll ie ▁is ▁diagnos ed ▁with ▁" hor no pho b ia ") , ▁the ▁film ▁is ▁an ▁a mi able ▁and ▁enjoyable ▁little ▁flick . ▁It \''</code></pre>
+<pre><code>"▁Cinema t ically , ▁this ▁film ▁st ink s . ▁So ▁does ▁a ▁lot ▁of ▁the ▁acting . ▁But ▁I &lt; br ▁/&gt; &lt; br ▁/&gt; don ' t ▁care . ▁If ▁there ▁is ▁a ▁strong ▁representation ▁of ▁what ▁the"</code></pre>
 </div>
 </div>
 <p>If we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence. So, there is a compromise to take into account when choosing sub-word vocab: A larger vocab means more fewer tokens per sentence which means faster training, less memory, less state for the model to remember, but it comes to the downside of larger embedding matrix and requiring more data to learn.</p>
@@ -365,7 +365,7 @@ Three-Step Transfer Learning Process
 <section id="numericalization" class="level3">
 <h3 class="anchored" data-anchor-id="numericalization">Numericalization</h3>
 <p>In order to numericalize the tokens, we need to call <code>setup</code> first to create the vocab.</p>
-<div id="e9bc3170" class="cell" data-message="false" data-execution_count="7">
+<div id="0de39657" class="cell" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
@@ -376,28 +376,28 @@ Three-Step Transfer Learning Process
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab,<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>"(#2976) ['xxunk','xxpad','xxbos','xxeos','xxfld','xxrep','xxwrep','xxup','xxmaj','the',',','.','and','a','of','to','is','in','it','i'...]"</code></pre>
+<pre><code>"(#2952) ['xxunk','xxpad','xxbos','xxeos','xxfld','xxrep','xxwrep','xxup','xxmaj','the','.',',','and','a','of','to','is','in','it','i'...]"</code></pre>
 </div>
 </div>
 <p>The results return our rule tokens first, and it is followed by word appearances, in frequency order. Once we created our Numerical object, we can use it as if it were a function.</p>
-<div id="ed391997" class="cell" data-execution_count="8">
+<div id="5bf5b1e9" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks)[:<span class="dv">20</span>]</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>nums</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>TensorText([   0,    9,  938,   14,    9,   30,   16,  173, 1227,   35,    0,
-              16,    0,   27,   23,    0,   23,   33,   10,    9])</code></pre>
+<pre><code>TensorText([  0,  11,  21,  25,   0,  10,   0,  83,  13, 147,  14,   9, 154,
+             10,   0,   0,   0,   0,   0,   0])</code></pre>
 </div>
 </div>
-<div id="73da4d1c" class="cell" data-execution_count="9">
+<div id="ee50fc7b" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">' '</span>.join(num.vocab[o] <span class="cf">for</span> o <span class="kw">in</span> nums)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>'xxunk the premise of the film is pretty lame ( xxunk is xxunk with " xxunk " ) , the'</code></pre>
+<pre><code>'xxunk , this film xxunk . xxunk does a lot of the acting . xxunk xxunk xxunk xxunk xxunk xxunk'</code></pre>
 </div>
 </div>
 <p>Now, we have already had numerical data, we need to put them in batches for our model.</p>
@@ -407,7 +407,7 @@ Three-Step Transfer Learning Process
 <p>Recalling the batch creation for the images when we have to reshape all the images to be same size before grouping them together in a single tensor for the efficient calculation purposes. It is a little bit different when dealing with texts because it is not desirable to resize the text length. Also, we want the model read texts in order so that it can efficiently predict what the next word is. This suggests that each new batch should begin precisely where the previous one left off.</p>
 <p>So, the text stream will be cut into a certain number of batches (with batch size) with preserving the order of the tokens. Because we want the model to read continuous rows of the text.</p>
 <p>To recap, at every epoch, we shuffle our collection of documents and concatenate them into a stream of tokens. Then, that stream will be cut into a batch of fixed size consecutive mini stream. The model will read these mini streams in order and it will produce the same activation.</p>
-<div id="e9b9d42b" class="cell" data-execution_count="10">
+<div id="2b3701c2" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nums300 <span class="op">=</span> toks300.<span class="bu">map</span>(num)</span>
@@ -425,7 +425,7 @@ Three-Step Transfer Learning Process
 <section id="create-a-language-model-using-datablock" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-language-model-using-datablock">Create a language model using DataBlock</h2>
 <p>By default, <code>fastai</code> handles tokenization and numericalization automatically when <code>TextBlock</code> is passed to <code>DataBlock</code>.</p>
-<div id="90b5ab90" class="cell" data-execution_count="11">
+<div id="367581d2" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_imdb <span class="op">=</span> partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>, <span class="st">'unsup'</span>])</span>
@@ -440,7 +440,7 @@ Three-Step Transfer Learning Process
 <section id="fine-tuning-the-language-model" class="level1">
 <h1>Fine-tuning the language model</h1>
 <p>In this step, we are going to create a learner which is going to learn and predict the next word of a <code>movie review</code>. It will take the data from data loader, pretrained model (<code>AWD_LSTM</code>), apply dropout technique and take accuracy as well as perplexity metrics into account. Particularly, <code>accuracy</code> metric is used to evaluate how the correctness when the model tries to predict the next word, while <code>perplexity</code> metric is used to track the (exponential) value of cross-entropy loss.</p>
-<div id="bd4a4a3e" class="cell" data-execution_count="12">
+<div id="3c595637" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> language_model_learner(</span>
@@ -449,7 +449,7 @@ Three-Step Transfer Learning Process
 </details>
 </div>
 <p>Then, we will perform intermediate model training by fitting the model in one training cycle.</p>
-<div id="510ea153" class="cell" data-cache="true" data-message="false" data-execution_count="13">
+<div id="642a31e9" class="cell" data-cache="true" data-message="false" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>,<span class="fl">2e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -487,29 +487,32 @@ Three-Step Transfer Learning Process
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>4.022009</td>
-<td>3.903203</td>
-<td>0.300614</td>
-<td>49.560917</td>
-<td>2:10:54</td>
+<td>4.019818</td>
+<td>3.927234</td>
+<td>0.298552</td>
+<td>50.766361</td>
+<td>11:27</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>After few minutes of training, we got the prediction accuracy which is around 29-30 percent. In order to reuse the pre-trained model, we can easily save the model with PyTorch. In this case, we are going to save only learnable parameters (i.e., weight and bias of a model via <code>state_dict</code>) and the updated parameters after one epoch training will be stored at <code>learn.path/'models'/'one_epoch_training_torch.pth'</code>.</p>
-<div id="2ab141ff" class="cell" data-cache="true" data-execution_count="14">
+<div id="2372e46e" class="cell" data-cache="true" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Save with FastAI</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.save('one_epoch_training')</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>learn.save(<span class="st">'one_epoch_training'</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Save with PyTorch</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>model_save_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>torch.save(learn.model.state_dict(), model_save_path)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import torch</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># model_save_path = learn.path/'models'/'one_epoch_training_torch.pth'</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># torch.save(learn.model.state_dict(), model_save_path)</span></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Model saved to: {model_save_path}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>Path('/home/ec2-user/.fastai/data/imdb/models/one_epoch_training.pth')</code></pre>
+</div>
 </div>
 <p>Once the trainable parameters are stored, we can later load those parameter to the compatible model for further training</p>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -525,30 +528,30 @@ Implementation Note: PyTorch Model Loading
 <p>When using <code>torch.load()</code>, be cautious about the <code>weights_only</code> parameter. For security reasons, consider using <code>weights_only=True</code> when loading models from untrusted sources to prevent execution of arbitrary code.</p>
 </div>
 </div>
-<div id="c9a40d4d" class="cell" data-cache="true" data-execution_count="15">
+<div id="59a4a472" class="cell" data-cache="true" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Use FastAI's load method</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.load('one_epoch_training', strict=False)</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Use PyTorch to load the saved model</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>model_load_path <span class="op">=</span> learn.path<span class="op">/</span><span class="st">'models'</span><span class="op">/</span><span class="st">'one_epoch_training_torch.pth'</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>state_dict <span class="op">=</span> torch.load(model_load_path, weights_only<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>learn.model.load_state_dict(state_dict, strict<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Model loaded from: {model_load_path}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Use FastAI's load method</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>learn.load(<span class="st">'one_epoch_training'</span>, strict<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Use PyTorch to load the saved model</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import torch</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># model_load_path = learn.path/'models'/'one_epoch_training_torch.pth'</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># state_dict = torch.load(model_load_path, weights_only=False)</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.model.load_state_dict(state_dict, strict=False)</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Model loaded from: {model_load_path}")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>&lt;All keys matched successfully&gt;</code></pre>
+<pre><code>&lt;fastai.text.learner.LMLearner at 0x7f17b1873750&gt;</code></pre>
 </div>
 </div>
 <p>After loading the pre-saved model, we can unfreeze it and train it for few more epochs. Then, let’s see the improvement of the accuracy.</p>
-<div id="64cfa83e" class="cell" data-cache="true" data-message="false" data-execution_count="16">
+<div id="49af7509" class="cell" data-cache="true" data-message="false" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">10</span>,<span class="fl">2e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">10</span>,<span class="fl">2e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -583,107 +586,107 @@ Implementation Note: PyTorch Model Loading
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>3.760638</td>
-<td>3.760075</td>
-<td>0.316936</td>
-<td>42.951653</td>
-<td>2:07:02</td>
+<td>3.782169</td>
+<td>3.788476</td>
+<td>0.315449</td>
+<td>44.188984</td>
+<td>12:10</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>3.703956</td>
-<td>3.700609</td>
-<td>0.323304</td>
-<td>40.471931</td>
-<td>2:08:32</td>
+<td>3.723952</td>
+<td>3.727253</td>
+<td>0.322712</td>
+<td>41.564770</td>
+<td>12:07</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>3.631842</td>
-<td>3.652532</td>
-<td>0.329091</td>
-<td>38.572201</td>
-<td>2:06:09</td>
+<td>3.642733</td>
+<td>3.674777</td>
+<td>0.328581</td>
+<td>39.439842</td>
+<td>12:13</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>3.554917</td>
-<td>3.620509</td>
-<td>0.332665</td>
-<td>37.356575</td>
-<td>2:09:31</td>
+<td>3.596529</td>
+<td>3.642143</td>
+<td>0.332389</td>
+<td>38.173573</td>
+<td>12:10</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>3.499525</td>
-<td>3.599286</td>
-<td>0.335780</td>
-<td>36.572124</td>
-<td>2:06:44</td>
+<td>3.523266</td>
+<td>3.617251</td>
+<td>0.335581</td>
+<td>37.235065</td>
+<td>12:07</td>
 </tr>
 <tr class="even">
 <td>5</td>
-<td>3.431938</td>
-<td>3.582833</td>
-<td>0.338105</td>
-<td>35.975315</td>
-<td>2:05:43</td>
+<td>3.462589</td>
+<td>3.600153</td>
+<td>0.337624</td>
+<td>36.603844</td>
+<td>12:09</td>
 </tr>
 <tr class="odd">
 <td>6</td>
-<td>3.355997</td>
-<td>3.576728</td>
-<td>0.339651</td>
-<td>35.756351</td>
-<td>2:08:20</td>
+<td>3.407445</td>
+<td>3.587515</td>
+<td>0.339506</td>
+<td>36.144157</td>
+<td>12:11</td>
 </tr>
 <tr class="even">
 <td>7</td>
-<td>3.303835</td>
-<td>3.572320</td>
-<td>0.340352</td>
-<td>35.599072</td>
-<td>2:21:43</td>
+<td>3.355997</td>
+<td>3.582915</td>
+<td>0.340206</td>
+<td>35.978275</td>
+<td>12:11</td>
 </tr>
 <tr class="odd">
 <td>8</td>
-<td>3.248072</td>
-<td>3.575607</td>
-<td>0.340495</td>
-<td>35.716297</td>
-<td>2:25:55</td>
+<td>3.302955</td>
+<td>3.582744</td>
+<td>0.340567</td>
+<td>35.972118</td>
+<td>12:09</td>
 </tr>
 <tr class="even">
 <td>9</td>
-<td>3.223243</td>
-<td>3.580205</td>
-<td>0.340375</td>
-<td>35.880901</td>
-<td>2:15:01</td>
+<td>3.270668</td>
+<td>3.584618</td>
+<td>0.340502</td>
+<td>36.039574</td>
+<td>12:09</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>As we can see from the training process, the accuracy has improved progressively. At the end of ten cycle training, the accuracy has increased to around 35 percent. To perform model finetuning, we save the model parameters except the last activation function layer. To do that, we can save it with <code>save_encoder</code></p>
-<div id="1e5b6014" class="cell" data-cache="true" data-execution_count="17">
+<div id="d79447d3" class="cell" data-cache="true" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn.save_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>learn.save_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In this step, we have fine tuned the language model. Now, we will fine tune this language model using the IMDb sentiment labels.</p>
 <p>Although the model is pre-designed for next word prediction, we can also use this model to generate texts. For example, we can self-create a sentence with some words and we parses this sentence to the model to generate a new sentence which has one word longer than the parsed sentence. Leveraging this capability, we are going to create 40 new words from that randomized content.</p>
-<div id="15d0f41a" class="cell" data-message="false" data-execution_count="18">
+<div id="3dc42db4" class="cell" data-message="false" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>TEXT <span class="op">=</span> <span class="st">"I liked this movie so"</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>N_WORDS <span class="op">=</span> <span class="dv">40</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>N_SENTENCES <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> [learn.predict(TEXT, N_WORDS, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(N_SENTENCES)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>TEXT <span class="op">=</span> <span class="st">"I liked this movie so"</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>N_WORDS <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>N_SENTENCES <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> [learn.predict(TEXT, N_WORDS, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(N_SENTENCES)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -729,29 +732,31 @@ Implementation Note: PyTorch Model Loading
 </div>
 </div>
 <p>Let’s see the generation of new inventing words</p>
-<div id="6efcd3a4" class="cell" data-execution_count="19">
+<div id="2d0d783b" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(preds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(preds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>i liked this movie so much . The characters were believable , the story was believable and entertaining . i will never forget it . Everyone i see this movie has a great time watching it . It is a GREAT
-i liked this movie so much . Although it is not a " straight to DVD " movie , it is definitely worth checking out . If you are looking for a good comedy , this is not for you .</code></pre>
+<pre><code>i liked this movie so much when i saw it on the whim of DVD . i was expecting something like The Kentucky Fried Movie . i very much enjoyed the plot and was pretty good . 
+
+ i am
+i liked this movie so much , i laughed at the pretty poor acting , the lame plot , the silly plot , and the cheesy special effects . i do n't know how i can remember one movie that made this like this .</code></pre>
 </div>
 </div>
 </section>
 <section id="create-a-classification-model-from-fine-tuned-model" class="level1">
 <h1>Create a classification model from fine-tuned model</h1>
 <p>Previously, we built a language model to predict the next word of a document given the input text. Now, we are going to move to the classifier which predicts the sentiment of a document.</p>
-<div id="5d27eb44" class="cell" data-cache="true" data-execution_count="20">
+<div id="60363eb1" class="cell" data-cache="true" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dls_clas <span class="op">=</span> DataBlock(</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    blocks<span class="op">=</span>(TextBlock.from_folder(path, vocab<span class="op">=</span>dls_lm.vocab),CategoryBlock),</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    get_y <span class="op">=</span> parent_label,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    get_items<span class="op">=</span>partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>]),</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    splitter<span class="op">=</span>GrandparentSplitter(valid_name<span class="op">=</span><span class="st">'test'</span>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>).dataloaders(path, path<span class="op">=</span>path, bs<span class="op">=</span><span class="dv">128</span>, seq_len<span class="op">=</span><span class="dv">72</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dls_clas <span class="op">=</span> DataBlock(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    blocks<span class="op">=</span>(TextBlock.from_folder(path, vocab<span class="op">=</span>dls_lm.vocab),CategoryBlock),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    get_y <span class="op">=</span> parent_label,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    get_items<span class="op">=</span>partial(get_text_files, folders<span class="op">=</span>[<span class="st">'train'</span>, <span class="st">'test'</span>]),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    splitter<span class="op">=</span>GrandparentSplitter(valid_name<span class="op">=</span><span class="st">'test'</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>).dataloaders(path, path<span class="op">=</span>path, bs<span class="op">=</span><span class="dv">128</span>, seq_len<span class="op">=</span><span class="dv">72</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In the <code>TextBlock.from_folder()</code> function, we do not set <code>is_lm=True</code> because we tell <code>TextBlock</code> that we had regular labelled data rather than using next word as a label as we did for prediction.</p>
@@ -771,28 +776,28 @@ Create training batch for sentiment classification
 <section id="fine-tuning-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="fine-tuning-the-model">Fine-tuning the model</h2>
 <p>so far, we have <code>finetuned</code> encoder, which stores the trained parameter weights from previous step. Now, we are going to create a learner that load the <code>finetuned</code> encoder for fine-tuning. Then, we are going to fine-tune it over several epoch.</p>
-<div id="6d56cda1" class="cell" data-cache="true" data-execution_count="21">
+<div id="773882d9" class="cell" data-cache="true" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> text_classifier_learner(dls_clas, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                                metrics<span class="op">=</span>accuracy).to_fp16()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> text_classifier_learner(dls_clas, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                                metrics<span class="op">=</span>accuracy).to_fp16()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="8c8f6570" class="cell" data-cache="true" data-execution_count="22">
+<div id="c78f8959" class="cell" data-cache="true" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>learn.load_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>learn.load_encoder(<span class="st">'finetuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="21">
-<pre><code>&lt;fastai.text.learner.TextLearner at 0x7f1c55cccbf0&gt;</code></pre>
+<pre><code>&lt;fastai.text.learner.TextLearner at 0x7f17aa2c3010&gt;</code></pre>
 </div>
 </div>
 <p>As we are training a classification task, we only need to unfreeze several last layers of the encoder instead of unfreezing all the layers. By fitting the last layers first, we can adapt the model to the specific task without losing the general language understanding captured in the earlier layers. The result show that we achieve around 93 % accuracy, just with one cycle fitting.</p>
-<div id="7cceeabf" class="cell" data-cache="true" data-message="false" data-execution_count="23">
+<div id="d3ad4311" class="cell" data-cache="true" data-message="false" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">2</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">1e-2</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">2</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">1e-2</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -826,21 +831,21 @@ Create training batch for sentiment classification
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.219989</td>
-<td>0.168302</td>
-<td>0.937000</td>
-<td>09:15</td>
+<td>0.232339</td>
+<td>0.169032</td>
+<td>0.935000</td>
+<td>00:29</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>We can also further unfreeze more layers and do training to see if the accuracy improves or not. It shows that the accuracy results have improved from 93% to approximately 94%.</p>
-<div id="f276ba1f" class="cell" data-cache="true" data-message="false" data-execution_count="24">
+<div id="de3391d9" class="cell" data-cache="true" data-message="false" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">3</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">5e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">5e-3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learn.freeze_to(<span class="op">-</span><span class="dv">3</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">5e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">5e-3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -874,21 +879,21 @@ Create training batch for sentiment classification
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.198631</td>
-<td>0.152882</td>
-<td>0.942440</td>
-<td>11:43</td>
+<td>0.204471</td>
+<td>0.154350</td>
+<td>0.941800</td>
+<td>00:38</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>As we can observe, the accuracy has improved with the unfreezing of more layers. Now, we unfreeze all layers and do some training. The accuracy results are further improved to approximately 95%.</p>
-<div id="a54a1a91" class="cell" data-cache="true" data-message="false" data-execution_count="25">
+<div id="94b8f8bf" class="cell" data-cache="true" data-message="false" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="bu">slice</span>(<span class="fl">1e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="bu">slice</span>(<span class="fl">1e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -922,17 +927,17 @@ Create training batch for sentiment classification
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.160233</td>
-<td>0.147829</td>
-<td>0.945160</td>
-<td>13:34</td>
+<td>0.172045</td>
+<td>0.146765</td>
+<td>0.945280</td>
+<td>00:50</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.155604</td>
-<td>0.143441</td>
-<td>0.947920</td>
-<td>13:35</td>
+<td>0.154358</td>
+<td>0.146338</td>
+<td>0.945200</td>
+<td>00:50</td>
 </tr>
 </tbody>
 </table>

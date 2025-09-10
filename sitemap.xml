@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dnlam.github.io/blog/index.html</loc>
-    <lastmod>2025-08-07T10:32:05.514Z</lastmod>
-  </url>
-  <url>
     <loc>https://dnlam.github.io/blog/posts/natural-language-processing/index.html</loc>
-    <lastmod>2025-08-22T19:56:31.557Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dnlam.github.io/blog/about.html</loc>
-    <lastmod>2025-08-07T10:32:05.514Z</lastmod>
+    <lastmod>2025-09-10T15:10:15.259Z</lastmod>
   </url>
   <url>
     <loc>https://dnlam.github.io/blog/posts/collaborative-filtering/index.html</loc>
-    <lastmod>2025-08-24T10:32:44.862Z</lastmod>
+    <lastmod>2025-09-10T13:27:25.814Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dnlam.github.io/blog/about.html</loc>
+    <lastmod>2025-09-10T13:27:25.804Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dnlam.github.io/blog/index.html</loc>
+    <lastmod>2025-09-10T13:27:25.804Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dnlam.github.io/blog/posts/convolution-neural-networks/index.html</loc>
+    <lastmod>2025-09-10T16:22:58.616Z</lastmod>
   </url>
 </urlset>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.34">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-6ebe3c5a90dca8b9f7c106914dcbe581.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-1688d9e1630bd0bcb1ec498477fd8fb7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -290,7 +290,7 @@ window.Quarto = {
 <section id="finding-similar-users-with-similarity-scores" class="level3">
 <h3 class="anchored" data-anchor-id="finding-similar-users-with-similarity-scores">Finding similar users with similarity scores</h3>
 <p>For example, there are 4 user <span class="math inline">\(u_1, u_2, u_3, u_4\)</span> <span class="math inline">\(\in \mathbf{U}\)</span> have rated two movies <span class="math inline">\(i_1, i_2\)</span> <span class="math inline">\(\in \mathbf{I}\)</span> as follows:</p>
-<div id="fdc43b7f" class="cell" data-fig-height="4" data-execution_count="2">
+<div id="7b52345a" class="cell" data-fig-height="4" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -419,7 +419,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <h2 class="anchored" data-anchor-id="model-training">Model Training</h2>
 <p>To calculate the result of each user-item interaction, we look for the index of the item in the item latent factor matrix and the index of user in the user latent factor matrix. Then, we perform the <em>dot product</em> between the latent vectors.</p>
 <p>Furthermore, to capture user positive/negative feedback in their recommendations than others, and some movies are just plain better or worse than others, we can add bias terms for users and items.</p>
-<div id="de379e18" class="cell" data-cache="true" data-message="false" data-execution_count="4">
+<div id="d6ce9e4c" class="cell" data-cache="true" data-message="false" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DotProductBias(Module):</span>
@@ -439,7 +439,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>or</p>
-<div id="d12d4281" class="cell" data-cache="true" data-message="false" data-execution_count="5">
+<div id="a09874c8" class="cell" data-cache="true" data-message="false" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CollabNN(Module):</span>
@@ -461,7 +461,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>Then, we can train the model by first creating data batches using DataLoader. We will use the <code>CollabDataLoaders</code> class from FastAI to create our data loaders.</p>
-<div id="7fc999b6" class="cell" data-cache="true" data-message="false" data-execution_count="6">
+<div id="b0067c45" class="cell" data-cache="true" data-message="false" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> CollabDataLoaders.from_df(ratings, item_name<span class="op">=</span><span class="st">'title'</span>, bs<span class="op">=</span><span class="dv">64</span>)</span>
@@ -470,7 +470,7 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 </details>
 </div>
 <p>Let try to train the model which is based on <code>DotProductBias</code> in 5 epochs with learning rate of 0.005.</p>
-<div id="83635779" class="cell" data-cache="true" data-message="false" data-execution_count="7">
+<div id="e77c2a7f" class="cell" data-cache="true" data-message="false" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
@@ -508,33 +508,33 @@ Figure&nbsp;3: Initialization of random parameters for user and item embeddings
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.839644</td>
-<td>0.939991</td>
-<td>00:06</td>
+<td>0.832946</td>
+<td>0.948861</td>
+<td>00:04</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.560127</td>
-<td>0.917238</td>
-<td>00:05</td>
+<td>0.584821</td>
+<td>0.928112</td>
+<td>00:04</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.418118</td>
-<td>0.943585</td>
-<td>00:05</td>
+<td>0.407661</td>
+<td>0.949344</td>
+<td>00:04</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.316448</td>
-<td>0.956628</td>
-<td>00:05</td>
+<td>0.320535</td>
+<td>0.960816</td>
+<td>00:04</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.302514</td>
-<td>0.956912</td>
-<td>00:05</td>
+<td>0.288325</td>
+<td>0.960388</td>
+<td>00:04</td>
 </tr>
 </tbody>
 </table>
@@ -559,7 +559,7 @@ Regularization Techniques
 </div>
 </div>
 <p>In <code>Weight Decay</code>, limiting our weights from growing too much is going to hinder the training of the model, but it will yield a state where it generalizes better. The updates of parameters are as follows: <code>parameters.grad += wd * 2 * parameter</code></p>
-<div id="e1a3d082" class="cell" data-cache="true" data-message="false" data-execution_count="8">
+<div id="e9dd3711" class="cell" data-cache="true" data-message="false" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DotProductBias(n_users, n_movies, n_factors<span class="op">=</span><span class="dv">50</span>)</span>
@@ -597,33 +597,33 @@ Regularization Techniques
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.931131</td>
-<td>0.954593</td>
-<td>00:05</td>
+<td>0.905391</td>
+<td>0.980552</td>
+<td>00:04</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.683145</td>
-<td>0.906108</td>
-<td>00:05</td>
+<td>0.680553</td>
+<td>0.903055</td>
+<td>00:04</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.518805</td>
-<td>0.876689</td>
-<td>00:05</td>
+<td>0.508638</td>
+<td>0.884937</td>
+<td>00:04</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.450820</td>
-<td>0.862776</td>
-<td>00:05</td>
+<td>0.458852</td>
+<td>0.867883</td>
+<td>00:04</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.434238</td>
-<td>0.857502</td>
-<td>00:05</td>
+<td>0.449187</td>
+<td>0.862520</td>
+<td>00:04</td>
 </tr>
 </tbody>
 </table>
@@ -634,7 +634,7 @@ Regularization Techniques
 <section id="model-testing" class="level2">
 <h2 class="anchored" data-anchor-id="model-testing">Model Testing</h2>
 <p>Once the model has been trained, we can use that model to find the <code>similarity</code> between movies. For example, We can use this to find the most similar movie to <code>Silence of the Lambs</code> using <code>cosine similarity</code>:</p>
-<div id="100f83eb" class="cell" data-cache="true" data-message="false" data-execution_count="9">
+<div id="8bb67d18" class="cell" data-cache="true" data-message="false" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> collab_learner(dls, n_factors<span class="op">=</span><span class="dv">50</span>, y_range<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">5.5</span>))</span>
@@ -645,7 +645,7 @@ Regularization Techniques
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>dls.classes[<span class="st">'title'</span>][idx]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>'Arsenic and Old Lace (1944)'</code></pre>
+<pre><code>'Ayn Rand: A Sense of Life (1997)'</code></pre>
 </div>
 </div>
 </section>
