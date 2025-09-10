@@ -23,15 +23,32 @@ execute:
   cache: true
   freeze: auto
 ---
+```{python}
+#| echo: false
+#| output: false
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
+from fastai.vision.all import *
+from fastai.vision.models import *
+
+path_imagenette=untar_data(URLs.IMAGENETTE)
+path_mnist=untar_data(URLs.MNIST_SAMPLE)
+```
 
 # Overview
 
-```{python}
-
-```
+In this blog post, we will explore the architecture of Convolution Neural Networks (CNN) and how they have been used to achieve state-of-the-art performance in image recognition tasks. We will also discuss some of the key components of CNNs, such as convolution layers, pooling layers, and activation functions. Finally, we will look at one of the most popular CNN architectures: `ResNet`.
 
 # Overview of Convolution Neural Networks (CNN)
+In the context of computer vision, **feature engineering** is the process of using domain knowledge to extract distinctive attributes from images that can be used to improve the performance of machine learning algorithms. For instance, in image classification tasks, the number 7 is characterized by a horizontal edge near the top, and a diagonal line that goes down to the right. These features can be used to distinguish the number 7 from other digits.
+
+It turns out that finding the edges in an image is a crucial step in computer vision tasks. To achieve this, we can use a technique called **convolution**. Convolution is a mathematical operation that takes two inputs: an image and a filter (also known as a kernel). The filter is a small matrix that is used to scan the image and extract features. For example, the following filter can be used to detect horizontal edges in an image
+
 ## Convolution Layer
+
+
 ## Strides and Padding
 ## Improving Training Stability
 
