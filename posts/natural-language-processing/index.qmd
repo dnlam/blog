@@ -221,12 +221,12 @@ In order to reuse the pre-trained model, we can easily save the model with PyTor
 ```{python}
 #| cache: true
 # Option 1: Save with FastAI
-# learn.save('one_epoch_training')
+learn.save('one_epoch_training')
 
 # Option 2: Save with PyTorch
-import torch
-model_save_path = learn.path/'models'/'one_epoch_training_torch.pth'
-torch.save(learn.model.state_dict(), model_save_path)
+# import torch
+# model_save_path = learn.path/'models'/'one_epoch_training_torch.pth'
+# torch.save(learn.model.state_dict(), model_save_path)
 # print(f"Model saved to: {model_save_path}")
 ```
 
@@ -239,13 +239,13 @@ When using `torch.load()`, be cautious about the `weights_only` parameter. For s
 ```{python}
 #| cache: true
 # Option 1: Use FastAI's load method
-# learn.load('one_epoch_training', strict=False)
+learn.load('one_epoch_training', strict=False)
 
 # Option 2: Use PyTorch to load the saved model
-import torch
-model_load_path = learn.path/'models'/'one_epoch_training_torch.pth'
-state_dict = torch.load(model_load_path, weights_only=False)
-learn.model.load_state_dict(state_dict, strict=False)
+# import torch
+# model_load_path = learn.path/'models'/'one_epoch_training_torch.pth'
+# state_dict = torch.load(model_load_path, weights_only=False)
+# learn.model.load_state_dict(state_dict, strict=False)
 # print(f"Model loaded from: {model_load_path}")
 ```
 
