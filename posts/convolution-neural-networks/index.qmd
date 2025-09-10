@@ -1,9 +1,9 @@
 ---
-title: "Building modern Convolution Neural Networks"
+title: "Building SoTA Convolution Neural Networks for Image Recognition"
 # author: "Lam Dinh"
 date: "2022-05-10"
 categories: [CNN, code]
-image: "NLP.png"
+image: "resnet.png"
 pdf-engine: pdflatex
 format:
   html:
@@ -24,3 +24,17 @@ execute:
   freeze: auto
 ---
 
+# Overview
+
+```{python}
+
+```
+
+# Overview of Convolution Neural Networks (CNN)
+## Convolution Layer
+## Strides and Padding
+## Improving Training Stability
+
+# Residual Networks (ResNet)
+
+# Conclusions
