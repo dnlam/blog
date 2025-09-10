@@ -48,6 +48,7 @@ It turns out that finding the edges in an image is a crucial step in computer vi
 
 ## Convolution Layer
 
+![An example of kernel](./imgs/kernel.png){#fig-kernel fig-align="center"}
 
 ## Strides and Padding
 ## Improving Training Stability
