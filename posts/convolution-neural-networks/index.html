@@ -56,27 +56,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -289,507 +269,507 @@ Figure&nbsp;1: An example of kernel
 </div>
 <p>As illustrated in Figure <a href="#fig-kernel" class="quarto-xref">Figure&nbsp;1</a>, a 3x3 matrix kernel is applied to the input image, which is 7x7 grid. The kernel is applied to each pixel in the image, and the output is a new pixel value that is calculated by taking the dot product of the kernel and the corresponding pixels in the image. This process is repeated for each pixel in the image, resulting in a new feature map.</p>
 <p>Let’s take another look at how convolution works in practice. We will use the <code>im3</code> image, which is a 28x28 grayscale image of the digit 3 from the MNIST dataset. We will apply a 3x3 kernel to the image to extract features.</p>
-<div id="4117cad4" class="cell" data-cache="true" data-message="false" data-execution_count="2">
+<div id="1d8a3609" class="cell" data-cache="true" data-message="false" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <style type="text/css">
-#T_61ead_row0_col0, #T_61ead_row0_col1, #T_61ead_row0_col2, #T_61ead_row0_col3, #T_61ead_row0_col4, #T_61ead_row0_col5, #T_61ead_row0_col6, #T_61ead_row0_col7, #T_61ead_row0_col8, #T_61ead_row0_col9, #T_61ead_row0_col10, #T_61ead_row0_col11, #T_61ead_row0_col12, #T_61ead_row0_col13, #T_61ead_row0_col14, #T_61ead_row0_col15, #T_61ead_row0_col16, #T_61ead_row0_col17, #T_61ead_row0_col18, #T_61ead_row0_col19, #T_61ead_row0_col20, #T_61ead_row0_col21, #T_61ead_row0_col22, #T_61ead_row0_col23, #T_61ead_row0_col24, #T_61ead_row0_col25, #T_61ead_row0_col26, #T_61ead_row0_col27, #T_61ead_row1_col0, #T_61ead_row1_col1, #T_61ead_row1_col2, #T_61ead_row1_col3, #T_61ead_row1_col4, #T_61ead_row1_col5, #T_61ead_row1_col6, #T_61ead_row1_col7, #T_61ead_row1_col8, #T_61ead_row1_col9, #T_61ead_row1_col10, #T_61ead_row1_col11, #T_61ead_row1_col12, #T_61ead_row1_col13, #T_61ead_row1_col14, #T_61ead_row1_col15, #T_61ead_row1_col16, #T_61ead_row1_col17, #T_61ead_row1_col18, #T_61ead_row1_col19, #T_61ead_row1_col20, #T_61ead_row1_col21, #T_61ead_row1_col22, #T_61ead_row1_col23, #T_61ead_row1_col24, #T_61ead_row1_col25, #T_61ead_row1_col26, #T_61ead_row1_col27, #T_61ead_row2_col0, #T_61ead_row2_col1, #T_61ead_row2_col2, #T_61ead_row2_col3, #T_61ead_row2_col4, #T_61ead_row2_col5, #T_61ead_row2_col6, #T_61ead_row2_col7, #T_61ead_row2_col8, #T_61ead_row2_col9, #T_61ead_row2_col10, #T_61ead_row2_col11, #T_61ead_row2_col12, #T_61ead_row2_col13, #T_61ead_row2_col14, #T_61ead_row2_col15, #T_61ead_row2_col16, #T_61ead_row2_col17, #T_61ead_row2_col18, #T_61ead_row2_col19, #T_61ead_row2_col20, #T_61ead_row2_col21, #T_61ead_row2_col22, #T_61ead_row2_col23, #T_61ead_row2_col24, #T_61ead_row2_col25, #T_61ead_row2_col26, #T_61ead_row2_col27, #T_61ead_row3_col0, #T_61ead_row3_col1, #T_61ead_row3_col2, #T_61ead_row3_col3, #T_61ead_row3_col4, #T_61ead_row3_col5, #T_61ead_row3_col6, #T_61ead_row3_col7, #T_61ead_row3_col8, #T_61ead_row3_col9, #T_61ead_row3_col10, #T_61ead_row3_col11, #T_61ead_row3_col12, #T_61ead_row3_col13, #T_61ead_row3_col14, #T_61ead_row3_col15, #T_61ead_row3_col16, #T_61ead_row3_col17, #T_61ead_row3_col18, #T_61ead_row3_col19, #T_61ead_row3_col20, #T_61ead_row3_col21, #T_61ead_row3_col22, #T_61ead_row3_col23, #T_61ead_row3_col24, #T_61ead_row3_col25, #T_61ead_row3_col26, #T_61ead_row3_col27, #T_61ead_row4_col0, #T_61ead_row4_col1, #T_61ead_row4_col2, #T_61ead_row4_col3, #T_61ead_row4_col4, #T_61ead_row4_col5, #T_61ead_row4_col6, #T_61ead_row4_col7, #T_61ead_row4_col8, #T_61ead_row4_col9, #T_61ead_row4_col10, #T_61ead_row4_col11, #T_61ead_row4_col12, #T_61ead_row4_col13, #T_61ead_row4_col14, #T_61ead_row4_col15, #T_61ead_row4_col16, #T_61ead_row4_col17, #T_61ead_row4_col18, #T_61ead_row4_col19, #T_61ead_row4_col20, #T_61ead_row4_col21, #T_61ead_row4_col22, #T_61ead_row4_col23, #T_61ead_row4_col24, #T_61ead_row4_col25, #T_61ead_row4_col26, #T_61ead_row4_col27, #T_61ead_row5_col0, #T_61ead_row5_col1, #T_61ead_row5_col2, #T_61ead_row5_col16, #T_61ead_row5_col17, #T_61ead_row5_col18, #T_61ead_row5_col19, #T_61ead_row5_col20, #T_61ead_row5_col21, #T_61ead_row5_col22, #T_61ead_row5_col23, #T_61ead_row5_col24, #T_61ead_row5_col25, #T_61ead_row5_col26, #T_61ead_row5_col27, #T_61ead_row6_col0, #T_61ead_row6_col1, #T_61ead_row6_col2, #T_61ead_row6_col19, #T_61ead_row6_col20, #T_61ead_row6_col21, #T_61ead_row6_col22, #T_61ead_row6_col23, #T_61ead_row6_col24, #T_61ead_row6_col25, #T_61ead_row6_col26, #T_61ead_row6_col27, #T_61ead_row7_col0, #T_61ead_row7_col1, #T_61ead_row7_col2, #T_61ead_row7_col19, #T_61ead_row7_col20, #T_61ead_row7_col21, #T_61ead_row7_col22, #T_61ead_row7_col23, #T_61ead_row7_col24, #T_61ead_row7_col25, #T_61ead_row7_col26, #T_61ead_row7_col27, #T_61ead_row8_col0, #T_61ead_row8_col1, #T_61ead_row8_col2, #T_61ead_row8_col8, #T_61ead_row8_col9, #T_61ead_row8_col10, #T_61ead_row8_col11, #T_61ead_row8_col12, #T_61ead_row8_col13, #T_61ead_row8_col19, #T_61ead_row8_col20, #T_61ead_row8_col21, #T_61ead_row8_col22, #T_61ead_row8_col23, #T_61ead_row8_col24, #T_61ead_row8_col25, #T_61ead_row8_col26, #T_61ead_row8_col27, #T_61ead_row9_col0, #T_61ead_row9_col1, #T_61ead_row9_col2, #T_61ead_row9_col3, #T_61ead_row9_col4, #T_61ead_row9_col5, #T_61ead_row9_col6, #T_61ead_row9_col7, #T_61ead_row9_col8, #T_61ead_row9_col9, #T_61ead_row9_col10, #T_61ead_row9_col11, #T_61ead_row9_col12, #T_61ead_row9_col13, #T_61ead_row9_col19, #T_61ead_row9_col20, #T_61ead_row9_col21, #T_61ead_row9_col22, #T_61ead_row9_col23, #T_61ead_row9_col24, #T_61ead_row9_col25, #T_61ead_row9_col26, #T_61ead_row9_col27 {
+#T_a41b1_row0_col0, #T_a41b1_row0_col1, #T_a41b1_row0_col2, #T_a41b1_row0_col3, #T_a41b1_row0_col4, #T_a41b1_row0_col5, #T_a41b1_row0_col6, #T_a41b1_row0_col7, #T_a41b1_row0_col8, #T_a41b1_row0_col9, #T_a41b1_row0_col10, #T_a41b1_row0_col11, #T_a41b1_row0_col12, #T_a41b1_row0_col13, #T_a41b1_row0_col14, #T_a41b1_row0_col15, #T_a41b1_row0_col16, #T_a41b1_row0_col17, #T_a41b1_row0_col18, #T_a41b1_row0_col19, #T_a41b1_row0_col20, #T_a41b1_row0_col21, #T_a41b1_row0_col22, #T_a41b1_row0_col23, #T_a41b1_row0_col24, #T_a41b1_row0_col25, #T_a41b1_row0_col26, #T_a41b1_row0_col27, #T_a41b1_row1_col0, #T_a41b1_row1_col1, #T_a41b1_row1_col2, #T_a41b1_row1_col3, #T_a41b1_row1_col4, #T_a41b1_row1_col5, #T_a41b1_row1_col6, #T_a41b1_row1_col7, #T_a41b1_row1_col8, #T_a41b1_row1_col9, #T_a41b1_row1_col10, #T_a41b1_row1_col11, #T_a41b1_row1_col12, #T_a41b1_row1_col13, #T_a41b1_row1_col14, #T_a41b1_row1_col15, #T_a41b1_row1_col16, #T_a41b1_row1_col17, #T_a41b1_row1_col18, #T_a41b1_row1_col19, #T_a41b1_row1_col20, #T_a41b1_row1_col21, #T_a41b1_row1_col22, #T_a41b1_row1_col23, #T_a41b1_row1_col24, #T_a41b1_row1_col25, #T_a41b1_row1_col26, #T_a41b1_row1_col27, #T_a41b1_row2_col0, #T_a41b1_row2_col1, #T_a41b1_row2_col2, #T_a41b1_row2_col3, #T_a41b1_row2_col4, #T_a41b1_row2_col5, #T_a41b1_row2_col6, #T_a41b1_row2_col7, #T_a41b1_row2_col8, #T_a41b1_row2_col9, #T_a41b1_row2_col10, #T_a41b1_row2_col11, #T_a41b1_row2_col12, #T_a41b1_row2_col13, #T_a41b1_row2_col14, #T_a41b1_row2_col15, #T_a41b1_row2_col16, #T_a41b1_row2_col17, #T_a41b1_row2_col18, #T_a41b1_row2_col19, #T_a41b1_row2_col20, #T_a41b1_row2_col21, #T_a41b1_row2_col22, #T_a41b1_row2_col23, #T_a41b1_row2_col24, #T_a41b1_row2_col25, #T_a41b1_row2_col26, #T_a41b1_row2_col27, #T_a41b1_row3_col0, #T_a41b1_row3_col1, #T_a41b1_row3_col2, #T_a41b1_row3_col3, #T_a41b1_row3_col4, #T_a41b1_row3_col5, #T_a41b1_row3_col6, #T_a41b1_row3_col7, #T_a41b1_row3_col8, #T_a41b1_row3_col9, #T_a41b1_row3_col10, #T_a41b1_row3_col11, #T_a41b1_row3_col12, #T_a41b1_row3_col13, #T_a41b1_row3_col14, #T_a41b1_row3_col15, #T_a41b1_row3_col16, #T_a41b1_row3_col17, #T_a41b1_row3_col18, #T_a41b1_row3_col19, #T_a41b1_row3_col20, #T_a41b1_row3_col21, #T_a41b1_row3_col22, #T_a41b1_row3_col23, #T_a41b1_row3_col24, #T_a41b1_row3_col25, #T_a41b1_row3_col26, #T_a41b1_row3_col27, #T_a41b1_row4_col0, #T_a41b1_row4_col1, #T_a41b1_row4_col2, #T_a41b1_row4_col3, #T_a41b1_row4_col4, #T_a41b1_row4_col5, #T_a41b1_row4_col6, #T_a41b1_row4_col7, #T_a41b1_row4_col8, #T_a41b1_row4_col9, #T_a41b1_row4_col10, #T_a41b1_row4_col11, #T_a41b1_row4_col12, #T_a41b1_row4_col13, #T_a41b1_row4_col14, #T_a41b1_row4_col15, #T_a41b1_row4_col16, #T_a41b1_row4_col17, #T_a41b1_row4_col18, #T_a41b1_row4_col19, #T_a41b1_row4_col20, #T_a41b1_row4_col21, #T_a41b1_row4_col22, #T_a41b1_row4_col23, #T_a41b1_row4_col24, #T_a41b1_row4_col25, #T_a41b1_row4_col26, #T_a41b1_row4_col27, #T_a41b1_row5_col0, #T_a41b1_row5_col1, #T_a41b1_row5_col2, #T_a41b1_row5_col16, #T_a41b1_row5_col17, #T_a41b1_row5_col18, #T_a41b1_row5_col19, #T_a41b1_row5_col20, #T_a41b1_row5_col21, #T_a41b1_row5_col22, #T_a41b1_row5_col23, #T_a41b1_row5_col24, #T_a41b1_row5_col25, #T_a41b1_row5_col26, #T_a41b1_row5_col27, #T_a41b1_row6_col0, #T_a41b1_row6_col1, #T_a41b1_row6_col2, #T_a41b1_row6_col19, #T_a41b1_row6_col20, #T_a41b1_row6_col21, #T_a41b1_row6_col22, #T_a41b1_row6_col23, #T_a41b1_row6_col24, #T_a41b1_row6_col25, #T_a41b1_row6_col26, #T_a41b1_row6_col27, #T_a41b1_row7_col0, #T_a41b1_row7_col1, #T_a41b1_row7_col2, #T_a41b1_row7_col19, #T_a41b1_row7_col20, #T_a41b1_row7_col21, #T_a41b1_row7_col22, #T_a41b1_row7_col23, #T_a41b1_row7_col24, #T_a41b1_row7_col25, #T_a41b1_row7_col26, #T_a41b1_row7_col27, #T_a41b1_row8_col0, #T_a41b1_row8_col1, #T_a41b1_row8_col2, #T_a41b1_row8_col8, #T_a41b1_row8_col9, #T_a41b1_row8_col10, #T_a41b1_row8_col11, #T_a41b1_row8_col12, #T_a41b1_row8_col13, #T_a41b1_row8_col19, #T_a41b1_row8_col20, #T_a41b1_row8_col21, #T_a41b1_row8_col22, #T_a41b1_row8_col23, #T_a41b1_row8_col24, #T_a41b1_row8_col25, #T_a41b1_row8_col26, #T_a41b1_row8_col27, #T_a41b1_row9_col0, #T_a41b1_row9_col1, #T_a41b1_row9_col2, #T_a41b1_row9_col3, #T_a41b1_row9_col4, #T_a41b1_row9_col5, #T_a41b1_row9_col6, #T_a41b1_row9_col7, #T_a41b1_row9_col8, #T_a41b1_row9_col9, #T_a41b1_row9_col10, #T_a41b1_row9_col11, #T_a41b1_row9_col12, #T_a41b1_row9_col13, #T_a41b1_row9_col19, #T_a41b1_row9_col20, #T_a41b1_row9_col21, #T_a41b1_row9_col22, #T_a41b1_row9_col23, #T_a41b1_row9_col24, #T_a41b1_row9_col25, #T_a41b1_row9_col26, #T_a41b1_row9_col27 {
   font-size: 6pt;
   background-color: #ffffff;
   color: #000000;
 }
-#T_61ead_row5_col3, #T_61ead_row8_col14 {
+#T_a41b1_row5_col3, #T_a41b1_row8_col14 {
   font-size: 6pt;
   background-color: #f9f9f9;
   color: #000000;
 }
-#T_61ead_row5_col4 {
+#T_a41b1_row5_col4 {
   font-size: 6pt;
   background-color: #b9b9b9;
   color: #000000;
 }
-#T_61ead_row5_col5 {
+#T_a41b1_row5_col5 {
   font-size: 6pt;
   background-color: #c1c1c1;
   color: #000000;
 }
-#T_61ead_row5_col6 {
+#T_a41b1_row5_col6 {
   font-size: 6pt;
   background-color: #858585;
   color: #f1f1f1;
 }
-#T_61ead_row5_col7, #T_61ead_row5_col10, #T_61ead_row5_col11, #T_61ead_row5_col12, #T_61ead_row5_col13 {
+#T_a41b1_row5_col7, #T_a41b1_row5_col10, #T_a41b1_row5_col11, #T_a41b1_row5_col12, #T_a41b1_row5_col13 {
   font-size: 6pt;
   background-color: #777777;
   color: #f1f1f1;
 }
-#T_61ead_row5_col8 {
+#T_a41b1_row5_col8 {
   font-size: 6pt;
   background-color: #090909;
   color: #f1f1f1;
 }
-#T_61ead_row5_col9 {
+#T_a41b1_row5_col9 {
   font-size: 6pt;
   background-color: #5b5b5b;
   color: #f1f1f1;
 }
-#T_61ead_row5_col14 {
+#T_a41b1_row5_col14 {
   font-size: 6pt;
   background-color: #919191;
   color: #f1f1f1;
 }
-#T_61ead_row5_col15 {
+#T_a41b1_row5_col15 {
   font-size: 6pt;
   background-color: #e1e1e1;
   color: #000000;
 }
-#T_61ead_row6_col3 {
+#T_a41b1_row6_col3 {
   font-size: 6pt;
   background-color: #727272;
   color: #f1f1f1;
 }
-#T_61ead_row6_col4, #T_61ead_row6_col5, #T_61ead_row6_col6, #T_61ead_row6_col7, #T_61ead_row6_col8, #T_61ead_row6_col9, #T_61ead_row6_col10, #T_61ead_row6_col11, #T_61ead_row6_col12, #T_61ead_row6_col13, #T_61ead_row6_col14, #T_61ead_row7_col3, #T_61ead_row7_col4, #T_61ead_row7_col5, #T_61ead_row7_col6, #T_61ead_row7_col15, #T_61ead_row7_col16, #T_61ead_row7_col17, #T_61ead_row8_col16, #T_61ead_row8_col17, #T_61ead_row8_col18, #T_61ead_row9_col15, #T_61ead_row9_col16 {
+#T_a41b1_row6_col4, #T_a41b1_row6_col5, #T_a41b1_row6_col6, #T_a41b1_row6_col7, #T_a41b1_row6_col8, #T_a41b1_row6_col9, #T_a41b1_row6_col10, #T_a41b1_row6_col11, #T_a41b1_row6_col12, #T_a41b1_row6_col13, #T_a41b1_row6_col14, #T_a41b1_row7_col3, #T_a41b1_row7_col4, #T_a41b1_row7_col5, #T_a41b1_row7_col6, #T_a41b1_row7_col15, #T_a41b1_row7_col16, #T_a41b1_row7_col17, #T_a41b1_row8_col16, #T_a41b1_row8_col17, #T_a41b1_row8_col18, #T_a41b1_row9_col15, #T_a41b1_row9_col16 {
   font-size: 6pt;
   background-color: #000000;
   color: #f1f1f1;
 }
-#T_61ead_row6_col15 {
+#T_a41b1_row6_col15 {
   font-size: 6pt;
   background-color: #020202;
   color: #f1f1f1;
 }
-#T_61ead_row6_col16 {
+#T_a41b1_row6_col16 {
   font-size: 6pt;
   background-color: #363636;
   color: #f1f1f1;
 }
-#T_61ead_row6_col17 {
+#T_a41b1_row6_col17 {
   font-size: 6pt;
   background-color: #9d9d9d;
   color: #f1f1f1;
 }
-#T_61ead_row6_col18 {
+#T_a41b1_row6_col18 {
   font-size: 6pt;
   background-color: #dfdfdf;
   color: #000000;
 }
-#T_61ead_row7_col7 {
+#T_a41b1_row7_col7 {
   font-size: 6pt;
   background-color: #161616;
   color: #f1f1f1;
 }
-#T_61ead_row7_col8, #T_61ead_row7_col9, #T_61ead_row7_col10, #T_61ead_row7_col11, #T_61ead_row7_col13 {
+#T_a41b1_row7_col8, #T_a41b1_row7_col9, #T_a41b1_row7_col10, #T_a41b1_row7_col11, #T_a41b1_row7_col13 {
   font-size: 6pt;
   background-color: #535353;
   color: #f1f1f1;
 }
-#T_61ead_row7_col12 {
+#T_a41b1_row7_col12 {
   font-size: 6pt;
   background-color: #7c7c7c;
   color: #f1f1f1;
 }
-#T_61ead_row7_col14 {
+#T_a41b1_row7_col14 {
   font-size: 6pt;
   background-color: #3d3d3d;
   color: #f1f1f1;
 }
-#T_61ead_row7_col18 {
+#T_a41b1_row7_col18 {
   font-size: 6pt;
   background-color: #999999;
   color: #f1f1f1;
 }
-#T_61ead_row8_col3 {
+#T_a41b1_row8_col3 {
   font-size: 6pt;
   background-color: #eaeaea;
   color: #000000;
 }
-#T_61ead_row8_col4 {
+#T_a41b1_row8_col4 {
   font-size: 6pt;
   background-color: #d0d0d0;
   color: #000000;
 }
-#T_61ead_row8_col5, #T_61ead_row8_col6 {
+#T_a41b1_row8_col5, #T_a41b1_row8_col6 {
   font-size: 6pt;
   background-color: #eeeeee;
   color: #000000;
 }
-#T_61ead_row8_col7 {
+#T_a41b1_row8_col7 {
   font-size: 6pt;
   background-color: #f3f3f3;
   color: #000000;
 }
-#T_61ead_row8_col15 {
+#T_a41b1_row8_col15 {
   font-size: 6pt;
   background-color: #232323;
   color: #f1f1f1;
 }
-#T_61ead_row9_col14 {
+#T_a41b1_row9_col14 {
   font-size: 6pt;
   background-color: #c2c2c2;
   color: #000000;
 }
-#T_61ead_row9_col17 {
+#T_a41b1_row9_col17 {
   font-size: 6pt;
   background-color: #080808;
   color: #f1f1f1;
 }
-#T_61ead_row9_col18 {
+#T_a41b1_row9_col18 {
   font-size: 6pt;
   background-color: #c4c4c4;
   color: #000000;
 }
 </style>
 
-<table id="T_61ead" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<table id="T_a41b1" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_61ead_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">0</th>
-<th id="T_61ead_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">1</th>
-<th id="T_61ead_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">2</th>
-<th id="T_61ead_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">3</th>
-<th id="T_61ead_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">4</th>
-<th id="T_61ead_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">5</th>
-<th id="T_61ead_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">6</th>
-<th id="T_61ead_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">7</th>
-<th id="T_61ead_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">8</th>
-<th id="T_61ead_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">9</th>
-<th id="T_61ead_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">10</th>
-<th id="T_61ead_level0_col11" class="col_heading level0 col11" data-quarto-table-cell-role="th">11</th>
-<th id="T_61ead_level0_col12" class="col_heading level0 col12" data-quarto-table-cell-role="th">12</th>
-<th id="T_61ead_level0_col13" class="col_heading level0 col13" data-quarto-table-cell-role="th">13</th>
-<th id="T_61ead_level0_col14" class="col_heading level0 col14" data-quarto-table-cell-role="th">14</th>
-<th id="T_61ead_level0_col15" class="col_heading level0 col15" data-quarto-table-cell-role="th">15</th>
-<th id="T_61ead_level0_col16" class="col_heading level0 col16" data-quarto-table-cell-role="th">16</th>
-<th id="T_61ead_level0_col17" class="col_heading level0 col17" data-quarto-table-cell-role="th">17</th>
-<th id="T_61ead_level0_col18" class="col_heading level0 col18" data-quarto-table-cell-role="th">18</th>
-<th id="T_61ead_level0_col19" class="col_heading level0 col19" data-quarto-table-cell-role="th">19</th>
-<th id="T_61ead_level0_col20" class="col_heading level0 col20" data-quarto-table-cell-role="th">20</th>
-<th id="T_61ead_level0_col21" class="col_heading level0 col21" data-quarto-table-cell-role="th">21</th>
-<th id="T_61ead_level0_col22" class="col_heading level0 col22" data-quarto-table-cell-role="th">22</th>
-<th id="T_61ead_level0_col23" class="col_heading level0 col23" data-quarto-table-cell-role="th">23</th>
-<th id="T_61ead_level0_col24" class="col_heading level0 col24" data-quarto-table-cell-role="th">24</th>
-<th id="T_61ead_level0_col25" class="col_heading level0 col25" data-quarto-table-cell-role="th">25</th>
-<th id="T_61ead_level0_col26" class="col_heading level0 col26" data-quarto-table-cell-role="th">26</th>
-<th id="T_61ead_level0_col27" class="col_heading level0 col27" data-quarto-table-cell-role="th">27</th>
+<th id="T_a41b1_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">0</th>
+<th id="T_a41b1_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">1</th>
+<th id="T_a41b1_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">2</th>
+<th id="T_a41b1_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">3</th>
+<th id="T_a41b1_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">4</th>
+<th id="T_a41b1_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">5</th>
+<th id="T_a41b1_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">6</th>
+<th id="T_a41b1_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">7</th>
+<th id="T_a41b1_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">8</th>
+<th id="T_a41b1_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">9</th>
+<th id="T_a41b1_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">10</th>
+<th id="T_a41b1_level0_col11" class="col_heading level0 col11" data-quarto-table-cell-role="th">11</th>
+<th id="T_a41b1_level0_col12" class="col_heading level0 col12" data-quarto-table-cell-role="th">12</th>
+<th id="T_a41b1_level0_col13" class="col_heading level0 col13" data-quarto-table-cell-role="th">13</th>
+<th id="T_a41b1_level0_col14" class="col_heading level0 col14" data-quarto-table-cell-role="th">14</th>
+<th id="T_a41b1_level0_col15" class="col_heading level0 col15" data-quarto-table-cell-role="th">15</th>
+<th id="T_a41b1_level0_col16" class="col_heading level0 col16" data-quarto-table-cell-role="th">16</th>
+<th id="T_a41b1_level0_col17" class="col_heading level0 col17" data-quarto-table-cell-role="th">17</th>
+<th id="T_a41b1_level0_col18" class="col_heading level0 col18" data-quarto-table-cell-role="th">18</th>
+<th id="T_a41b1_level0_col19" class="col_heading level0 col19" data-quarto-table-cell-role="th">19</th>
+<th id="T_a41b1_level0_col20" class="col_heading level0 col20" data-quarto-table-cell-role="th">20</th>
+<th id="T_a41b1_level0_col21" class="col_heading level0 col21" data-quarto-table-cell-role="th">21</th>
+<th id="T_a41b1_level0_col22" class="col_heading level0 col22" data-quarto-table-cell-role="th">22</th>
+<th id="T_a41b1_level0_col23" class="col_heading level0 col23" data-quarto-table-cell-role="th">23</th>
+<th id="T_a41b1_level0_col24" class="col_heading level0 col24" data-quarto-table-cell-role="th">24</th>
+<th id="T_a41b1_level0_col25" class="col_heading level0 col25" data-quarto-table-cell-role="th">25</th>
+<th id="T_a41b1_level0_col26" class="col_heading level0 col26" data-quarto-table-cell-role="th">26</th>
+<th id="T_a41b1_level0_col27" class="col_heading level0 col27" data-quarto-table-cell-role="th">27</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_61ead_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_61ead_row0_col0" class="data row0 col0">0</td>
-<td id="T_61ead_row0_col1" class="data row0 col1">0</td>
-<td id="T_61ead_row0_col2" class="data row0 col2">0</td>
-<td id="T_61ead_row0_col3" class="data row0 col3">0</td>
-<td id="T_61ead_row0_col4" class="data row0 col4">0</td>
-<td id="T_61ead_row0_col5" class="data row0 col5">0</td>
-<td id="T_61ead_row0_col6" class="data row0 col6">0</td>
-<td id="T_61ead_row0_col7" class="data row0 col7">0</td>
-<td id="T_61ead_row0_col8" class="data row0 col8">0</td>
-<td id="T_61ead_row0_col9" class="data row0 col9">0</td>
-<td id="T_61ead_row0_col10" class="data row0 col10">0</td>
-<td id="T_61ead_row0_col11" class="data row0 col11">0</td>
-<td id="T_61ead_row0_col12" class="data row0 col12">0</td>
-<td id="T_61ead_row0_col13" class="data row0 col13">0</td>
-<td id="T_61ead_row0_col14" class="data row0 col14">0</td>
-<td id="T_61ead_row0_col15" class="data row0 col15">0</td>
-<td id="T_61ead_row0_col16" class="data row0 col16">0</td>
-<td id="T_61ead_row0_col17" class="data row0 col17">0</td>
-<td id="T_61ead_row0_col18" class="data row0 col18">0</td>
-<td id="T_61ead_row0_col19" class="data row0 col19">0</td>
-<td id="T_61ead_row0_col20" class="data row0 col20">0</td>
-<td id="T_61ead_row0_col21" class="data row0 col21">0</td>
-<td id="T_61ead_row0_col22" class="data row0 col22">0</td>
-<td id="T_61ead_row0_col23" class="data row0 col23">0</td>
-<td id="T_61ead_row0_col24" class="data row0 col24">0</td>
-<td id="T_61ead_row0_col25" class="data row0 col25">0</td>
-<td id="T_61ead_row0_col26" class="data row0 col26">0</td>
-<td id="T_61ead_row0_col27" class="data row0 col27">0</td>
+<td id="T_a41b1_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_a41b1_row0_col0" class="data row0 col0">0</td>
+<td id="T_a41b1_row0_col1" class="data row0 col1">0</td>
+<td id="T_a41b1_row0_col2" class="data row0 col2">0</td>
+<td id="T_a41b1_row0_col3" class="data row0 col3">0</td>
+<td id="T_a41b1_row0_col4" class="data row0 col4">0</td>
+<td id="T_a41b1_row0_col5" class="data row0 col5">0</td>
+<td id="T_a41b1_row0_col6" class="data row0 col6">0</td>
+<td id="T_a41b1_row0_col7" class="data row0 col7">0</td>
+<td id="T_a41b1_row0_col8" class="data row0 col8">0</td>
+<td id="T_a41b1_row0_col9" class="data row0 col9">0</td>
+<td id="T_a41b1_row0_col10" class="data row0 col10">0</td>
+<td id="T_a41b1_row0_col11" class="data row0 col11">0</td>
+<td id="T_a41b1_row0_col12" class="data row0 col12">0</td>
+<td id="T_a41b1_row0_col13" class="data row0 col13">0</td>
+<td id="T_a41b1_row0_col14" class="data row0 col14">0</td>
+<td id="T_a41b1_row0_col15" class="data row0 col15">0</td>
+<td id="T_a41b1_row0_col16" class="data row0 col16">0</td>
+<td id="T_a41b1_row0_col17" class="data row0 col17">0</td>
+<td id="T_a41b1_row0_col18" class="data row0 col18">0</td>
+<td id="T_a41b1_row0_col19" class="data row0 col19">0</td>
+<td id="T_a41b1_row0_col20" class="data row0 col20">0</td>
+<td id="T_a41b1_row0_col21" class="data row0 col21">0</td>
+<td id="T_a41b1_row0_col22" class="data row0 col22">0</td>
+<td id="T_a41b1_row0_col23" class="data row0 col23">0</td>
+<td id="T_a41b1_row0_col24" class="data row0 col24">0</td>
+<td id="T_a41b1_row0_col25" class="data row0 col25">0</td>
+<td id="T_a41b1_row0_col26" class="data row0 col26">0</td>
+<td id="T_a41b1_row0_col27" class="data row0 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_61ead_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_61ead_row1_col0" class="data row1 col0">0</td>
-<td id="T_61ead_row1_col1" class="data row1 col1">0</td>
-<td id="T_61ead_row1_col2" class="data row1 col2">0</td>
-<td id="T_61ead_row1_col3" class="data row1 col3">0</td>
-<td id="T_61ead_row1_col4" class="data row1 col4">0</td>
-<td id="T_61ead_row1_col5" class="data row1 col5">0</td>
-<td id="T_61ead_row1_col6" class="data row1 col6">0</td>
-<td id="T_61ead_row1_col7" class="data row1 col7">0</td>
-<td id="T_61ead_row1_col8" class="data row1 col8">0</td>
-<td id="T_61ead_row1_col9" class="data row1 col9">0</td>
-<td id="T_61ead_row1_col10" class="data row1 col10">0</td>
-<td id="T_61ead_row1_col11" class="data row1 col11">0</td>
-<td id="T_61ead_row1_col12" class="data row1 col12">0</td>
-<td id="T_61ead_row1_col13" class="data row1 col13">0</td>
-<td id="T_61ead_row1_col14" class="data row1 col14">0</td>
-<td id="T_61ead_row1_col15" class="data row1 col15">0</td>
-<td id="T_61ead_row1_col16" class="data row1 col16">0</td>
-<td id="T_61ead_row1_col17" class="data row1 col17">0</td>
-<td id="T_61ead_row1_col18" class="data row1 col18">0</td>
-<td id="T_61ead_row1_col19" class="data row1 col19">0</td>
-<td id="T_61ead_row1_col20" class="data row1 col20">0</td>
-<td id="T_61ead_row1_col21" class="data row1 col21">0</td>
-<td id="T_61ead_row1_col22" class="data row1 col22">0</td>
-<td id="T_61ead_row1_col23" class="data row1 col23">0</td>
-<td id="T_61ead_row1_col24" class="data row1 col24">0</td>
-<td id="T_61ead_row1_col25" class="data row1 col25">0</td>
-<td id="T_61ead_row1_col26" class="data row1 col26">0</td>
-<td id="T_61ead_row1_col27" class="data row1 col27">0</td>
+<td id="T_a41b1_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_a41b1_row1_col0" class="data row1 col0">0</td>
+<td id="T_a41b1_row1_col1" class="data row1 col1">0</td>
+<td id="T_a41b1_row1_col2" class="data row1 col2">0</td>
+<td id="T_a41b1_row1_col3" class="data row1 col3">0</td>
+<td id="T_a41b1_row1_col4" class="data row1 col4">0</td>
+<td id="T_a41b1_row1_col5" class="data row1 col5">0</td>
+<td id="T_a41b1_row1_col6" class="data row1 col6">0</td>
+<td id="T_a41b1_row1_col7" class="data row1 col7">0</td>
+<td id="T_a41b1_row1_col8" class="data row1 col8">0</td>
+<td id="T_a41b1_row1_col9" class="data row1 col9">0</td>
+<td id="T_a41b1_row1_col10" class="data row1 col10">0</td>
+<td id="T_a41b1_row1_col11" class="data row1 col11">0</td>
+<td id="T_a41b1_row1_col12" class="data row1 col12">0</td>
+<td id="T_a41b1_row1_col13" class="data row1 col13">0</td>
+<td id="T_a41b1_row1_col14" class="data row1 col14">0</td>
+<td id="T_a41b1_row1_col15" class="data row1 col15">0</td>
+<td id="T_a41b1_row1_col16" class="data row1 col16">0</td>
+<td id="T_a41b1_row1_col17" class="data row1 col17">0</td>
+<td id="T_a41b1_row1_col18" class="data row1 col18">0</td>
+<td id="T_a41b1_row1_col19" class="data row1 col19">0</td>
+<td id="T_a41b1_row1_col20" class="data row1 col20">0</td>
+<td id="T_a41b1_row1_col21" class="data row1 col21">0</td>
+<td id="T_a41b1_row1_col22" class="data row1 col22">0</td>
+<td id="T_a41b1_row1_col23" class="data row1 col23">0</td>
+<td id="T_a41b1_row1_col24" class="data row1 col24">0</td>
+<td id="T_a41b1_row1_col25" class="data row1 col25">0</td>
+<td id="T_a41b1_row1_col26" class="data row1 col26">0</td>
+<td id="T_a41b1_row1_col27" class="data row1 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_61ead_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_61ead_row2_col0" class="data row2 col0">0</td>
-<td id="T_61ead_row2_col1" class="data row2 col1">0</td>
-<td id="T_61ead_row2_col2" class="data row2 col2">0</td>
-<td id="T_61ead_row2_col3" class="data row2 col3">0</td>
-<td id="T_61ead_row2_col4" class="data row2 col4">0</td>
-<td id="T_61ead_row2_col5" class="data row2 col5">0</td>
-<td id="T_61ead_row2_col6" class="data row2 col6">0</td>
-<td id="T_61ead_row2_col7" class="data row2 col7">0</td>
-<td id="T_61ead_row2_col8" class="data row2 col8">0</td>
-<td id="T_61ead_row2_col9" class="data row2 col9">0</td>
-<td id="T_61ead_row2_col10" class="data row2 col10">0</td>
-<td id="T_61ead_row2_col11" class="data row2 col11">0</td>
-<td id="T_61ead_row2_col12" class="data row2 col12">0</td>
-<td id="T_61ead_row2_col13" class="data row2 col13">0</td>
-<td id="T_61ead_row2_col14" class="data row2 col14">0</td>
-<td id="T_61ead_row2_col15" class="data row2 col15">0</td>
-<td id="T_61ead_row2_col16" class="data row2 col16">0</td>
-<td id="T_61ead_row2_col17" class="data row2 col17">0</td>
-<td id="T_61ead_row2_col18" class="data row2 col18">0</td>
-<td id="T_61ead_row2_col19" class="data row2 col19">0</td>
-<td id="T_61ead_row2_col20" class="data row2 col20">0</td>
-<td id="T_61ead_row2_col21" class="data row2 col21">0</td>
-<td id="T_61ead_row2_col22" class="data row2 col22">0</td>
-<td id="T_61ead_row2_col23" class="data row2 col23">0</td>
-<td id="T_61ead_row2_col24" class="data row2 col24">0</td>
-<td id="T_61ead_row2_col25" class="data row2 col25">0</td>
-<td id="T_61ead_row2_col26" class="data row2 col26">0</td>
-<td id="T_61ead_row2_col27" class="data row2 col27">0</td>
+<td id="T_a41b1_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_a41b1_row2_col0" class="data row2 col0">0</td>
+<td id="T_a41b1_row2_col1" class="data row2 col1">0</td>
+<td id="T_a41b1_row2_col2" class="data row2 col2">0</td>
+<td id="T_a41b1_row2_col3" class="data row2 col3">0</td>
+<td id="T_a41b1_row2_col4" class="data row2 col4">0</td>
+<td id="T_a41b1_row2_col5" class="data row2 col5">0</td>
+<td id="T_a41b1_row2_col6" class="data row2 col6">0</td>
+<td id="T_a41b1_row2_col7" class="data row2 col7">0</td>
+<td id="T_a41b1_row2_col8" class="data row2 col8">0</td>
+<td id="T_a41b1_row2_col9" class="data row2 col9">0</td>
+<td id="T_a41b1_row2_col10" class="data row2 col10">0</td>
+<td id="T_a41b1_row2_col11" class="data row2 col11">0</td>
+<td id="T_a41b1_row2_col12" class="data row2 col12">0</td>
+<td id="T_a41b1_row2_col13" class="data row2 col13">0</td>
+<td id="T_a41b1_row2_col14" class="data row2 col14">0</td>
+<td id="T_a41b1_row2_col15" class="data row2 col15">0</td>
+<td id="T_a41b1_row2_col16" class="data row2 col16">0</td>
+<td id="T_a41b1_row2_col17" class="data row2 col17">0</td>
+<td id="T_a41b1_row2_col18" class="data row2 col18">0</td>
+<td id="T_a41b1_row2_col19" class="data row2 col19">0</td>
+<td id="T_a41b1_row2_col20" class="data row2 col20">0</td>
+<td id="T_a41b1_row2_col21" class="data row2 col21">0</td>
+<td id="T_a41b1_row2_col22" class="data row2 col22">0</td>
+<td id="T_a41b1_row2_col23" class="data row2 col23">0</td>
+<td id="T_a41b1_row2_col24" class="data row2 col24">0</td>
+<td id="T_a41b1_row2_col25" class="data row2 col25">0</td>
+<td id="T_a41b1_row2_col26" class="data row2 col26">0</td>
+<td id="T_a41b1_row2_col27" class="data row2 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_61ead_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_61ead_row3_col0" class="data row3 col0">0</td>
-<td id="T_61ead_row3_col1" class="data row3 col1">0</td>
-<td id="T_61ead_row3_col2" class="data row3 col2">0</td>
-<td id="T_61ead_row3_col3" class="data row3 col3">0</td>
-<td id="T_61ead_row3_col4" class="data row3 col4">0</td>
-<td id="T_61ead_row3_col5" class="data row3 col5">0</td>
-<td id="T_61ead_row3_col6" class="data row3 col6">0</td>
-<td id="T_61ead_row3_col7" class="data row3 col7">0</td>
-<td id="T_61ead_row3_col8" class="data row3 col8">0</td>
-<td id="T_61ead_row3_col9" class="data row3 col9">0</td>
-<td id="T_61ead_row3_col10" class="data row3 col10">0</td>
-<td id="T_61ead_row3_col11" class="data row3 col11">0</td>
-<td id="T_61ead_row3_col12" class="data row3 col12">0</td>
-<td id="T_61ead_row3_col13" class="data row3 col13">0</td>
-<td id="T_61ead_row3_col14" class="data row3 col14">0</td>
-<td id="T_61ead_row3_col15" class="data row3 col15">0</td>
-<td id="T_61ead_row3_col16" class="data row3 col16">0</td>
-<td id="T_61ead_row3_col17" class="data row3 col17">0</td>
-<td id="T_61ead_row3_col18" class="data row3 col18">0</td>
-<td id="T_61ead_row3_col19" class="data row3 col19">0</td>
-<td id="T_61ead_row3_col20" class="data row3 col20">0</td>
-<td id="T_61ead_row3_col21" class="data row3 col21">0</td>
-<td id="T_61ead_row3_col22" class="data row3 col22">0</td>
-<td id="T_61ead_row3_col23" class="data row3 col23">0</td>
-<td id="T_61ead_row3_col24" class="data row3 col24">0</td>
-<td id="T_61ead_row3_col25" class="data row3 col25">0</td>
-<td id="T_61ead_row3_col26" class="data row3 col26">0</td>
-<td id="T_61ead_row3_col27" class="data row3 col27">0</td>
+<td id="T_a41b1_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_a41b1_row3_col0" class="data row3 col0">0</td>
+<td id="T_a41b1_row3_col1" class="data row3 col1">0</td>
+<td id="T_a41b1_row3_col2" class="data row3 col2">0</td>
+<td id="T_a41b1_row3_col3" class="data row3 col3">0</td>
+<td id="T_a41b1_row3_col4" class="data row3 col4">0</td>
+<td id="T_a41b1_row3_col5" class="data row3 col5">0</td>
+<td id="T_a41b1_row3_col6" class="data row3 col6">0</td>
+<td id="T_a41b1_row3_col7" class="data row3 col7">0</td>
+<td id="T_a41b1_row3_col8" class="data row3 col8">0</td>
+<td id="T_a41b1_row3_col9" class="data row3 col9">0</td>
+<td id="T_a41b1_row3_col10" class="data row3 col10">0</td>
+<td id="T_a41b1_row3_col11" class="data row3 col11">0</td>
+<td id="T_a41b1_row3_col12" class="data row3 col12">0</td>
+<td id="T_a41b1_row3_col13" class="data row3 col13">0</td>
+<td id="T_a41b1_row3_col14" class="data row3 col14">0</td>
+<td id="T_a41b1_row3_col15" class="data row3 col15">0</td>
+<td id="T_a41b1_row3_col16" class="data row3 col16">0</td>
+<td id="T_a41b1_row3_col17" class="data row3 col17">0</td>
+<td id="T_a41b1_row3_col18" class="data row3 col18">0</td>
+<td id="T_a41b1_row3_col19" class="data row3 col19">0</td>
+<td id="T_a41b1_row3_col20" class="data row3 col20">0</td>
+<td id="T_a41b1_row3_col21" class="data row3 col21">0</td>
+<td id="T_a41b1_row3_col22" class="data row3 col22">0</td>
+<td id="T_a41b1_row3_col23" class="data row3 col23">0</td>
+<td id="T_a41b1_row3_col24" class="data row3 col24">0</td>
+<td id="T_a41b1_row3_col25" class="data row3 col25">0</td>
+<td id="T_a41b1_row3_col26" class="data row3 col26">0</td>
+<td id="T_a41b1_row3_col27" class="data row3 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_61ead_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_61ead_row4_col0" class="data row4 col0">0</td>
-<td id="T_61ead_row4_col1" class="data row4 col1">0</td>
-<td id="T_61ead_row4_col2" class="data row4 col2">0</td>
-<td id="T_61ead_row4_col3" class="data row4 col3">0</td>
-<td id="T_61ead_row4_col4" class="data row4 col4">0</td>
-<td id="T_61ead_row4_col5" class="data row4 col5">0</td>
-<td id="T_61ead_row4_col6" class="data row4 col6">0</td>
-<td id="T_61ead_row4_col7" class="data row4 col7">0</td>
-<td id="T_61ead_row4_col8" class="data row4 col8">0</td>
-<td id="T_61ead_row4_col9" class="data row4 col9">0</td>
-<td id="T_61ead_row4_col10" class="data row4 col10">0</td>
-<td id="T_61ead_row4_col11" class="data row4 col11">0</td>
-<td id="T_61ead_row4_col12" class="data row4 col12">0</td>
-<td id="T_61ead_row4_col13" class="data row4 col13">0</td>
-<td id="T_61ead_row4_col14" class="data row4 col14">0</td>
-<td id="T_61ead_row4_col15" class="data row4 col15">0</td>
-<td id="T_61ead_row4_col16" class="data row4 col16">0</td>
-<td id="T_61ead_row4_col17" class="data row4 col17">0</td>
-<td id="T_61ead_row4_col18" class="data row4 col18">0</td>
-<td id="T_61ead_row4_col19" class="data row4 col19">0</td>
-<td id="T_61ead_row4_col20" class="data row4 col20">0</td>
-<td id="T_61ead_row4_col21" class="data row4 col21">0</td>
-<td id="T_61ead_row4_col22" class="data row4 col22">0</td>
-<td id="T_61ead_row4_col23" class="data row4 col23">0</td>
-<td id="T_61ead_row4_col24" class="data row4 col24">0</td>
-<td id="T_61ead_row4_col25" class="data row4 col25">0</td>
-<td id="T_61ead_row4_col26" class="data row4 col26">0</td>
-<td id="T_61ead_row4_col27" class="data row4 col27">0</td>
+<td id="T_a41b1_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_a41b1_row4_col0" class="data row4 col0">0</td>
+<td id="T_a41b1_row4_col1" class="data row4 col1">0</td>
+<td id="T_a41b1_row4_col2" class="data row4 col2">0</td>
+<td id="T_a41b1_row4_col3" class="data row4 col3">0</td>
+<td id="T_a41b1_row4_col4" class="data row4 col4">0</td>
+<td id="T_a41b1_row4_col5" class="data row4 col5">0</td>
+<td id="T_a41b1_row4_col6" class="data row4 col6">0</td>
+<td id="T_a41b1_row4_col7" class="data row4 col7">0</td>
+<td id="T_a41b1_row4_col8" class="data row4 col8">0</td>
+<td id="T_a41b1_row4_col9" class="data row4 col9">0</td>
+<td id="T_a41b1_row4_col10" class="data row4 col10">0</td>
+<td id="T_a41b1_row4_col11" class="data row4 col11">0</td>
+<td id="T_a41b1_row4_col12" class="data row4 col12">0</td>
+<td id="T_a41b1_row4_col13" class="data row4 col13">0</td>
+<td id="T_a41b1_row4_col14" class="data row4 col14">0</td>
+<td id="T_a41b1_row4_col15" class="data row4 col15">0</td>
+<td id="T_a41b1_row4_col16" class="data row4 col16">0</td>
+<td id="T_a41b1_row4_col17" class="data row4 col17">0</td>
+<td id="T_a41b1_row4_col18" class="data row4 col18">0</td>
+<td id="T_a41b1_row4_col19" class="data row4 col19">0</td>
+<td id="T_a41b1_row4_col20" class="data row4 col20">0</td>
+<td id="T_a41b1_row4_col21" class="data row4 col21">0</td>
+<td id="T_a41b1_row4_col22" class="data row4 col22">0</td>
+<td id="T_a41b1_row4_col23" class="data row4 col23">0</td>
+<td id="T_a41b1_row4_col24" class="data row4 col24">0</td>
+<td id="T_a41b1_row4_col25" class="data row4 col25">0</td>
+<td id="T_a41b1_row4_col26" class="data row4 col26">0</td>
+<td id="T_a41b1_row4_col27" class="data row4 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_61ead_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_61ead_row5_col0" class="data row5 col0">0</td>
-<td id="T_61ead_row5_col1" class="data row5 col1">0</td>
-<td id="T_61ead_row5_col2" class="data row5 col2">0</td>
-<td id="T_61ead_row5_col3" class="data row5 col3">12</td>
-<td id="T_61ead_row5_col4" class="data row5 col4">99</td>
-<td id="T_61ead_row5_col5" class="data row5 col5">91</td>
-<td id="T_61ead_row5_col6" class="data row5 col6">142</td>
-<td id="T_61ead_row5_col7" class="data row5 col7">155</td>
-<td id="T_61ead_row5_col8" class="data row5 col8">246</td>
-<td id="T_61ead_row5_col9" class="data row5 col9">182</td>
-<td id="T_61ead_row5_col10" class="data row5 col10">155</td>
-<td id="T_61ead_row5_col11" class="data row5 col11">155</td>
-<td id="T_61ead_row5_col12" class="data row5 col12">155</td>
-<td id="T_61ead_row5_col13" class="data row5 col13">155</td>
-<td id="T_61ead_row5_col14" class="data row5 col14">131</td>
-<td id="T_61ead_row5_col15" class="data row5 col15">52</td>
-<td id="T_61ead_row5_col16" class="data row5 col16">0</td>
-<td id="T_61ead_row5_col17" class="data row5 col17">0</td>
-<td id="T_61ead_row5_col18" class="data row5 col18">0</td>
-<td id="T_61ead_row5_col19" class="data row5 col19">0</td>
-<td id="T_61ead_row5_col20" class="data row5 col20">0</td>
-<td id="T_61ead_row5_col21" class="data row5 col21">0</td>
-<td id="T_61ead_row5_col22" class="data row5 col22">0</td>
-<td id="T_61ead_row5_col23" class="data row5 col23">0</td>
-<td id="T_61ead_row5_col24" class="data row5 col24">0</td>
-<td id="T_61ead_row5_col25" class="data row5 col25">0</td>
-<td id="T_61ead_row5_col26" class="data row5 col26">0</td>
-<td id="T_61ead_row5_col27" class="data row5 col27">0</td>
+<td id="T_a41b1_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_a41b1_row5_col0" class="data row5 col0">0</td>
+<td id="T_a41b1_row5_col1" class="data row5 col1">0</td>
+<td id="T_a41b1_row5_col2" class="data row5 col2">0</td>
+<td id="T_a41b1_row5_col3" class="data row5 col3">12</td>
+<td id="T_a41b1_row5_col4" class="data row5 col4">99</td>
+<td id="T_a41b1_row5_col5" class="data row5 col5">91</td>
+<td id="T_a41b1_row5_col6" class="data row5 col6">142</td>
+<td id="T_a41b1_row5_col7" class="data row5 col7">155</td>
+<td id="T_a41b1_row5_col8" class="data row5 col8">246</td>
+<td id="T_a41b1_row5_col9" class="data row5 col9">182</td>
+<td id="T_a41b1_row5_col10" class="data row5 col10">155</td>
+<td id="T_a41b1_row5_col11" class="data row5 col11">155</td>
+<td id="T_a41b1_row5_col12" class="data row5 col12">155</td>
+<td id="T_a41b1_row5_col13" class="data row5 col13">155</td>
+<td id="T_a41b1_row5_col14" class="data row5 col14">131</td>
+<td id="T_a41b1_row5_col15" class="data row5 col15">52</td>
+<td id="T_a41b1_row5_col16" class="data row5 col16">0</td>
+<td id="T_a41b1_row5_col17" class="data row5 col17">0</td>
+<td id="T_a41b1_row5_col18" class="data row5 col18">0</td>
+<td id="T_a41b1_row5_col19" class="data row5 col19">0</td>
+<td id="T_a41b1_row5_col20" class="data row5 col20">0</td>
+<td id="T_a41b1_row5_col21" class="data row5 col21">0</td>
+<td id="T_a41b1_row5_col22" class="data row5 col22">0</td>
+<td id="T_a41b1_row5_col23" class="data row5 col23">0</td>
+<td id="T_a41b1_row5_col24" class="data row5 col24">0</td>
+<td id="T_a41b1_row5_col25" class="data row5 col25">0</td>
+<td id="T_a41b1_row5_col26" class="data row5 col26">0</td>
+<td id="T_a41b1_row5_col27" class="data row5 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_61ead_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_61ead_row6_col0" class="data row6 col0">0</td>
-<td id="T_61ead_row6_col1" class="data row6 col1">0</td>
-<td id="T_61ead_row6_col2" class="data row6 col2">0</td>
-<td id="T_61ead_row6_col3" class="data row6 col3">138</td>
-<td id="T_61ead_row6_col4" class="data row6 col4">254</td>
-<td id="T_61ead_row6_col5" class="data row6 col5">254</td>
-<td id="T_61ead_row6_col6" class="data row6 col6">254</td>
-<td id="T_61ead_row6_col7" class="data row6 col7">254</td>
-<td id="T_61ead_row6_col8" class="data row6 col8">254</td>
-<td id="T_61ead_row6_col9" class="data row6 col9">254</td>
-<td id="T_61ead_row6_col10" class="data row6 col10">254</td>
-<td id="T_61ead_row6_col11" class="data row6 col11">254</td>
-<td id="T_61ead_row6_col12" class="data row6 col12">254</td>
-<td id="T_61ead_row6_col13" class="data row6 col13">254</td>
-<td id="T_61ead_row6_col14" class="data row6 col14">254</td>
-<td id="T_61ead_row6_col15" class="data row6 col15">252</td>
-<td id="T_61ead_row6_col16" class="data row6 col16">210</td>
-<td id="T_61ead_row6_col17" class="data row6 col17">122</td>
-<td id="T_61ead_row6_col18" class="data row6 col18">33</td>
-<td id="T_61ead_row6_col19" class="data row6 col19">0</td>
-<td id="T_61ead_row6_col20" class="data row6 col20">0</td>
-<td id="T_61ead_row6_col21" class="data row6 col21">0</td>
-<td id="T_61ead_row6_col22" class="data row6 col22">0</td>
-<td id="T_61ead_row6_col23" class="data row6 col23">0</td>
-<td id="T_61ead_row6_col24" class="data row6 col24">0</td>
-<td id="T_61ead_row6_col25" class="data row6 col25">0</td>
-<td id="T_61ead_row6_col26" class="data row6 col26">0</td>
-<td id="T_61ead_row6_col27" class="data row6 col27">0</td>
+<td id="T_a41b1_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_a41b1_row6_col0" class="data row6 col0">0</td>
+<td id="T_a41b1_row6_col1" class="data row6 col1">0</td>
+<td id="T_a41b1_row6_col2" class="data row6 col2">0</td>
+<td id="T_a41b1_row6_col3" class="data row6 col3">138</td>
+<td id="T_a41b1_row6_col4" class="data row6 col4">254</td>
+<td id="T_a41b1_row6_col5" class="data row6 col5">254</td>
+<td id="T_a41b1_row6_col6" class="data row6 col6">254</td>
+<td id="T_a41b1_row6_col7" class="data row6 col7">254</td>
+<td id="T_a41b1_row6_col8" class="data row6 col8">254</td>
+<td id="T_a41b1_row6_col9" class="data row6 col9">254</td>
+<td id="T_a41b1_row6_col10" class="data row6 col10">254</td>
+<td id="T_a41b1_row6_col11" class="data row6 col11">254</td>
+<td id="T_a41b1_row6_col12" class="data row6 col12">254</td>
+<td id="T_a41b1_row6_col13" class="data row6 col13">254</td>
+<td id="T_a41b1_row6_col14" class="data row6 col14">254</td>
+<td id="T_a41b1_row6_col15" class="data row6 col15">252</td>
+<td id="T_a41b1_row6_col16" class="data row6 col16">210</td>
+<td id="T_a41b1_row6_col17" class="data row6 col17">122</td>
+<td id="T_a41b1_row6_col18" class="data row6 col18">33</td>
+<td id="T_a41b1_row6_col19" class="data row6 col19">0</td>
+<td id="T_a41b1_row6_col20" class="data row6 col20">0</td>
+<td id="T_a41b1_row6_col21" class="data row6 col21">0</td>
+<td id="T_a41b1_row6_col22" class="data row6 col22">0</td>
+<td id="T_a41b1_row6_col23" class="data row6 col23">0</td>
+<td id="T_a41b1_row6_col24" class="data row6 col24">0</td>
+<td id="T_a41b1_row6_col25" class="data row6 col25">0</td>
+<td id="T_a41b1_row6_col26" class="data row6 col26">0</td>
+<td id="T_a41b1_row6_col27" class="data row6 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_61ead_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_61ead_row7_col0" class="data row7 col0">0</td>
-<td id="T_61ead_row7_col1" class="data row7 col1">0</td>
-<td id="T_61ead_row7_col2" class="data row7 col2">0</td>
-<td id="T_61ead_row7_col3" class="data row7 col3">220</td>
-<td id="T_61ead_row7_col4" class="data row7 col4">254</td>
-<td id="T_61ead_row7_col5" class="data row7 col5">254</td>
-<td id="T_61ead_row7_col6" class="data row7 col6">254</td>
-<td id="T_61ead_row7_col7" class="data row7 col7">235</td>
-<td id="T_61ead_row7_col8" class="data row7 col8">189</td>
-<td id="T_61ead_row7_col9" class="data row7 col9">189</td>
-<td id="T_61ead_row7_col10" class="data row7 col10">189</td>
-<td id="T_61ead_row7_col11" class="data row7 col11">189</td>
-<td id="T_61ead_row7_col12" class="data row7 col12">150</td>
-<td id="T_61ead_row7_col13" class="data row7 col13">189</td>
-<td id="T_61ead_row7_col14" class="data row7 col14">205</td>
-<td id="T_61ead_row7_col15" class="data row7 col15">254</td>
-<td id="T_61ead_row7_col16" class="data row7 col16">254</td>
-<td id="T_61ead_row7_col17" class="data row7 col17">254</td>
-<td id="T_61ead_row7_col18" class="data row7 col18">75</td>
-<td id="T_61ead_row7_col19" class="data row7 col19">0</td>
-<td id="T_61ead_row7_col20" class="data row7 col20">0</td>
-<td id="T_61ead_row7_col21" class="data row7 col21">0</td>
-<td id="T_61ead_row7_col22" class="data row7 col22">0</td>
-<td id="T_61ead_row7_col23" class="data row7 col23">0</td>
-<td id="T_61ead_row7_col24" class="data row7 col24">0</td>
-<td id="T_61ead_row7_col25" class="data row7 col25">0</td>
-<td id="T_61ead_row7_col26" class="data row7 col26">0</td>
-<td id="T_61ead_row7_col27" class="data row7 col27">0</td>
+<td id="T_a41b1_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_a41b1_row7_col0" class="data row7 col0">0</td>
+<td id="T_a41b1_row7_col1" class="data row7 col1">0</td>
+<td id="T_a41b1_row7_col2" class="data row7 col2">0</td>
+<td id="T_a41b1_row7_col3" class="data row7 col3">220</td>
+<td id="T_a41b1_row7_col4" class="data row7 col4">254</td>
+<td id="T_a41b1_row7_col5" class="data row7 col5">254</td>
+<td id="T_a41b1_row7_col6" class="data row7 col6">254</td>
+<td id="T_a41b1_row7_col7" class="data row7 col7">235</td>
+<td id="T_a41b1_row7_col8" class="data row7 col8">189</td>
+<td id="T_a41b1_row7_col9" class="data row7 col9">189</td>
+<td id="T_a41b1_row7_col10" class="data row7 col10">189</td>
+<td id="T_a41b1_row7_col11" class="data row7 col11">189</td>
+<td id="T_a41b1_row7_col12" class="data row7 col12">150</td>
+<td id="T_a41b1_row7_col13" class="data row7 col13">189</td>
+<td id="T_a41b1_row7_col14" class="data row7 col14">205</td>
+<td id="T_a41b1_row7_col15" class="data row7 col15">254</td>
+<td id="T_a41b1_row7_col16" class="data row7 col16">254</td>
+<td id="T_a41b1_row7_col17" class="data row7 col17">254</td>
+<td id="T_a41b1_row7_col18" class="data row7 col18">75</td>
+<td id="T_a41b1_row7_col19" class="data row7 col19">0</td>
+<td id="T_a41b1_row7_col20" class="data row7 col20">0</td>
+<td id="T_a41b1_row7_col21" class="data row7 col21">0</td>
+<td id="T_a41b1_row7_col22" class="data row7 col22">0</td>
+<td id="T_a41b1_row7_col23" class="data row7 col23">0</td>
+<td id="T_a41b1_row7_col24" class="data row7 col24">0</td>
+<td id="T_a41b1_row7_col25" class="data row7 col25">0</td>
+<td id="T_a41b1_row7_col26" class="data row7 col26">0</td>
+<td id="T_a41b1_row7_col27" class="data row7 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_61ead_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_61ead_row8_col0" class="data row8 col0">0</td>
-<td id="T_61ead_row8_col1" class="data row8 col1">0</td>
-<td id="T_61ead_row8_col2" class="data row8 col2">0</td>
-<td id="T_61ead_row8_col3" class="data row8 col3">35</td>
-<td id="T_61ead_row8_col4" class="data row8 col4">74</td>
-<td id="T_61ead_row8_col5" class="data row8 col5">35</td>
-<td id="T_61ead_row8_col6" class="data row8 col6">35</td>
-<td id="T_61ead_row8_col7" class="data row8 col7">25</td>
-<td id="T_61ead_row8_col8" class="data row8 col8">0</td>
-<td id="T_61ead_row8_col9" class="data row8 col9">0</td>
-<td id="T_61ead_row8_col10" class="data row8 col10">0</td>
-<td id="T_61ead_row8_col11" class="data row8 col11">0</td>
-<td id="T_61ead_row8_col12" class="data row8 col12">0</td>
-<td id="T_61ead_row8_col13" class="data row8 col13">0</td>
-<td id="T_61ead_row8_col14" class="data row8 col14">13</td>
-<td id="T_61ead_row8_col15" class="data row8 col15">224</td>
-<td id="T_61ead_row8_col16" class="data row8 col16">254</td>
-<td id="T_61ead_row8_col17" class="data row8 col17">254</td>
-<td id="T_61ead_row8_col18" class="data row8 col18">153</td>
-<td id="T_61ead_row8_col19" class="data row8 col19">0</td>
-<td id="T_61ead_row8_col20" class="data row8 col20">0</td>
-<td id="T_61ead_row8_col21" class="data row8 col21">0</td>
-<td id="T_61ead_row8_col22" class="data row8 col22">0</td>
-<td id="T_61ead_row8_col23" class="data row8 col23">0</td>
-<td id="T_61ead_row8_col24" class="data row8 col24">0</td>
-<td id="T_61ead_row8_col25" class="data row8 col25">0</td>
-<td id="T_61ead_row8_col26" class="data row8 col26">0</td>
-<td id="T_61ead_row8_col27" class="data row8 col27">0</td>
+<td id="T_a41b1_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_a41b1_row8_col0" class="data row8 col0">0</td>
+<td id="T_a41b1_row8_col1" class="data row8 col1">0</td>
+<td id="T_a41b1_row8_col2" class="data row8 col2">0</td>
+<td id="T_a41b1_row8_col3" class="data row8 col3">35</td>
+<td id="T_a41b1_row8_col4" class="data row8 col4">74</td>
+<td id="T_a41b1_row8_col5" class="data row8 col5">35</td>
+<td id="T_a41b1_row8_col6" class="data row8 col6">35</td>
+<td id="T_a41b1_row8_col7" class="data row8 col7">25</td>
+<td id="T_a41b1_row8_col8" class="data row8 col8">0</td>
+<td id="T_a41b1_row8_col9" class="data row8 col9">0</td>
+<td id="T_a41b1_row8_col10" class="data row8 col10">0</td>
+<td id="T_a41b1_row8_col11" class="data row8 col11">0</td>
+<td id="T_a41b1_row8_col12" class="data row8 col12">0</td>
+<td id="T_a41b1_row8_col13" class="data row8 col13">0</td>
+<td id="T_a41b1_row8_col14" class="data row8 col14">13</td>
+<td id="T_a41b1_row8_col15" class="data row8 col15">224</td>
+<td id="T_a41b1_row8_col16" class="data row8 col16">254</td>
+<td id="T_a41b1_row8_col17" class="data row8 col17">254</td>
+<td id="T_a41b1_row8_col18" class="data row8 col18">153</td>
+<td id="T_a41b1_row8_col19" class="data row8 col19">0</td>
+<td id="T_a41b1_row8_col20" class="data row8 col20">0</td>
+<td id="T_a41b1_row8_col21" class="data row8 col21">0</td>
+<td id="T_a41b1_row8_col22" class="data row8 col22">0</td>
+<td id="T_a41b1_row8_col23" class="data row8 col23">0</td>
+<td id="T_a41b1_row8_col24" class="data row8 col24">0</td>
+<td id="T_a41b1_row8_col25" class="data row8 col25">0</td>
+<td id="T_a41b1_row8_col26" class="data row8 col26">0</td>
+<td id="T_a41b1_row8_col27" class="data row8 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_61ead_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_61ead_row9_col0" class="data row9 col0">0</td>
-<td id="T_61ead_row9_col1" class="data row9 col1">0</td>
-<td id="T_61ead_row9_col2" class="data row9 col2">0</td>
-<td id="T_61ead_row9_col3" class="data row9 col3">0</td>
-<td id="T_61ead_row9_col4" class="data row9 col4">0</td>
-<td id="T_61ead_row9_col5" class="data row9 col5">0</td>
-<td id="T_61ead_row9_col6" class="data row9 col6">0</td>
-<td id="T_61ead_row9_col7" class="data row9 col7">0</td>
-<td id="T_61ead_row9_col8" class="data row9 col8">0</td>
-<td id="T_61ead_row9_col9" class="data row9 col9">0</td>
-<td id="T_61ead_row9_col10" class="data row9 col10">0</td>
-<td id="T_61ead_row9_col11" class="data row9 col11">0</td>
-<td id="T_61ead_row9_col12" class="data row9 col12">0</td>
-<td id="T_61ead_row9_col13" class="data row9 col13">0</td>
-<td id="T_61ead_row9_col14" class="data row9 col14">90</td>
-<td id="T_61ead_row9_col15" class="data row9 col15">254</td>
-<td id="T_61ead_row9_col16" class="data row9 col16">254</td>
-<td id="T_61ead_row9_col17" class="data row9 col17">247</td>
-<td id="T_61ead_row9_col18" class="data row9 col18">53</td>
-<td id="T_61ead_row9_col19" class="data row9 col19">0</td>
-<td id="T_61ead_row9_col20" class="data row9 col20">0</td>
-<td id="T_61ead_row9_col21" class="data row9 col21">0</td>
-<td id="T_61ead_row9_col22" class="data row9 col22">0</td>
-<td id="T_61ead_row9_col23" class="data row9 col23">0</td>
-<td id="T_61ead_row9_col24" class="data row9 col24">0</td>
-<td id="T_61ead_row9_col25" class="data row9 col25">0</td>
-<td id="T_61ead_row9_col26" class="data row9 col26">0</td>
-<td id="T_61ead_row9_col27" class="data row9 col27">0</td>
+<td id="T_a41b1_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_a41b1_row9_col0" class="data row9 col0">0</td>
+<td id="T_a41b1_row9_col1" class="data row9 col1">0</td>
+<td id="T_a41b1_row9_col2" class="data row9 col2">0</td>
+<td id="T_a41b1_row9_col3" class="data row9 col3">0</td>
+<td id="T_a41b1_row9_col4" class="data row9 col4">0</td>
+<td id="T_a41b1_row9_col5" class="data row9 col5">0</td>
+<td id="T_a41b1_row9_col6" class="data row9 col6">0</td>
+<td id="T_a41b1_row9_col7" class="data row9 col7">0</td>
+<td id="T_a41b1_row9_col8" class="data row9 col8">0</td>
+<td id="T_a41b1_row9_col9" class="data row9 col9">0</td>
+<td id="T_a41b1_row9_col10" class="data row9 col10">0</td>
+<td id="T_a41b1_row9_col11" class="data row9 col11">0</td>
+<td id="T_a41b1_row9_col12" class="data row9 col12">0</td>
+<td id="T_a41b1_row9_col13" class="data row9 col13">0</td>
+<td id="T_a41b1_row9_col14" class="data row9 col14">90</td>
+<td id="T_a41b1_row9_col15" class="data row9 col15">254</td>
+<td id="T_a41b1_row9_col16" class="data row9 col16">254</td>
+<td id="T_a41b1_row9_col17" class="data row9 col17">247</td>
+<td id="T_a41b1_row9_col18" class="data row9 col18">53</td>
+<td id="T_a41b1_row9_col19" class="data row9 col19">0</td>
+<td id="T_a41b1_row9_col20" class="data row9 col20">0</td>
+<td id="T_a41b1_row9_col21" class="data row9 col21">0</td>
+<td id="T_a41b1_row9_col22" class="data row9 col22">0</td>
+<td id="T_a41b1_row9_col23" class="data row9 col23">0</td>
+<td id="T_a41b1_row9_col24" class="data row9 col24">0</td>
+<td id="T_a41b1_row9_col25" class="data row9 col25">0</td>
+<td id="T_a41b1_row9_col26" class="data row9 col26">0</td>
+<td id="T_a41b1_row9_col27" class="data row9 col27">0</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>Let’s define a kernel that detects horizontal edges in the image. The kernel is a 3x3 matrix with values that are designed to highlight horizontal edges.</p>
-<div id="05912cd6" class="cell" data-execution_count="3">
+<div id="5eb758f1" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> tensor([[<span class="op">-</span><span class="fl">1.</span>, <span class="op">-</span><span class="fl">1.</span>, <span class="op">-</span><span class="fl">1.</span>],</span>
@@ -798,14 +778,14 @@ Figure&nbsp;1: An example of kernel
 </details>
 </div>
 <p>This kernel will detect horizontal edges in the image by emphasizing the differences between the pixel values in the top and bottom rows of the kernel, we can also change the kernel to have the row of 1s at the top and -1s at the bottom, we can detect horizontal edges that go from dark to light, putting 1s and -1s in columns versus rows give us filters that detect vertical edges.</p>
-<div id="3ee6e78a" class="cell" data-execution_count="4">
+<div id="28a0cecf" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_kernel(row, col, kernel):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (im3_t[row<span class="op">-</span><span class="dv">1</span>:row<span class="op">+</span><span class="dv">2</span>,col<span class="op">-</span><span class="dv">1</span>:col<span class="op">+</span><span class="dv">2</span>] <span class="op">*</span> kernel).<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>For a more in-depth guide to convolution arithmetic, see <span class="citation" data-cites="dumoulin2016guide">Dumoulin and Visin (<a href="#ref-dumoulin2016guide" role="doc-biblioref">2016</a>)</span>.</p>
+<p>For a more in-depth guide to convolution arithmetic, see the paper <a href="https://arxiv.org/abs/1603.07285">A guide to convolution arithmetic for deep learning</a> (Dumoulin, 2013)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 </section>
 <section id="strides-and-padding" class="level2">
 <h2 class="anchored" data-anchor-id="strides-and-padding">Strides and Padding</h2>
@@ -836,7 +816,7 @@ p = ks//2
 <p>In this example, we create a convolution layer with 1 input channel (grayscale image), 30 output channels (feature maps), a kernel size of 3x3, a stride of 1, and padding of 1. We also apply the ReLU activation function after the first convolution layer. One interesting property to note here is that we do not need to specify the input size when creating the convolution layer because a convolution is applied over each pixel automatically.</p>
 <p>When creating <code>cnn</code> as above, we see that the output shape is the same as the input shape, which is (28, 28) (This is because we have used padding to preserve the spatial dimensions of the input image in the output feature map). It is not interesting for classification task since we need only single output activation per input image.</p>
 <p>To deal with this, we can use several stride-2 convolution layers to reduce the spatial dimensions of the input image in the output feature map. For example, we can use two stride-2 convolution layers to reduce the spatial dimensions of the input image from (28, 28) to (7, 7), (4x4), (2x2) and then 1.</p>
-<div id="c2967e83" class="cell" data-execution_count="7">
+<div id="ca62e873" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conv(ni, nf, ks<span class="op">=</span><span class="dv">3</span>, act<span class="op">=</span><span class="va">True</span>):</span>
@@ -846,7 +826,7 @@ p = ks//2
 </details>
 </div>
 <p>Then, we create a simple <code>cnn</code> which consists of several convolution layers with stride of 2, kernel size of 3 to reduce the spatial dimensions of the input image in the output feature map. We also flatten the output feature map before passing it to the final classification layer.:</p>
-<div id="73b8715f" class="cell" data-execution_count="8">
+<div id="7912f557" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>simple_cnn <span class="op">=</span> sequential(</span>
@@ -860,7 +840,7 @@ p = ks//2
 </details>
 </div>
 <p>To test our <code>simple_cnn</code>, we can train a classification model from a batch of images from the MNIST dataset to see how effective of the feature extraction it is. To do this, we build a <code>Learner</code> from <code>simple_cnn</code> and dataset <code>dls</code> as follows:</p>
-<div id="b2e787c3" class="cell" data-execution_count="9">
+<div id="54544f4d" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, simple_cnn, loss_func<span class="op">=</span>F.cross_entropy, metrics<span class="op">=</span>accuracy)</span>
@@ -919,8 +899,8 @@ Total params: 6,722
 Total trainable params: 6,722
 Total non-trainable params: 0
 
-Optimizer used: &lt;function Adam at 0x7f9252329a80&gt;
-Loss function: &lt;function cross_entropy at 0x7f92c2125120&gt;
+Optimizer used: &lt;function Adam at 0x7f2791719a80&gt;
+Loss function: &lt;function cross_entropy at 0x7f2801519120&gt;
 
 Callbacks:
   - TrainEvalCallback
@@ -931,7 +911,7 @@ Callbacks:
 </div>
 <p>As we can see, the output of the final Conv2D layer is 64x2x1x1, that’s why we need to flatten it before passing it to the final classification layer.</p>
 <p>Afterwards, let’s train the model with low learning rate and 2 epochs using <code>fit_one_cycle</code> function.</p>
-<div id="4d6eaa88" class="cell" data-execution_count="10">
+<div id="18353b84" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="fl">1e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -968,16 +948,16 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.083458</td>
-<td>0.045043</td>
-<td>0.987242</td>
+<td>0.065424</td>
+<td>0.048044</td>
+<td>0.984789</td>
 <td>00:01</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.020140</td>
-<td>0.030831</td>
-<td>0.989205</td>
+<td>0.019719</td>
+<td>0.021269</td>
+<td>0.993131</td>
 <td>00:01</td>
 </tr>
 </tbody>
@@ -989,7 +969,7 @@ Callbacks:
 <section id="improving-training-stability" class="level2">
 <h2 class="anchored" data-anchor-id="improving-training-stability">Improving Training Stability</h2>
 <p>So far, we have created a simple 2D CNN for image classification task over the MNIST dataset and achieved around 98% accuracy. In this section, we will talk about several techniques that we can use to improve the training stability and performance of our model. To make it more interesting, we will train a CNN model to recognize 10 digits from the MNIST dataset and apply several techniques to improve its performance.</p>
-<div id="c8da666d" class="cell" data-cache="true" data-message="false" data-execution_count="11">
+<div id="81a4053f" class="cell" data-cache="true" data-message="false" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1003,7 +983,7 @@ Callbacks:
 <p>One simple tweak that we can apply to improve recognition accuracy is to use more activation functions in our <code>CNN</code>, as we need more <code>filters</code> to learn more complex patterns in 10-digit MNIST samples. To achieve this, we add one more activation function after each convolution layer in our <code>simple_cnn</code> architecture. As a result, the number of activations ends up being doubled.</p>
 <p>However, adding more activation functions can lead to a subtle (training) problem. Specifically, when we apply 3x3-pixel kernel to the first convolution layer with 4 output filters, we embed information from 9 input pixels into 4 output pixels. While doubling the number of activation functions, we have the computation of 8 output pixels from 9 input pixels. It makes neural networks more difficult to learn the features while mapping from 9 input pixels to 8 output pixels than from 9 input pixels to 4 output pixels.</p>
 <p>To deal with this issue, we can increase the kernel size from 3 to 5, which allows us to embed information from 25 input pixels into 8 output pixels. This makes it easier for the neural network to learn the features while mapping from 25 input pixels to 8 output pixels.</p>
-<div id="f81ef7ca" class="cell" data-execution_count="12">
+<div id="5a621742" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simple_cnn():</span>
@@ -1018,7 +998,7 @@ Callbacks:
 </details>
 </div>
 <p>To train the model more quickly, we can set learning rate to 0.06 and use <code>ActivationStats</code> callback to monitor the activation statistics during training.</p>
-<div id="301098d4" class="cell" data-execution_count="13">
+<div id="1874dee3" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit(epochs<span class="op">=</span><span class="dv">1</span>):</span>
@@ -1064,17 +1044,17 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>2.308261</td>
-<td>2.303150</td>
-<td>0.098000</td>
-<td>00:09</td>
+<td>0.745531</td>
+<td>0.789573</td>
+<td>0.738500</td>
+<td>00:08</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>Surprisingly, the model is not trained at all, the accuracy is just around 10% (random guess). To findout what went wrong, we can plot the activation statistics of the first/penultimate convolution layers using <code>ActivationStats</code> callback. It shows that the activations of the first convolution layer are all zeros, and it carries over the next layer, meaning that the model is not learning anything.</p>
-<div id="fbe99c5d" class="cell" data-execution_count="14">
+<div id="7c31f5ed" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.callback.hook <span class="im">import</span> <span class="op">*</span></span>
@@ -1085,20 +1065,20 @@ Callbacks:
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-1.png" width="962" height="283" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-15-output-1.png" width="954" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-2.png" width="954" height="283" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-15-output-2.png" width="941" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>To fix this issue, we can try several techniques to improve the training stability of our model. ### Increase Batch Size To make training more stable, we can try to increase the batch size, because larger batch sizes prodive more accurate estimates of the gradients, which can help to reduce the noise in the training process. On the downside, larger batch sizes require more memory and less batches per epochs, which bring less opportunities for the model to update its weights, and also it is subject to hardware capabilities.</p>
-<div id="266a78f5" class="cell" data-execution_count="15">
+<div id="c813ec7b" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> get_dls(bs<span class="op">=</span><span class="dv">512</span>)</span>
@@ -1136,20 +1116,20 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>2.312627</td>
-<td>2.302824</td>
-<td>0.113500</td>
+<td>0.333724</td>
+<td>0.179789</td>
+<td>0.946100</td>
 <td>00:06</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="3c03fab1" class="cell" data-execution_count="16">
+<div id="39381117" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-17-output-1.png" width="954" height="283" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-17-output-1.png" width="941" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1159,17 +1139,18 @@ Callbacks:
 <section id="learning-rate-finder" class="level3">
 <h3 class="anchored" data-anchor-id="learning-rate-finder">Learning Rate Finder</h3>
 <p>It is not favorable that we start training with a high learning rate for a bad initialization of weights. Also, we do not want to end training with a high learning rate either, because it can cause the model to overshoot the optimal weights.</p>
-<p>One way to deal with this issue has been proposed by Leslie Smith in his paper <a href="https://arxiv.org/abs/1708.07120">Cyclical Learning Rates for Training Neural Networks</a> (Smith, 2017)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The idea is to use a learning rate that varies cyclically between a lower and upper bound during training. This allows the model to:</p>
+<p>One way to deal with this issue has been proposed by Leslie Smith in his paper <a href="https://arxiv.org/abs/1708.07120">Cyclical Learning Rates for Training Neural Networks</a> (Smith, 2017)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The idea is to use a learning rate that varies cyclically between a lower and upper bound during training. This allows the model to:</p>
 <ul>
-<li><p>Explore different regions of the loss landscape and can help to avoid getting stuck in local minima (higher training rate skips over small local minima).</p></li>
-<li></li>
+<li><p>Explore different regions of the loss landscape and can help to avoid getting stuck in local minima (higher training rate helps to skip over small local minima).</p></li>
+<li><p>Improve generalization. Based on the fact that the training model with high learning rate tends to have diverging loss. If it is trained with that high learning rate for a while and it can find a good loss, it will find an area that generalizes well. Thus, a good strategy is to start with a low learning rate, where the loss does not diverge, and then allow optimizer to find smoother areas of parameters by going to higher learning rates. When the smoother areas are found, we can bring the learning rate down again to refine the weights. (i.e.&nbsp;<code>MomentumSGD</code> <a href="https://arxiv.org/pdf/1803.09820">A Disciplined Approach to Neural Network Hyper-Parameters: Part 1– LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY</a> (Smith, 2017)<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>)</p></li>
 </ul>
-<div id="36982990" class="cell" data-execution_count="17">
+<p>It is implemeted in <code>fastai</code> library as <code>fit_one_cycle</code> function.</p>
+<div id="fdebe398" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit(epochs<span class="op">=</span><span class="dv">1</span>):</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit(epochs<span class="op">=</span><span class="dv">1</span>, lr<span class="op">=</span><span class="fl">0.06</span>):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    learn <span class="op">=</span> Learner(dls, simple_cnn(), loss_func<span class="op">=</span>F.cross_entropy, metrics<span class="op">=</span>accuracy, cbs<span class="op">=</span>ActivationStats(with_hist<span class="op">=</span><span class="va">True</span>))</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    learn.fit_one_cycle(epochs, <span class="fl">0.06</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    learn.fit_one_cycle(epochs, lr)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> learn</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1206,16 +1187,17 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.204199</td>
-<td>0.075426</td>
-<td>0.974500</td>
+<td>0.221975</td>
+<td>0.078908</td>
+<td>0.975000</td>
 <td>00:06</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="dd572a29" class="cell" data-execution_count="18">
+<p>We can view the learning rate schedule and momentum during training by plotting the learning rate using <code>recorder.plot_sched</code> function.</p>
+<div id="526bec81" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>learn.recorder.plot_sched()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1228,9 +1210,165 @@ Callbacks:
 </div>
 </div>
 </div>
+<p>For <code>fit_one_cycle</code> function, there are several parameters that we can tune to improve the training stability and performance of our model, such as <code>lr_max</code>,<code>pct_start</code>, <code>div_factor</code>, and <code>final_div_factor</code>. For more details, see the <a href="https://docs.fast.ai/callback.schedule.html#fastai.callback.schedule.fit_one_cycle">fastai documentation</a>.</p>
+<p>To see what is happening to the activations of the penultimate convolution layer, we can plot the activation statistics again. Now, the percentage of dead activations (all zeros) is significantly reduced, and the model is finally learning.</p>
+<div id="8d33fd37" class="cell" data-execution_count="19">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-20-output-1.png" width="941" height="283" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As we paid attention to the activation statistics during training, near-zero activations appear ar the beginning of training and gradually decreases as the training progresses. It suggests that the model training is not smooth because of the cylical learning rate going up and down during the cycle.</p>
+<p>To solve this problem, we can use batch normalization technique.</p>
 </section>
 <section id="batch-normalization" class="level3">
 <h3 class="anchored" data-anchor-id="batch-normalization">Batch Normalization</h3>
+<p>As stated in <a href="https://arxiv.org/abs/1502.03167">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a> (Sergey Ioffe)<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, they talked about the problem that we have seen earlier:</p>
+<blockquote class="blockquote">
+<p>“Training Deep Neural Networks is complicated by the fact that the distribution of each layer’s inputs changes during training, as the parameters of the previous layers change. This slows down the training by requiring lower learning rates and careful parameter initialization, and makes it notoriously hard to train models with saturating nonlinearities.”</p>
+</blockquote>
+<p>To address this issue, they proposed a technique called <strong>batch normalization</strong>. &gt; “Making normalization a part of the model architecture and performing the normalization for each training mini-batch. Batch Normalization allows us to use much higher learning rates and be less careful about initialization.”</p>
+<p><strong>Batch normalization</strong> normalizes** the activations of each layer by averaging the means and standard deviations of the activations of a layer use those to normalize the activations. To further deal with situation when we need activation is high to make accurate prediction, they also introduced two learnable parameters per activation (i.e., <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\beta\)</span>), which are used to scale and shift the normalized activations. After normalization, the activations get a vector <span class="math inline">\(y\)</span>, and a batch normalization layer computes the output as follows: <span class="math inline">\(\gamma*y + \beta\)</span></p>
+<p>By doing so, our activations can have any mean and standard deviation, which are independent from the previous layer.</p>
+<div id="fig-bn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./imgs/batch_norm.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Batch Normalization
+</figcaption>
+</figure>
+</div>
+<p>To add batch normalization to our <code>simple_cnn</code>, we can use <code>nn.BatchNorm2d</code> class from PyTorch. We can add a batch normalization layer after each convolution layer in our <code>simple_cnn</code> architecture as follows:</p>
+<div id="a5d76de9" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conv(ni, nf, ks<span class="op">=</span><span class="dv">3</span>, act<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  layers <span class="op">=</span> [nn.Conv2d(ni, nf, stride<span class="op">=</span><span class="dv">2</span>, kernel_size<span class="op">=</span>ks, padding<span class="op">=</span>ks<span class="op">//</span><span class="dv">2</span>)]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  layers.append(nn.BatchNorm2d(nf))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> act: layers.append(nn.ReLU())</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> nn.Sequential(<span class="op">*</span>layers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="f59959e1" class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.134114</td>
+<td>0.057422</td>
+<td>0.986200</td>
+<td>00:06</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>As a result, the accuracy is improved and the model is able to achieve around 98.6% accuracy on the MNIST dataset. Compared to the previous results, we observe that the model tends to generalize better with batch normalization. One possible reason is that batch normalization adds some noise to the activations during training, which can force the model learning more robust to these variations.</p>
+<p>As some paper claimed that we should train with more epochs and larger learning rate when using batch normalization, we can try to train the model with 5 epochs and learning rate of 0.1.</p>
+<div id="ba30e735" class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.194603</td>
+<td>0.098067</td>
+<td>0.967400</td>
+<td>00:06</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.083216</td>
+<td>0.070085</td>
+<td>0.976700</td>
+<td>00:06</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.053030</td>
+<td>0.049988</td>
+<td>0.984000</td>
+<td>00:06</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0.032268</td>
+<td>0.028644</td>
+<td>0.991300</td>
+<td>00:06</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.016631</td>
+<td>0.023865</td>
+<td>0.992200</td>
+<td>00:06</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Great, at this point, the model is able to achieve around 99.2% accuracy on the digit recognition task on MNIST dataset, which is a significant improvement compared to the previous results.</p>
 </section>
 </section>
 </section>
@@ -1238,21 +1376,19 @@ Callbacks:
 <h1>Residual Networks (ResNet)</h1>
 </section>
 <section id="conclusions" class="level1">
-
-
+<h1>Conclusions</h1>
 
 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Conclusions</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-dumoulin2016guide" class="csl-entry" role="listitem">
-Dumoulin, Vincent, and Francesco Visin. 2016. <span>“A Guide to Convolution Arithmetic for Deep Learning.”</span> <a href="https://arxiv.org/abs/1603.07285">https://arxiv.org/abs/1603.07285</a>.
-</div>
-</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Smith, L. (2017). “Cyclical Learning Rates for Training Neural Networks”.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Dumoulin, V. (2016). “A guide to convolution arithmetic for deep learning”.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Smith, L. (2017). “Cyclical Learning Rates for Training Neural Networks”.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Smith, L. (2017). “A Disciplined Approach to Neural Network Hyper-Parameters: Part 1 LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY .<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Sergey, Ioffe. (2015). “Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
