@@ -89,7 +89,7 @@ def apply_kernel(row, col, kernel):
     return (im3_t[row-1:row+2,col-1:col+2] * kernel).sum()
 ```
 
-For a more in-depth guide to convolution arithmetic, see @dumoulin2016guide.
+For a more in-depth guide to convolution arithmetic, see the paper [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285) (Dumoulin, 2013)^[Dumoulin, V. (2016). "A guide to convolution arithmetic for deep learning".].
 
 
 ## Strides and Padding
@@ -272,7 +272,6 @@ learn = fit()
 
 ```{python}
 #| echo: false
-echo = false
 learn.activation_stats.plot_layer_stats(-2)
 ```
 
@@ -284,26 +283,80 @@ It is not favorable that we start training with a high learning rate for a bad i
 
 One way to deal with this issue has been proposed by Leslie Smith in his paper [Cyclical Learning Rates for Training Neural Networks](https://arxiv.org/abs/1708.07120) (Smith, 2017)^[Smith, L. (2017). "Cyclical Learning Rates for Training Neural Networks".]. The idea is to use a learning rate that varies cyclically between a lower and upper bound during training. This allows the model to:
 
-- Explore different regions of the loss landscape and can help to avoid getting stuck in local minima (higher training rate skips over small local minima).
+- Explore different regions of the loss landscape and can help to avoid getting stuck in local minima (higher training rate helps to skip over small local minima).
 
-- 
+- Improve generalization. Based on the fact that the training model with high learning rate tends to have diverging loss. If it is trained with that high learning rate for a while and it can find a good loss, it will find an area that generalizes well. Thus, a good strategy is to start with a low learning rate, where the loss does not diverge, and then allow optimizer to find smoother areas of parameters by going to higher learning rates. When the smoother areas are found, we can bring the learning rate down again to refine the weights. (i.e. `MomentumSGD` [A Disciplined Approach to Neural Network Hyper-Parameters: Part 1– LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY](https://arxiv.org/pdf/1803.09820) (Smith, 2017)^[Smith, L. (2017). "A Disciplined Approach to Neural Network Hyper-Parameters: Part  1 LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY .])
+
+
+It is implemeted in `fastai` library as `fit_one_cycle` function.
 
 ```{python}
-def fit(epochs=1):
+def fit(epochs=1, lr=0.06):
     learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
-    learn.fit_one_cycle(epochs, 0.06)
+    learn.fit_one_cycle(epochs, lr)
     return learn
 
 learn = fit()
 ```
 
+We can view the learning rate schedule and momentum during training by plotting the learning rate using `recorder.plot_sched` function.
 ```{python}
 learn.recorder.plot_sched()
 ```
 
+For `fit_one_cycle` function, there are several parameters that we can tune to improve the training stability and performance of our model, such as `lr_max`,`pct_start`, `div_factor`, and `final_div_factor`. For more details, see the [fastai documentation](https://docs.fast.ai/callback.schedule.html#fastai.callback.schedule.fit_one_cycle).
 
+
+To see what is happening to the activations of the penultimate convolution layer, we can plot the activation statistics again. Now, the percentage of dead activations (all zeros) is significantly reduced, and the model is finally learning.
+```{python}
+#| echo: false
+learn.activation_stats.plot_layer_stats(-2)
+```
+
+As we paid attention to the activation statistics during training, near-zero activations appear ar the beginning of training and gradually decreases as the training progresses. It suggests that the model training is not smooth because of the cylical learning rate going up and down during the cycle. 
+
+To solve this problem, we can use batch normalization technique.
 
 ### Batch Normalization
+As stated in [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167) (Sergey Ioffe)^[Sergey, Ioffe. (2015). "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.], they talked about the problem that we have seen earlier:
+
+> "Training Deep Neural Networks is complicated by the fact that the distribution of each layer's inputs changes during training, as the parameters of the previous layers change. This slows down the training by requiring lower learning rates and careful parameter initialization, and makes it notoriously hard to train models with saturating nonlinearities."
+
+To address this issue, they proposed a technique called **batch normalization**.
+> "Making normalization a part of the model architecture and performing the normalization for each training mini-batch. Batch Normalization allows us to use much higher learning rates and be less careful about initialization." 
+
+
+**Batch normalization** normalizes** the activations of each layer by averaging the means and standard deviations of the activations of a layer use those to normalize the activations. To further deal with situation when we need activation is high to make accurate prediction, they also introduced two learnable parameters per activation (i.e., $\gamma$ and $\beta$), which are used to scale and shift the normalized activations. After normalization, the activations get a vector $y$, and a batch normalization layer computes the output as follows: $\gamma*y + \beta$
+
+By doing so, our activations can have any mean and standard deviation, which are independent from the previous layer. 
+
+![Batch Normalization ](./imgs/batch_norm.png){#fig-bn fig-align="center"}
+
+To add batch normalization to our `simple_cnn`, we can use `nn.BatchNorm2d` class from PyTorch. We can add a batch normalization layer after each convolution layer in our `simple_cnn` architecture as follows:
+
+```{python}
+def conv(ni, nf, ks=3, act=True):
+  layers = [nn.Conv2d(ni, nf, stride=2, kernel_size=ks, padding=ks//2)]
+  layers.append(nn.BatchNorm2d(nf))
+  if act: layers.append(nn.ReLU())
+  return nn.Sequential(*layers)
+```
+
+
+```{python}
+#| echo: false
+learn=fit()
+```
+As a result, the accuracy is improved and the model is able to achieve around 98.6% accuracy on the MNIST dataset. Compared to the previous results, we observe that the model tends to generalize better with batch normalization. One possible reason is that batch normalization adds some noise to the activations during training, which can force the model learning more robust to these variations.
+
+As some paper claimed that we should train with more epochs and larger learning rate when using batch normalization, we can try to train the model with 5 epochs and learning rate of 0.1.
+
+```{python}
+#| echo: false
+learn=fit(5, 0.1)
+```
+
+Great, at this point, the model is able to achieve around 99.2% accuracy on the digit recognition task on MNIST dataset, which is a significant improvement compared to the previous results.
 
 # Residual Networks (ResNet)
 
