@@ -168,7 +168,7 @@ def conv(ni, nf, ks=3, act=True):
     return res
 ```
 
-Then, a simple `cnn` can be defined as follows:
+Then, we create a simple `cnn` which consists of several convolution layers with stride of 2, kernel size of 3 to reduce the spatial dimensions of the input image in the output feature map. We also flatten the output feature map before passing it to the final classification layer.:
 
 ```{python}
 simple_cnn = sequential(
@@ -181,7 +181,7 @@ simple_cnn = sequential(
 )
 ```
 
-Our `Leaner` which is built from `simple_cnn` and dataset `dls` can be given as follows:
+To test our `simple_cnn`, we can train a classification model from a batch of images from the MNIST dataset to see how effective of the feature extraction it is. To do this, we build a `Learner` from `simple_cnn` and dataset `dls` as follows:
 
 ```{python}
 learn = Learner(dls, simple_cnn, loss_func=F.cross_entropy, metrics=accuracy)
@@ -190,18 +190,118 @@ learn.summary()
 
 As we can see, the output of the final Conv2D layer is 64x2x1x1, that's why we need to flatten it before passing it to the final classification layer.
 
-Afterwards, let's train the model with low learning rate and more epochs to see how well it performs.
+Afterwards, let's train the model with low learning rate and 2 epochs using `fit_one_cycle` function.
 
 ```{python}
 learn.fit_one_cycle(2, 1e-2)
 ```
 
-Impressive, we are able to achieve over 99% accuracy on the classification task with MNIST dataset using simple CNN architecture (built from scratch).
+Impressive, we are able to achieve over 98% accuracy on the classification task with MNIST dataset using simple CNN architecture (built from scratch).
 
 ## Improving Training Stability
+So far, we have created a simple 2D CNN for image classification task over the MNIST dataset and achieved around 98% accuracy. In this section, we will talk about several techniques that we can use to improve the training stability and performance of our model. To make it more interesting, we will train a CNN model to recognize 10 digits from the MNIST dataset and apply several techniques to improve its performance.
+
+```{python}
+#| echo: false
+#| output: true
+#| eval: true
+#| warning: false
+#| message: false
+#| cache: true
+# path_mnist.ls()
+path= untar_data(URLs.MNIST)
+def get_dls(bs=64):
+  return DataBlock(
+      blocks=(ImageBlock(cls=PILImageBW), CategoryBlock),
+      get_items=get_image_files,
+      splitter=GrandparentSplitter('training', 'testing'),
+      get_y=parent_label,
+      # item_tfms=Resize(28),
+      batch_tfms=Normalize()
+  ).dataloaders(path, bs=bs)
+dls = get_dls()
+dls.show_batch(max_n=9, figsize=(4,4))
+```
+
+### Use more activation functions
+One simple tweak that we can apply to improve recognition accuracy is to use more activation functions in our `CNN`, as we need more `filters` to learn more complex patterns in 10-digit MNIST samples. To achieve this, we add one more activation function after each convolution layer in our `simple_cnn` architecture. As a result, the number of activations ends up being doubled.
+
+However, adding more activation functions can lead to a subtle (training) problem. Specifically, when we apply 3x3-pixel kernel to the first convolution layer with 4 output filters, we embed information from 9 input pixels into 4 output pixels. While doubling the number of activation functions, we have the computation of 8 output pixels from 9 input pixels. It makes neural networks more difficult to learn the features while mapping from 9 input pixels to 8 output pixels than from 9 input pixels to 4 output pixels.
+
+To deal with this issue, we can increase the kernel size from 3 to 5, which allows us to embed information from 25 input pixels into 8 output pixels. This makes it easier for the neural network to learn the features while mapping from 25 input pixels to 8 output pixels.
+
+
+```{python}
+def simple_cnn():
+  return sequential(
+    conv(1, 8, 5),   # Input: 28x28 -> Output: 14x14
+    conv(8, 16),  # Input: 14x14 -> Output: 7x7
+    conv(16, 32), # Input: 7x7 -> Output: 4x4
+    conv(32, 64), # Input: 4x4 -> Output: 2x2
+    conv(64, 10, act=False), # Input: 2x2 -> Output: 1x1
+    Flatten()
+)
+```
+
+To train the model more quickly, we can set learning rate to 0.06 and use `ActivationStats` callback to monitor the activation statistics during training.
+```{python}
+def fit(epochs=1):
+    learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
+    learn.fit(epochs, 0.06)
+    return learn
+
+learn = fit()
+```
+Surprisingly, the model is not trained at all, the accuracy is just around 10% (random guess). 
+To findout what went wrong, we can plot the activation statistics of the first/penultimate convolution layers using `ActivationStats` callback. 
+It shows that the activations of the first convolution layer are all zeros, and it carries over the next layer, meaning that the model is not learning anything.
+```{python}
+from fastai.callback.hook import *
+# learn.recorder.plot_loss()
+learn.activation_stats.plot_layer_stats(0)
+learn.activation_stats.plot_layer_stats(-2)
+```
+To fix this issue, we can try several techniques to improve the training stability of our model.
 ### Increase Batch Size
+To make training more stable, we can try to increase the batch size, because larger batch sizes prodive more accurate estimates of the gradients, which can help to reduce the noise in the training process. On the downside, larger batch sizes require more memory and less batches per epochs, which bring less opportunities for the model to update its weights, and also it is subject to hardware capabilities.
+
+```{python}
+dls = get_dls(bs=512)
+learn = fit()
+```
+
+```{python}
+#| echo: false
+echo = false
+learn.activation_stats.plot_layer_stats(-2)
+```
+
+Still, most of the activations are zeros, and the model is not learning anything when we change the batch size to 512 instead of 64.
 
 ### Learning Rate Finder
+
+It is not favorable that we start training with a high learning rate for a bad initialization of weights. Also, we do not want to end training with a high learning rate either, because it can cause the model to overshoot the optimal weights. 
+
+One way to deal with this issue has been proposed by Leslie Smith in his paper [Cyclical Learning Rates for Training Neural Networks](https://arxiv.org/abs/1708.07120) (Smith, 2017)^[Smith, L. (2017). "Cyclical Learning Rates for Training Neural Networks".]. The idea is to use a learning rate that varies cyclically between a lower and upper bound during training. This allows the model to:
+
+- Explore different regions of the loss landscape and can help to avoid getting stuck in local minima (higher training rate skips over small local minima).
+
+- 
+
+```{python}
+def fit(epochs=1):
+    learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
+    learn.fit_one_cycle(epochs, 0.06)
+    return learn
+
+learn = fit()
+```
+
+```{python}
+learn.recorder.plot_sched()
+```
+
+
 
 ### Batch Normalization
 
