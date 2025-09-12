@@ -599,7 +599,7 @@ learn = get_learner(rn50)
 learn.fit_one_cycle(25, 3e-3)
 ```
 
-The results that we have achieved is great with ResNet-50 model built from scratch (around 90% accuracy on `Imagenette` dataset with 224x224 pixel images after 25 epochs of training). 
+The results that we have achieved is great with ResNet-50 model built from scratch (around 86% accuracy on `Imagenette` dataset with 224x224 pixel images after 25 epochs of training). 
 
 ### Mixup Technique
 Finally, we can add `Mixup` technique to further improve the performance of our model. `Mixup` is a data augmentation technique that creates new training samples by mixing two random samples from the training set. This can help to improve the generalization of the model and reduce overfitting.
@@ -614,6 +614,7 @@ def get_learner(model):
 learn = get_learner(rn50)
 learn.fit_one_cycle(80, 3e-3)
 ```
+
 
 
 # Conclusions
