@@ -41,7 +41,17 @@ import torch.nn.functional as F
 path_imagenette=untar_data(URLs.IMAGENETTE)
 path_mnist=untar_data(URLs.MNIST_SAMPLE)
 im3 = Image.open(path_mnist/'train'/'3'/'12.png')
-show_image(im3)
+# show_image(im3)
+def get_data(url,presize,resize):
+  path= untar_data(url)
+  return DataBlock(
+      blocks=(ImageBlock, CategoryBlock),
+      get_items=get_image_files,
+      splitter=GrandparentSplitter('train', 'val'),
+      get_y=parent_label,
+      item_tfms=Resize(presize),
+      batch_tfms=[*aug_transforms(size=resize, max_warp=0), Normalize.from_stats(*imagenet_stats)]
+  ).dataloaders(path, bs=128)
 ```
 
 # Overview
@@ -371,17 +381,6 @@ What would happen if we have a larger input image, for example, 128x128 or 224x2
 #| message: false
 #| cache: true
 
-def get_data(url,presize,resize):
-  path= untar_data(url)
-  return DataBlock(
-      blocks=(ImageBlock, CategoryBlock),
-      get_items=get_image_files,
-      splitter=GrandparentSplitter('train', 'val'),
-      get_y=parent_label,
-      item_tfms=Resize(presize),
-      batch_tfms=[*aug_transforms(size=resize, max_warp=0), Normalize.from_stats(*imagenet_stats)]
-  ).dataloaders(path, bs=128)
-
 dls = get_data(URLs.IMAGENETTE_160, 160, 128)
 dls.show_batch(max_n=9, figsize=(6,6))
 ```
@@ -520,19 +519,25 @@ learn.fit_one_cycle(5, 3e-3)
 ## State-of-the-art ResNet
 Coming from "Bags of Tricks for Image Classification with Convolutional Neural Networks" (He, 2019)^[He, K., Girshick, R., Dollár, P., & He, K. (2019). "Bags of Tricks for Image Classification with Convolutional Neural Networks".], the authors proposed several techniques to improve the performance of ResNet architecture, including tweaking ResNet-50 architecture and Mixup. 
 
+Then, we can create a state-of-the-art ResNet model with the following tweaks:
+
+- Use `stem` to enhance computational efficiency
+
+- Use `Bottleneck Layer` in ResNet block to reduce the computational cost and time significantly
+
+- Train with larger images (e.g., 224x224 pixels) and more epochs (e.g., 25 epochs)
+
+- Use `Mixup` technique (data augmentation) to further improve the performance of the model.
+
+### Stem
 The difference compared to our previous ResNet architecture is that they used the **stem** of the network in the first layer, which consists of few convolution layers followed by a max pooling layer. The stem is considered instead of ResNet block because the vast majority of computatation is in the first few layers of the network, and using a stem can reduce the computational cost and time.
+
+There are four ResNet blocks with 64, 128, 256, and 512 output filters, respectively. Each group starts with a stride-2 block, exept the first group, which is after the MaxPooing layer (`stem`).
 
 ```{python}
 def _resnet_stem(*sizes):
   return [ConvLayer(sizes[i], sizes[i+1], stride=2 if i==0 else 1) for i in range(len(sizes)-1)] + [nn.MaxPool2d(3, stride=2, padding=1)]
 ```
-
-Then, we can create a state-of-the-art ResNet model using the stem and ResNet blocks as follows:
-
-- There are four ResNet blocks with 64, 128, 256, and 512 output filters, respectively.
-
-- Each group starts with a stride-2 block, exept the first group, which is after the MaxPooing layer.
-
 
 ```{python}
 class ResNet(nn.Sequential):
@@ -558,30 +563,65 @@ learn = get_learner(rn)
 learn.fit_one_cycle(5, 3e-3)
 ```
 
+### Bottleneck Layer
 
 Another inmprovement we can apply is **Bottleneck Layer**. Instead of using two 3x3 convolution layers in the ResNet block, we can use a 1x1 convolution layer to reduce the number of filters, followed by a 3x3 convolution layer, and then another 1x1 convolution layer to increase the number of filters back. This reduces the computational cost and time significantly.
 
 ```{python}
-def _bottleneck_block(ni, nf, stride):
+def _conv_block(ni, nf, stride):
     return nn.Sequential(
         ConvLayer(ni, nf//4,  1),
         ConvLayer(nf//4, nf//4,  stride=stride),
         ConvLayer(nf//4, nf, 1, act_cls=None, norm_type=NormType.BatchZero)
     )
+class ResBlock(Module):
+  def __init__(self, ni, nf, stride=1):
+    self.convs = _conv_block(ni, nf, stride)
+    self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None)
+    self.pool = noop if stride==1 else nn.AvgPool2d(2, ceil_mode=True)
+
+  def forward(self, x): return F.relu(self.convs(x) + self.idconv(self.pool(x)))
 ```
 
 We can also create ResNet-50 architecture with 4 groups, of which the sizes are [3,4,6,3] and expansion factor of 4 (we need to start with 4 times fewer channels and end up 4 times more channels).
+
+### Training with Larger Images and More Epochs
 To really show the benefit of training deeper networks with bottleneck layers (i.e., higher parameters), we should consider more epochs of training (e.g., 20 epochs)
-And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x224 pixels) to see how well it performs. 
+And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x224 pixels) to see how well it performs. In this case, we can try with resizing `Imagenette_320` dataset with 320x320 pixel images to 224-pixel image dataset.
 
 ```{python}
-dls = get_data(URLs.IMAGENETTE_160, 160, 224)
+dls = get_data(URLs.IMAGENETTE_320, 320, 224)
 rn50 = ResNet(dls.c, [3, 4, 6, 3], expansion=4)
 learn = get_learner(rn50)
 learn.fit_one_cycle(25, 3e-3)
 ```
 
+The results that we have achieved is great with ResNet-50 model built from scratch (around 90% accuracy on `Imagenette` dataset with 224x224 pixel images after 25 epochs of training). 
 
+### Mixup Technique
+Finally, we can add `Mixup` technique to further improve the performance of our model. `Mixup` is a data augmentation technique that creates new training samples by mixing two random samples from the training set. This can help to improve the generalization of the model and reduce overfitting.
+It is implemented in `fastai` library as `MixUp` callback.
+
+```{python}
+#| echo: false
+def get_learner(model):
+    learn = Learner(dls, model, loss_func=nn.CrossEntropyLoss(), metrics=accuracy, cbs=Mixup)
+    return learn
+learn = get_learner(rn50)
+learn.fit_one_cycle(80, 3e-3)
+```
 
 
 # Conclusions
+In this post, we have learned about convolutional neural networks (CNNs) and how they can be used for image classification tasks. We have also learned about several techniques to improve the training stability and performance of our model, including batch normalization, residual networks (ResNet), and Mixup. By applying these techniques, we were able to achieve state-of-the-art performance on the `Imagenette` dataset using a ResNet-50 architecture built from scratch.
+
+## Technical Insights
+
+::: {.callout-important}
+## Key Technical Learnings
+- Convolutional layers are the building blocks of CNNs, which are designed to process grid-like data such as images.
+- Strides and padding are techniques used to control the spatial dimensions of the output feature map.
+- Batch normalization is a technique used to improve the training stability and performance of deep neural networks by normalizing the activations of each layer.
+- Residual networks (ResNet) are a type of CNN architecture that uses skip connections to allow the gradients to flow directly through the network, bypassing one or more layers.
+- Mixup is a data augmentation technique that creates new training samples by mixing two random samples from the training set, which can help to improve the generalization of the model and reduce overfitting.
+:::
