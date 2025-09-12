@@ -544,7 +544,7 @@ class ResNet(nn.Sequential):
   def __init__(self, n_out, layers, expansion=1):
     stem = _resnet_stem(3, 32, 32, 64)
     self.block_size = [64, 64, 128, 256, 512]
-    for i in range(5):
+    for i in range(1,5):
       self.block_size[i] *= expansion
     blocks = [self._make_layer(*o) for o in enumerate(layers)]
     super().__init__(*stem, *blocks, nn.AdaptiveAvgPool2d(1), Flatten(), nn.Linear(self.block_size[-1], n_out))
@@ -574,13 +574,6 @@ def _conv_block(ni, nf, stride):
         ConvLayer(nf//4, nf//4,  stride=stride),
         ConvLayer(nf//4, nf, 1, act_cls=None, norm_type=NormType.BatchZero)
     )
-class ResBlock(Module):
-  def __init__(self, ni, nf, stride=1):
-    self.convs = _conv_block(ni, nf, stride)
-    self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None)
-    self.pool = noop if stride==1 else nn.AvgPool2d(2, ceil_mode=True)
-
-  def forward(self, x): return F.relu(self.convs(x) + self.idconv(self.pool(x)))
 ```
 
 We can also create ResNet-50 architecture with 4 groups, of which the sizes are [3,4,6,3] and expansion factor of 4 (we need to start with 4 times fewer channels and end up 4 times more channels).
@@ -591,8 +584,18 @@ And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x
 
 ```{python}
 dls = get_data(URLs.IMAGENETTE_320, 320, 224)
+# learn = get_learner(rn50)
+```
+
+```{python}
 rn50 = ResNet(dls.c, [3, 4, 6, 3], expansion=4)
+```
+
+```{python}
 learn = get_learner(rn50)
+```
+
+```{python}
 learn.fit_one_cycle(25, 3e-3)
 ```
 
@@ -605,7 +608,8 @@ It is implemented in `fastai` library as `MixUp` callback.
 ```{python}
 #| echo: false
 def get_learner(model):
-    learn = Learner(dls, model, loss_func=nn.CrossEntropyLoss(), metrics=accuracy, cbs=Mixup)
+    learn = Learner(dls, model, loss_func=CrossEntropyLossFlat(), metrics=accuracy)
+    learn.add_cb(MixUp(alpha=0.4))
     return learn
 learn = get_learner(rn50)
 learn.fit_one_cycle(80, 3e-3)
