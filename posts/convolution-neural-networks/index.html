@@ -190,7 +190,10 @@ window.Quarto = {
       <h1 class="title">Building SoTA Convolution Neural Networks for Image Recognition</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">CNN</div>
-                <div class="quarto-category">code</div>
+                <div class="quarto-category">Resnet</div>
+                <div class="quarto-category">MNIST</div>
+                <div class="quarto-category">IMAGENETTE</div>
+                <div class="quarto-category">Code</div>
               </div>
                   </div>
   </div>
@@ -230,8 +233,21 @@ window.Quarto = {
   <li><a href="#batch-normalization" id="toc-batch-normalization" class="nav-link" data-scroll-target="#batch-normalization">Batch Normalization</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#residual-networks-resnet" id="toc-residual-networks-resnet" class="nav-link" data-scroll-target="#residual-networks-resnet">Residual Networks (ResNet)</a></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#residual-networks-resnet" id="toc-residual-networks-resnet" class="nav-link" data-scroll-target="#residual-networks-resnet">Residual Networks (ResNet)</a>
+  <ul class="collapse">
+  <li><a href="#skip-connections-in-residual-networks-resnet" id="toc-skip-connections-in-residual-networks-resnet" class="nav-link" data-scroll-target="#skip-connections-in-residual-networks-resnet">Skip Connections in Residual Networks (ResNet)</a></li>
+  <li><a href="#state-of-the-art-resnet" id="toc-state-of-the-art-resnet" class="nav-link" data-scroll-target="#state-of-the-art-resnet">State-of-the-art ResNet</a>
+  <ul class="collapse">
+  <li><a href="#stem" id="toc-stem" class="nav-link" data-scroll-target="#stem">Stem</a></li>
+  <li><a href="#bottleneck-layer" id="toc-bottleneck-layer" class="nav-link" data-scroll-target="#bottleneck-layer">Bottleneck Layer</a></li>
+  <li><a href="#training-with-larger-images-and-more-epochs" id="toc-training-with-larger-images-and-more-epochs" class="nav-link" data-scroll-target="#training-with-larger-images-and-more-epochs">Training with Larger Images and More Epochs</a></li>
+  <li><a href="#mixup-technique" id="toc-mixup-technique" class="nav-link" data-scroll-target="#mixup-technique">Mixup Technique</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a>
+  <ul class="collapse">
+  <li><a href="#technical-insights" id="toc-technical-insights" class="nav-link" data-scroll-target="#technical-insights">Technical Insights</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -269,507 +285,507 @@ Figure&nbsp;1: An example of kernel
 </div>
 <p>As illustrated in Figure <a href="#fig-kernel" class="quarto-xref">Figure&nbsp;1</a>, a 3x3 matrix kernel is applied to the input image, which is 7x7 grid. The kernel is applied to each pixel in the image, and the output is a new pixel value that is calculated by taking the dot product of the kernel and the corresponding pixels in the image. This process is repeated for each pixel in the image, resulting in a new feature map.</p>
 <p>Let’s take another look at how convolution works in practice. We will use the <code>im3</code> image, which is a 28x28 grayscale image of the digit 3 from the MNIST dataset. We will apply a 3x3 kernel to the image to extract features.</p>
-<div id="1d8a3609" class="cell" data-cache="true" data-message="false" data-execution_count="2">
+<div id="7dd0cd3e" class="cell" data-cache="true" data-message="false" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <style type="text/css">
-#T_a41b1_row0_col0, #T_a41b1_row0_col1, #T_a41b1_row0_col2, #T_a41b1_row0_col3, #T_a41b1_row0_col4, #T_a41b1_row0_col5, #T_a41b1_row0_col6, #T_a41b1_row0_col7, #T_a41b1_row0_col8, #T_a41b1_row0_col9, #T_a41b1_row0_col10, #T_a41b1_row0_col11, #T_a41b1_row0_col12, #T_a41b1_row0_col13, #T_a41b1_row0_col14, #T_a41b1_row0_col15, #T_a41b1_row0_col16, #T_a41b1_row0_col17, #T_a41b1_row0_col18, #T_a41b1_row0_col19, #T_a41b1_row0_col20, #T_a41b1_row0_col21, #T_a41b1_row0_col22, #T_a41b1_row0_col23, #T_a41b1_row0_col24, #T_a41b1_row0_col25, #T_a41b1_row0_col26, #T_a41b1_row0_col27, #T_a41b1_row1_col0, #T_a41b1_row1_col1, #T_a41b1_row1_col2, #T_a41b1_row1_col3, #T_a41b1_row1_col4, #T_a41b1_row1_col5, #T_a41b1_row1_col6, #T_a41b1_row1_col7, #T_a41b1_row1_col8, #T_a41b1_row1_col9, #T_a41b1_row1_col10, #T_a41b1_row1_col11, #T_a41b1_row1_col12, #T_a41b1_row1_col13, #T_a41b1_row1_col14, #T_a41b1_row1_col15, #T_a41b1_row1_col16, #T_a41b1_row1_col17, #T_a41b1_row1_col18, #T_a41b1_row1_col19, #T_a41b1_row1_col20, #T_a41b1_row1_col21, #T_a41b1_row1_col22, #T_a41b1_row1_col23, #T_a41b1_row1_col24, #T_a41b1_row1_col25, #T_a41b1_row1_col26, #T_a41b1_row1_col27, #T_a41b1_row2_col0, #T_a41b1_row2_col1, #T_a41b1_row2_col2, #T_a41b1_row2_col3, #T_a41b1_row2_col4, #T_a41b1_row2_col5, #T_a41b1_row2_col6, #T_a41b1_row2_col7, #T_a41b1_row2_col8, #T_a41b1_row2_col9, #T_a41b1_row2_col10, #T_a41b1_row2_col11, #T_a41b1_row2_col12, #T_a41b1_row2_col13, #T_a41b1_row2_col14, #T_a41b1_row2_col15, #T_a41b1_row2_col16, #T_a41b1_row2_col17, #T_a41b1_row2_col18, #T_a41b1_row2_col19, #T_a41b1_row2_col20, #T_a41b1_row2_col21, #T_a41b1_row2_col22, #T_a41b1_row2_col23, #T_a41b1_row2_col24, #T_a41b1_row2_col25, #T_a41b1_row2_col26, #T_a41b1_row2_col27, #T_a41b1_row3_col0, #T_a41b1_row3_col1, #T_a41b1_row3_col2, #T_a41b1_row3_col3, #T_a41b1_row3_col4, #T_a41b1_row3_col5, #T_a41b1_row3_col6, #T_a41b1_row3_col7, #T_a41b1_row3_col8, #T_a41b1_row3_col9, #T_a41b1_row3_col10, #T_a41b1_row3_col11, #T_a41b1_row3_col12, #T_a41b1_row3_col13, #T_a41b1_row3_col14, #T_a41b1_row3_col15, #T_a41b1_row3_col16, #T_a41b1_row3_col17, #T_a41b1_row3_col18, #T_a41b1_row3_col19, #T_a41b1_row3_col20, #T_a41b1_row3_col21, #T_a41b1_row3_col22, #T_a41b1_row3_col23, #T_a41b1_row3_col24, #T_a41b1_row3_col25, #T_a41b1_row3_col26, #T_a41b1_row3_col27, #T_a41b1_row4_col0, #T_a41b1_row4_col1, #T_a41b1_row4_col2, #T_a41b1_row4_col3, #T_a41b1_row4_col4, #T_a41b1_row4_col5, #T_a41b1_row4_col6, #T_a41b1_row4_col7, #T_a41b1_row4_col8, #T_a41b1_row4_col9, #T_a41b1_row4_col10, #T_a41b1_row4_col11, #T_a41b1_row4_col12, #T_a41b1_row4_col13, #T_a41b1_row4_col14, #T_a41b1_row4_col15, #T_a41b1_row4_col16, #T_a41b1_row4_col17, #T_a41b1_row4_col18, #T_a41b1_row4_col19, #T_a41b1_row4_col20, #T_a41b1_row4_col21, #T_a41b1_row4_col22, #T_a41b1_row4_col23, #T_a41b1_row4_col24, #T_a41b1_row4_col25, #T_a41b1_row4_col26, #T_a41b1_row4_col27, #T_a41b1_row5_col0, #T_a41b1_row5_col1, #T_a41b1_row5_col2, #T_a41b1_row5_col16, #T_a41b1_row5_col17, #T_a41b1_row5_col18, #T_a41b1_row5_col19, #T_a41b1_row5_col20, #T_a41b1_row5_col21, #T_a41b1_row5_col22, #T_a41b1_row5_col23, #T_a41b1_row5_col24, #T_a41b1_row5_col25, #T_a41b1_row5_col26, #T_a41b1_row5_col27, #T_a41b1_row6_col0, #T_a41b1_row6_col1, #T_a41b1_row6_col2, #T_a41b1_row6_col19, #T_a41b1_row6_col20, #T_a41b1_row6_col21, #T_a41b1_row6_col22, #T_a41b1_row6_col23, #T_a41b1_row6_col24, #T_a41b1_row6_col25, #T_a41b1_row6_col26, #T_a41b1_row6_col27, #T_a41b1_row7_col0, #T_a41b1_row7_col1, #T_a41b1_row7_col2, #T_a41b1_row7_col19, #T_a41b1_row7_col20, #T_a41b1_row7_col21, #T_a41b1_row7_col22, #T_a41b1_row7_col23, #T_a41b1_row7_col24, #T_a41b1_row7_col25, #T_a41b1_row7_col26, #T_a41b1_row7_col27, #T_a41b1_row8_col0, #T_a41b1_row8_col1, #T_a41b1_row8_col2, #T_a41b1_row8_col8, #T_a41b1_row8_col9, #T_a41b1_row8_col10, #T_a41b1_row8_col11, #T_a41b1_row8_col12, #T_a41b1_row8_col13, #T_a41b1_row8_col19, #T_a41b1_row8_col20, #T_a41b1_row8_col21, #T_a41b1_row8_col22, #T_a41b1_row8_col23, #T_a41b1_row8_col24, #T_a41b1_row8_col25, #T_a41b1_row8_col26, #T_a41b1_row8_col27, #T_a41b1_row9_col0, #T_a41b1_row9_col1, #T_a41b1_row9_col2, #T_a41b1_row9_col3, #T_a41b1_row9_col4, #T_a41b1_row9_col5, #T_a41b1_row9_col6, #T_a41b1_row9_col7, #T_a41b1_row9_col8, #T_a41b1_row9_col9, #T_a41b1_row9_col10, #T_a41b1_row9_col11, #T_a41b1_row9_col12, #T_a41b1_row9_col13, #T_a41b1_row9_col19, #T_a41b1_row9_col20, #T_a41b1_row9_col21, #T_a41b1_row9_col22, #T_a41b1_row9_col23, #T_a41b1_row9_col24, #T_a41b1_row9_col25, #T_a41b1_row9_col26, #T_a41b1_row9_col27 {
+#T_d7cc7_row0_col0, #T_d7cc7_row0_col1, #T_d7cc7_row0_col2, #T_d7cc7_row0_col3, #T_d7cc7_row0_col4, #T_d7cc7_row0_col5, #T_d7cc7_row0_col6, #T_d7cc7_row0_col7, #T_d7cc7_row0_col8, #T_d7cc7_row0_col9, #T_d7cc7_row0_col10, #T_d7cc7_row0_col11, #T_d7cc7_row0_col12, #T_d7cc7_row0_col13, #T_d7cc7_row0_col14, #T_d7cc7_row0_col15, #T_d7cc7_row0_col16, #T_d7cc7_row0_col17, #T_d7cc7_row0_col18, #T_d7cc7_row0_col19, #T_d7cc7_row0_col20, #T_d7cc7_row0_col21, #T_d7cc7_row0_col22, #T_d7cc7_row0_col23, #T_d7cc7_row0_col24, #T_d7cc7_row0_col25, #T_d7cc7_row0_col26, #T_d7cc7_row0_col27, #T_d7cc7_row1_col0, #T_d7cc7_row1_col1, #T_d7cc7_row1_col2, #T_d7cc7_row1_col3, #T_d7cc7_row1_col4, #T_d7cc7_row1_col5, #T_d7cc7_row1_col6, #T_d7cc7_row1_col7, #T_d7cc7_row1_col8, #T_d7cc7_row1_col9, #T_d7cc7_row1_col10, #T_d7cc7_row1_col11, #T_d7cc7_row1_col12, #T_d7cc7_row1_col13, #T_d7cc7_row1_col14, #T_d7cc7_row1_col15, #T_d7cc7_row1_col16, #T_d7cc7_row1_col17, #T_d7cc7_row1_col18, #T_d7cc7_row1_col19, #T_d7cc7_row1_col20, #T_d7cc7_row1_col21, #T_d7cc7_row1_col22, #T_d7cc7_row1_col23, #T_d7cc7_row1_col24, #T_d7cc7_row1_col25, #T_d7cc7_row1_col26, #T_d7cc7_row1_col27, #T_d7cc7_row2_col0, #T_d7cc7_row2_col1, #T_d7cc7_row2_col2, #T_d7cc7_row2_col3, #T_d7cc7_row2_col4, #T_d7cc7_row2_col5, #T_d7cc7_row2_col6, #T_d7cc7_row2_col7, #T_d7cc7_row2_col8, #T_d7cc7_row2_col9, #T_d7cc7_row2_col10, #T_d7cc7_row2_col11, #T_d7cc7_row2_col12, #T_d7cc7_row2_col13, #T_d7cc7_row2_col14, #T_d7cc7_row2_col15, #T_d7cc7_row2_col16, #T_d7cc7_row2_col17, #T_d7cc7_row2_col18, #T_d7cc7_row2_col19, #T_d7cc7_row2_col20, #T_d7cc7_row2_col21, #T_d7cc7_row2_col22, #T_d7cc7_row2_col23, #T_d7cc7_row2_col24, #T_d7cc7_row2_col25, #T_d7cc7_row2_col26, #T_d7cc7_row2_col27, #T_d7cc7_row3_col0, #T_d7cc7_row3_col1, #T_d7cc7_row3_col2, #T_d7cc7_row3_col3, #T_d7cc7_row3_col4, #T_d7cc7_row3_col5, #T_d7cc7_row3_col6, #T_d7cc7_row3_col7, #T_d7cc7_row3_col8, #T_d7cc7_row3_col9, #T_d7cc7_row3_col10, #T_d7cc7_row3_col11, #T_d7cc7_row3_col12, #T_d7cc7_row3_col13, #T_d7cc7_row3_col14, #T_d7cc7_row3_col15, #T_d7cc7_row3_col16, #T_d7cc7_row3_col17, #T_d7cc7_row3_col18, #T_d7cc7_row3_col19, #T_d7cc7_row3_col20, #T_d7cc7_row3_col21, #T_d7cc7_row3_col22, #T_d7cc7_row3_col23, #T_d7cc7_row3_col24, #T_d7cc7_row3_col25, #T_d7cc7_row3_col26, #T_d7cc7_row3_col27, #T_d7cc7_row4_col0, #T_d7cc7_row4_col1, #T_d7cc7_row4_col2, #T_d7cc7_row4_col3, #T_d7cc7_row4_col4, #T_d7cc7_row4_col5, #T_d7cc7_row4_col6, #T_d7cc7_row4_col7, #T_d7cc7_row4_col8, #T_d7cc7_row4_col9, #T_d7cc7_row4_col10, #T_d7cc7_row4_col11, #T_d7cc7_row4_col12, #T_d7cc7_row4_col13, #T_d7cc7_row4_col14, #T_d7cc7_row4_col15, #T_d7cc7_row4_col16, #T_d7cc7_row4_col17, #T_d7cc7_row4_col18, #T_d7cc7_row4_col19, #T_d7cc7_row4_col20, #T_d7cc7_row4_col21, #T_d7cc7_row4_col22, #T_d7cc7_row4_col23, #T_d7cc7_row4_col24, #T_d7cc7_row4_col25, #T_d7cc7_row4_col26, #T_d7cc7_row4_col27, #T_d7cc7_row5_col0, #T_d7cc7_row5_col1, #T_d7cc7_row5_col2, #T_d7cc7_row5_col16, #T_d7cc7_row5_col17, #T_d7cc7_row5_col18, #T_d7cc7_row5_col19, #T_d7cc7_row5_col20, #T_d7cc7_row5_col21, #T_d7cc7_row5_col22, #T_d7cc7_row5_col23, #T_d7cc7_row5_col24, #T_d7cc7_row5_col25, #T_d7cc7_row5_col26, #T_d7cc7_row5_col27, #T_d7cc7_row6_col0, #T_d7cc7_row6_col1, #T_d7cc7_row6_col2, #T_d7cc7_row6_col19, #T_d7cc7_row6_col20, #T_d7cc7_row6_col21, #T_d7cc7_row6_col22, #T_d7cc7_row6_col23, #T_d7cc7_row6_col24, #T_d7cc7_row6_col25, #T_d7cc7_row6_col26, #T_d7cc7_row6_col27, #T_d7cc7_row7_col0, #T_d7cc7_row7_col1, #T_d7cc7_row7_col2, #T_d7cc7_row7_col19, #T_d7cc7_row7_col20, #T_d7cc7_row7_col21, #T_d7cc7_row7_col22, #T_d7cc7_row7_col23, #T_d7cc7_row7_col24, #T_d7cc7_row7_col25, #T_d7cc7_row7_col26, #T_d7cc7_row7_col27, #T_d7cc7_row8_col0, #T_d7cc7_row8_col1, #T_d7cc7_row8_col2, #T_d7cc7_row8_col8, #T_d7cc7_row8_col9, #T_d7cc7_row8_col10, #T_d7cc7_row8_col11, #T_d7cc7_row8_col12, #T_d7cc7_row8_col13, #T_d7cc7_row8_col19, #T_d7cc7_row8_col20, #T_d7cc7_row8_col21, #T_d7cc7_row8_col22, #T_d7cc7_row8_col23, #T_d7cc7_row8_col24, #T_d7cc7_row8_col25, #T_d7cc7_row8_col26, #T_d7cc7_row8_col27, #T_d7cc7_row9_col0, #T_d7cc7_row9_col1, #T_d7cc7_row9_col2, #T_d7cc7_row9_col3, #T_d7cc7_row9_col4, #T_d7cc7_row9_col5, #T_d7cc7_row9_col6, #T_d7cc7_row9_col7, #T_d7cc7_row9_col8, #T_d7cc7_row9_col9, #T_d7cc7_row9_col10, #T_d7cc7_row9_col11, #T_d7cc7_row9_col12, #T_d7cc7_row9_col13, #T_d7cc7_row9_col19, #T_d7cc7_row9_col20, #T_d7cc7_row9_col21, #T_d7cc7_row9_col22, #T_d7cc7_row9_col23, #T_d7cc7_row9_col24, #T_d7cc7_row9_col25, #T_d7cc7_row9_col26, #T_d7cc7_row9_col27 {
   font-size: 6pt;
   background-color: #ffffff;
   color: #000000;
 }
-#T_a41b1_row5_col3, #T_a41b1_row8_col14 {
+#T_d7cc7_row5_col3, #T_d7cc7_row8_col14 {
   font-size: 6pt;
   background-color: #f9f9f9;
   color: #000000;
 }
-#T_a41b1_row5_col4 {
+#T_d7cc7_row5_col4 {
   font-size: 6pt;
   background-color: #b9b9b9;
   color: #000000;
 }
-#T_a41b1_row5_col5 {
+#T_d7cc7_row5_col5 {
   font-size: 6pt;
   background-color: #c1c1c1;
   color: #000000;
 }
-#T_a41b1_row5_col6 {
+#T_d7cc7_row5_col6 {
   font-size: 6pt;
   background-color: #858585;
   color: #f1f1f1;
 }
-#T_a41b1_row5_col7, #T_a41b1_row5_col10, #T_a41b1_row5_col11, #T_a41b1_row5_col12, #T_a41b1_row5_col13 {
+#T_d7cc7_row5_col7, #T_d7cc7_row5_col10, #T_d7cc7_row5_col11, #T_d7cc7_row5_col12, #T_d7cc7_row5_col13 {
   font-size: 6pt;
   background-color: #777777;
   color: #f1f1f1;
 }
-#T_a41b1_row5_col8 {
+#T_d7cc7_row5_col8 {
   font-size: 6pt;
   background-color: #090909;
   color: #f1f1f1;
 }
-#T_a41b1_row5_col9 {
+#T_d7cc7_row5_col9 {
   font-size: 6pt;
   background-color: #5b5b5b;
   color: #f1f1f1;
 }
-#T_a41b1_row5_col14 {
+#T_d7cc7_row5_col14 {
   font-size: 6pt;
   background-color: #919191;
   color: #f1f1f1;
 }
-#T_a41b1_row5_col15 {
+#T_d7cc7_row5_col15 {
   font-size: 6pt;
   background-color: #e1e1e1;
   color: #000000;
 }
-#T_a41b1_row6_col3 {
+#T_d7cc7_row6_col3 {
   font-size: 6pt;
   background-color: #727272;
   color: #f1f1f1;
 }
-#T_a41b1_row6_col4, #T_a41b1_row6_col5, #T_a41b1_row6_col6, #T_a41b1_row6_col7, #T_a41b1_row6_col8, #T_a41b1_row6_col9, #T_a41b1_row6_col10, #T_a41b1_row6_col11, #T_a41b1_row6_col12, #T_a41b1_row6_col13, #T_a41b1_row6_col14, #T_a41b1_row7_col3, #T_a41b1_row7_col4, #T_a41b1_row7_col5, #T_a41b1_row7_col6, #T_a41b1_row7_col15, #T_a41b1_row7_col16, #T_a41b1_row7_col17, #T_a41b1_row8_col16, #T_a41b1_row8_col17, #T_a41b1_row8_col18, #T_a41b1_row9_col15, #T_a41b1_row9_col16 {
+#T_d7cc7_row6_col4, #T_d7cc7_row6_col5, #T_d7cc7_row6_col6, #T_d7cc7_row6_col7, #T_d7cc7_row6_col8, #T_d7cc7_row6_col9, #T_d7cc7_row6_col10, #T_d7cc7_row6_col11, #T_d7cc7_row6_col12, #T_d7cc7_row6_col13, #T_d7cc7_row6_col14, #T_d7cc7_row7_col3, #T_d7cc7_row7_col4, #T_d7cc7_row7_col5, #T_d7cc7_row7_col6, #T_d7cc7_row7_col15, #T_d7cc7_row7_col16, #T_d7cc7_row7_col17, #T_d7cc7_row8_col16, #T_d7cc7_row8_col17, #T_d7cc7_row8_col18, #T_d7cc7_row9_col15, #T_d7cc7_row9_col16 {
   font-size: 6pt;
   background-color: #000000;
   color: #f1f1f1;
 }
-#T_a41b1_row6_col15 {
+#T_d7cc7_row6_col15 {
   font-size: 6pt;
   background-color: #020202;
   color: #f1f1f1;
 }
-#T_a41b1_row6_col16 {
+#T_d7cc7_row6_col16 {
   font-size: 6pt;
   background-color: #363636;
   color: #f1f1f1;
 }
-#T_a41b1_row6_col17 {
+#T_d7cc7_row6_col17 {
   font-size: 6pt;
   background-color: #9d9d9d;
   color: #f1f1f1;
 }
-#T_a41b1_row6_col18 {
+#T_d7cc7_row6_col18 {
   font-size: 6pt;
   background-color: #dfdfdf;
   color: #000000;
 }
-#T_a41b1_row7_col7 {
+#T_d7cc7_row7_col7 {
   font-size: 6pt;
   background-color: #161616;
   color: #f1f1f1;
 }
-#T_a41b1_row7_col8, #T_a41b1_row7_col9, #T_a41b1_row7_col10, #T_a41b1_row7_col11, #T_a41b1_row7_col13 {
+#T_d7cc7_row7_col8, #T_d7cc7_row7_col9, #T_d7cc7_row7_col10, #T_d7cc7_row7_col11, #T_d7cc7_row7_col13 {
   font-size: 6pt;
   background-color: #535353;
   color: #f1f1f1;
 }
-#T_a41b1_row7_col12 {
+#T_d7cc7_row7_col12 {
   font-size: 6pt;
   background-color: #7c7c7c;
   color: #f1f1f1;
 }
-#T_a41b1_row7_col14 {
+#T_d7cc7_row7_col14 {
   font-size: 6pt;
   background-color: #3d3d3d;
   color: #f1f1f1;
 }
-#T_a41b1_row7_col18 {
+#T_d7cc7_row7_col18 {
   font-size: 6pt;
   background-color: #999999;
   color: #f1f1f1;
 }
-#T_a41b1_row8_col3 {
+#T_d7cc7_row8_col3 {
   font-size: 6pt;
   background-color: #eaeaea;
   color: #000000;
 }
-#T_a41b1_row8_col4 {
+#T_d7cc7_row8_col4 {
   font-size: 6pt;
   background-color: #d0d0d0;
   color: #000000;
 }
-#T_a41b1_row8_col5, #T_a41b1_row8_col6 {
+#T_d7cc7_row8_col5, #T_d7cc7_row8_col6 {
   font-size: 6pt;
   background-color: #eeeeee;
   color: #000000;
 }
-#T_a41b1_row8_col7 {
+#T_d7cc7_row8_col7 {
   font-size: 6pt;
   background-color: #f3f3f3;
   color: #000000;
 }
-#T_a41b1_row8_col15 {
+#T_d7cc7_row8_col15 {
   font-size: 6pt;
   background-color: #232323;
   color: #f1f1f1;
 }
-#T_a41b1_row9_col14 {
+#T_d7cc7_row9_col14 {
   font-size: 6pt;
   background-color: #c2c2c2;
   color: #000000;
 }
-#T_a41b1_row9_col17 {
+#T_d7cc7_row9_col17 {
   font-size: 6pt;
   background-color: #080808;
   color: #f1f1f1;
 }
-#T_a41b1_row9_col18 {
+#T_d7cc7_row9_col18 {
   font-size: 6pt;
   background-color: #c4c4c4;
   color: #000000;
 }
 </style>
 
-<table id="T_a41b1" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<table id="T_d7cc7" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_a41b1_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">0</th>
-<th id="T_a41b1_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">1</th>
-<th id="T_a41b1_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">2</th>
-<th id="T_a41b1_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">3</th>
-<th id="T_a41b1_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">4</th>
-<th id="T_a41b1_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">5</th>
-<th id="T_a41b1_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">6</th>
-<th id="T_a41b1_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">7</th>
-<th id="T_a41b1_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">8</th>
-<th id="T_a41b1_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">9</th>
-<th id="T_a41b1_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">10</th>
-<th id="T_a41b1_level0_col11" class="col_heading level0 col11" data-quarto-table-cell-role="th">11</th>
-<th id="T_a41b1_level0_col12" class="col_heading level0 col12" data-quarto-table-cell-role="th">12</th>
-<th id="T_a41b1_level0_col13" class="col_heading level0 col13" data-quarto-table-cell-role="th">13</th>
-<th id="T_a41b1_level0_col14" class="col_heading level0 col14" data-quarto-table-cell-role="th">14</th>
-<th id="T_a41b1_level0_col15" class="col_heading level0 col15" data-quarto-table-cell-role="th">15</th>
-<th id="T_a41b1_level0_col16" class="col_heading level0 col16" data-quarto-table-cell-role="th">16</th>
-<th id="T_a41b1_level0_col17" class="col_heading level0 col17" data-quarto-table-cell-role="th">17</th>
-<th id="T_a41b1_level0_col18" class="col_heading level0 col18" data-quarto-table-cell-role="th">18</th>
-<th id="T_a41b1_level0_col19" class="col_heading level0 col19" data-quarto-table-cell-role="th">19</th>
-<th id="T_a41b1_level0_col20" class="col_heading level0 col20" data-quarto-table-cell-role="th">20</th>
-<th id="T_a41b1_level0_col21" class="col_heading level0 col21" data-quarto-table-cell-role="th">21</th>
-<th id="T_a41b1_level0_col22" class="col_heading level0 col22" data-quarto-table-cell-role="th">22</th>
-<th id="T_a41b1_level0_col23" class="col_heading level0 col23" data-quarto-table-cell-role="th">23</th>
-<th id="T_a41b1_level0_col24" class="col_heading level0 col24" data-quarto-table-cell-role="th">24</th>
-<th id="T_a41b1_level0_col25" class="col_heading level0 col25" data-quarto-table-cell-role="th">25</th>
-<th id="T_a41b1_level0_col26" class="col_heading level0 col26" data-quarto-table-cell-role="th">26</th>
-<th id="T_a41b1_level0_col27" class="col_heading level0 col27" data-quarto-table-cell-role="th">27</th>
+<th id="T_d7cc7_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">0</th>
+<th id="T_d7cc7_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">1</th>
+<th id="T_d7cc7_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">2</th>
+<th id="T_d7cc7_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">3</th>
+<th id="T_d7cc7_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">4</th>
+<th id="T_d7cc7_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">5</th>
+<th id="T_d7cc7_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">6</th>
+<th id="T_d7cc7_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">7</th>
+<th id="T_d7cc7_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">8</th>
+<th id="T_d7cc7_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">9</th>
+<th id="T_d7cc7_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">10</th>
+<th id="T_d7cc7_level0_col11" class="col_heading level0 col11" data-quarto-table-cell-role="th">11</th>
+<th id="T_d7cc7_level0_col12" class="col_heading level0 col12" data-quarto-table-cell-role="th">12</th>
+<th id="T_d7cc7_level0_col13" class="col_heading level0 col13" data-quarto-table-cell-role="th">13</th>
+<th id="T_d7cc7_level0_col14" class="col_heading level0 col14" data-quarto-table-cell-role="th">14</th>
+<th id="T_d7cc7_level0_col15" class="col_heading level0 col15" data-quarto-table-cell-role="th">15</th>
+<th id="T_d7cc7_level0_col16" class="col_heading level0 col16" data-quarto-table-cell-role="th">16</th>
+<th id="T_d7cc7_level0_col17" class="col_heading level0 col17" data-quarto-table-cell-role="th">17</th>
+<th id="T_d7cc7_level0_col18" class="col_heading level0 col18" data-quarto-table-cell-role="th">18</th>
+<th id="T_d7cc7_level0_col19" class="col_heading level0 col19" data-quarto-table-cell-role="th">19</th>
+<th id="T_d7cc7_level0_col20" class="col_heading level0 col20" data-quarto-table-cell-role="th">20</th>
+<th id="T_d7cc7_level0_col21" class="col_heading level0 col21" data-quarto-table-cell-role="th">21</th>
+<th id="T_d7cc7_level0_col22" class="col_heading level0 col22" data-quarto-table-cell-role="th">22</th>
+<th id="T_d7cc7_level0_col23" class="col_heading level0 col23" data-quarto-table-cell-role="th">23</th>
+<th id="T_d7cc7_level0_col24" class="col_heading level0 col24" data-quarto-table-cell-role="th">24</th>
+<th id="T_d7cc7_level0_col25" class="col_heading level0 col25" data-quarto-table-cell-role="th">25</th>
+<th id="T_d7cc7_level0_col26" class="col_heading level0 col26" data-quarto-table-cell-role="th">26</th>
+<th id="T_d7cc7_level0_col27" class="col_heading level0 col27" data-quarto-table-cell-role="th">27</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_a41b1_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_a41b1_row0_col0" class="data row0 col0">0</td>
-<td id="T_a41b1_row0_col1" class="data row0 col1">0</td>
-<td id="T_a41b1_row0_col2" class="data row0 col2">0</td>
-<td id="T_a41b1_row0_col3" class="data row0 col3">0</td>
-<td id="T_a41b1_row0_col4" class="data row0 col4">0</td>
-<td id="T_a41b1_row0_col5" class="data row0 col5">0</td>
-<td id="T_a41b1_row0_col6" class="data row0 col6">0</td>
-<td id="T_a41b1_row0_col7" class="data row0 col7">0</td>
-<td id="T_a41b1_row0_col8" class="data row0 col8">0</td>
-<td id="T_a41b1_row0_col9" class="data row0 col9">0</td>
-<td id="T_a41b1_row0_col10" class="data row0 col10">0</td>
-<td id="T_a41b1_row0_col11" class="data row0 col11">0</td>
-<td id="T_a41b1_row0_col12" class="data row0 col12">0</td>
-<td id="T_a41b1_row0_col13" class="data row0 col13">0</td>
-<td id="T_a41b1_row0_col14" class="data row0 col14">0</td>
-<td id="T_a41b1_row0_col15" class="data row0 col15">0</td>
-<td id="T_a41b1_row0_col16" class="data row0 col16">0</td>
-<td id="T_a41b1_row0_col17" class="data row0 col17">0</td>
-<td id="T_a41b1_row0_col18" class="data row0 col18">0</td>
-<td id="T_a41b1_row0_col19" class="data row0 col19">0</td>
-<td id="T_a41b1_row0_col20" class="data row0 col20">0</td>
-<td id="T_a41b1_row0_col21" class="data row0 col21">0</td>
-<td id="T_a41b1_row0_col22" class="data row0 col22">0</td>
-<td id="T_a41b1_row0_col23" class="data row0 col23">0</td>
-<td id="T_a41b1_row0_col24" class="data row0 col24">0</td>
-<td id="T_a41b1_row0_col25" class="data row0 col25">0</td>
-<td id="T_a41b1_row0_col26" class="data row0 col26">0</td>
-<td id="T_a41b1_row0_col27" class="data row0 col27">0</td>
+<td id="T_d7cc7_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_d7cc7_row0_col0" class="data row0 col0">0</td>
+<td id="T_d7cc7_row0_col1" class="data row0 col1">0</td>
+<td id="T_d7cc7_row0_col2" class="data row0 col2">0</td>
+<td id="T_d7cc7_row0_col3" class="data row0 col3">0</td>
+<td id="T_d7cc7_row0_col4" class="data row0 col4">0</td>
+<td id="T_d7cc7_row0_col5" class="data row0 col5">0</td>
+<td id="T_d7cc7_row0_col6" class="data row0 col6">0</td>
+<td id="T_d7cc7_row0_col7" class="data row0 col7">0</td>
+<td id="T_d7cc7_row0_col8" class="data row0 col8">0</td>
+<td id="T_d7cc7_row0_col9" class="data row0 col9">0</td>
+<td id="T_d7cc7_row0_col10" class="data row0 col10">0</td>
+<td id="T_d7cc7_row0_col11" class="data row0 col11">0</td>
+<td id="T_d7cc7_row0_col12" class="data row0 col12">0</td>
+<td id="T_d7cc7_row0_col13" class="data row0 col13">0</td>
+<td id="T_d7cc7_row0_col14" class="data row0 col14">0</td>
+<td id="T_d7cc7_row0_col15" class="data row0 col15">0</td>
+<td id="T_d7cc7_row0_col16" class="data row0 col16">0</td>
+<td id="T_d7cc7_row0_col17" class="data row0 col17">0</td>
+<td id="T_d7cc7_row0_col18" class="data row0 col18">0</td>
+<td id="T_d7cc7_row0_col19" class="data row0 col19">0</td>
+<td id="T_d7cc7_row0_col20" class="data row0 col20">0</td>
+<td id="T_d7cc7_row0_col21" class="data row0 col21">0</td>
+<td id="T_d7cc7_row0_col22" class="data row0 col22">0</td>
+<td id="T_d7cc7_row0_col23" class="data row0 col23">0</td>
+<td id="T_d7cc7_row0_col24" class="data row0 col24">0</td>
+<td id="T_d7cc7_row0_col25" class="data row0 col25">0</td>
+<td id="T_d7cc7_row0_col26" class="data row0 col26">0</td>
+<td id="T_d7cc7_row0_col27" class="data row0 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_a41b1_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_a41b1_row1_col0" class="data row1 col0">0</td>
-<td id="T_a41b1_row1_col1" class="data row1 col1">0</td>
-<td id="T_a41b1_row1_col2" class="data row1 col2">0</td>
-<td id="T_a41b1_row1_col3" class="data row1 col3">0</td>
-<td id="T_a41b1_row1_col4" class="data row1 col4">0</td>
-<td id="T_a41b1_row1_col5" class="data row1 col5">0</td>
-<td id="T_a41b1_row1_col6" class="data row1 col6">0</td>
-<td id="T_a41b1_row1_col7" class="data row1 col7">0</td>
-<td id="T_a41b1_row1_col8" class="data row1 col8">0</td>
-<td id="T_a41b1_row1_col9" class="data row1 col9">0</td>
-<td id="T_a41b1_row1_col10" class="data row1 col10">0</td>
-<td id="T_a41b1_row1_col11" class="data row1 col11">0</td>
-<td id="T_a41b1_row1_col12" class="data row1 col12">0</td>
-<td id="T_a41b1_row1_col13" class="data row1 col13">0</td>
-<td id="T_a41b1_row1_col14" class="data row1 col14">0</td>
-<td id="T_a41b1_row1_col15" class="data row1 col15">0</td>
-<td id="T_a41b1_row1_col16" class="data row1 col16">0</td>
-<td id="T_a41b1_row1_col17" class="data row1 col17">0</td>
-<td id="T_a41b1_row1_col18" class="data row1 col18">0</td>
-<td id="T_a41b1_row1_col19" class="data row1 col19">0</td>
-<td id="T_a41b1_row1_col20" class="data row1 col20">0</td>
-<td id="T_a41b1_row1_col21" class="data row1 col21">0</td>
-<td id="T_a41b1_row1_col22" class="data row1 col22">0</td>
-<td id="T_a41b1_row1_col23" class="data row1 col23">0</td>
-<td id="T_a41b1_row1_col24" class="data row1 col24">0</td>
-<td id="T_a41b1_row1_col25" class="data row1 col25">0</td>
-<td id="T_a41b1_row1_col26" class="data row1 col26">0</td>
-<td id="T_a41b1_row1_col27" class="data row1 col27">0</td>
+<td id="T_d7cc7_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_d7cc7_row1_col0" class="data row1 col0">0</td>
+<td id="T_d7cc7_row1_col1" class="data row1 col1">0</td>
+<td id="T_d7cc7_row1_col2" class="data row1 col2">0</td>
+<td id="T_d7cc7_row1_col3" class="data row1 col3">0</td>
+<td id="T_d7cc7_row1_col4" class="data row1 col4">0</td>
+<td id="T_d7cc7_row1_col5" class="data row1 col5">0</td>
+<td id="T_d7cc7_row1_col6" class="data row1 col6">0</td>
+<td id="T_d7cc7_row1_col7" class="data row1 col7">0</td>
+<td id="T_d7cc7_row1_col8" class="data row1 col8">0</td>
+<td id="T_d7cc7_row1_col9" class="data row1 col9">0</td>
+<td id="T_d7cc7_row1_col10" class="data row1 col10">0</td>
+<td id="T_d7cc7_row1_col11" class="data row1 col11">0</td>
+<td id="T_d7cc7_row1_col12" class="data row1 col12">0</td>
+<td id="T_d7cc7_row1_col13" class="data row1 col13">0</td>
+<td id="T_d7cc7_row1_col14" class="data row1 col14">0</td>
+<td id="T_d7cc7_row1_col15" class="data row1 col15">0</td>
+<td id="T_d7cc7_row1_col16" class="data row1 col16">0</td>
+<td id="T_d7cc7_row1_col17" class="data row1 col17">0</td>
+<td id="T_d7cc7_row1_col18" class="data row1 col18">0</td>
+<td id="T_d7cc7_row1_col19" class="data row1 col19">0</td>
+<td id="T_d7cc7_row1_col20" class="data row1 col20">0</td>
+<td id="T_d7cc7_row1_col21" class="data row1 col21">0</td>
+<td id="T_d7cc7_row1_col22" class="data row1 col22">0</td>
+<td id="T_d7cc7_row1_col23" class="data row1 col23">0</td>
+<td id="T_d7cc7_row1_col24" class="data row1 col24">0</td>
+<td id="T_d7cc7_row1_col25" class="data row1 col25">0</td>
+<td id="T_d7cc7_row1_col26" class="data row1 col26">0</td>
+<td id="T_d7cc7_row1_col27" class="data row1 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_a41b1_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_a41b1_row2_col0" class="data row2 col0">0</td>
-<td id="T_a41b1_row2_col1" class="data row2 col1">0</td>
-<td id="T_a41b1_row2_col2" class="data row2 col2">0</td>
-<td id="T_a41b1_row2_col3" class="data row2 col3">0</td>
-<td id="T_a41b1_row2_col4" class="data row2 col4">0</td>
-<td id="T_a41b1_row2_col5" class="data row2 col5">0</td>
-<td id="T_a41b1_row2_col6" class="data row2 col6">0</td>
-<td id="T_a41b1_row2_col7" class="data row2 col7">0</td>
-<td id="T_a41b1_row2_col8" class="data row2 col8">0</td>
-<td id="T_a41b1_row2_col9" class="data row2 col9">0</td>
-<td id="T_a41b1_row2_col10" class="data row2 col10">0</td>
-<td id="T_a41b1_row2_col11" class="data row2 col11">0</td>
-<td id="T_a41b1_row2_col12" class="data row2 col12">0</td>
-<td id="T_a41b1_row2_col13" class="data row2 col13">0</td>
-<td id="T_a41b1_row2_col14" class="data row2 col14">0</td>
-<td id="T_a41b1_row2_col15" class="data row2 col15">0</td>
-<td id="T_a41b1_row2_col16" class="data row2 col16">0</td>
-<td id="T_a41b1_row2_col17" class="data row2 col17">0</td>
-<td id="T_a41b1_row2_col18" class="data row2 col18">0</td>
-<td id="T_a41b1_row2_col19" class="data row2 col19">0</td>
-<td id="T_a41b1_row2_col20" class="data row2 col20">0</td>
-<td id="T_a41b1_row2_col21" class="data row2 col21">0</td>
-<td id="T_a41b1_row2_col22" class="data row2 col22">0</td>
-<td id="T_a41b1_row2_col23" class="data row2 col23">0</td>
-<td id="T_a41b1_row2_col24" class="data row2 col24">0</td>
-<td id="T_a41b1_row2_col25" class="data row2 col25">0</td>
-<td id="T_a41b1_row2_col26" class="data row2 col26">0</td>
-<td id="T_a41b1_row2_col27" class="data row2 col27">0</td>
+<td id="T_d7cc7_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_d7cc7_row2_col0" class="data row2 col0">0</td>
+<td id="T_d7cc7_row2_col1" class="data row2 col1">0</td>
+<td id="T_d7cc7_row2_col2" class="data row2 col2">0</td>
+<td id="T_d7cc7_row2_col3" class="data row2 col3">0</td>
+<td id="T_d7cc7_row2_col4" class="data row2 col4">0</td>
+<td id="T_d7cc7_row2_col5" class="data row2 col5">0</td>
+<td id="T_d7cc7_row2_col6" class="data row2 col6">0</td>
+<td id="T_d7cc7_row2_col7" class="data row2 col7">0</td>
+<td id="T_d7cc7_row2_col8" class="data row2 col8">0</td>
+<td id="T_d7cc7_row2_col9" class="data row2 col9">0</td>
+<td id="T_d7cc7_row2_col10" class="data row2 col10">0</td>
+<td id="T_d7cc7_row2_col11" class="data row2 col11">0</td>
+<td id="T_d7cc7_row2_col12" class="data row2 col12">0</td>
+<td id="T_d7cc7_row2_col13" class="data row2 col13">0</td>
+<td id="T_d7cc7_row2_col14" class="data row2 col14">0</td>
+<td id="T_d7cc7_row2_col15" class="data row2 col15">0</td>
+<td id="T_d7cc7_row2_col16" class="data row2 col16">0</td>
+<td id="T_d7cc7_row2_col17" class="data row2 col17">0</td>
+<td id="T_d7cc7_row2_col18" class="data row2 col18">0</td>
+<td id="T_d7cc7_row2_col19" class="data row2 col19">0</td>
+<td id="T_d7cc7_row2_col20" class="data row2 col20">0</td>
+<td id="T_d7cc7_row2_col21" class="data row2 col21">0</td>
+<td id="T_d7cc7_row2_col22" class="data row2 col22">0</td>
+<td id="T_d7cc7_row2_col23" class="data row2 col23">0</td>
+<td id="T_d7cc7_row2_col24" class="data row2 col24">0</td>
+<td id="T_d7cc7_row2_col25" class="data row2 col25">0</td>
+<td id="T_d7cc7_row2_col26" class="data row2 col26">0</td>
+<td id="T_d7cc7_row2_col27" class="data row2 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_a41b1_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_a41b1_row3_col0" class="data row3 col0">0</td>
-<td id="T_a41b1_row3_col1" class="data row3 col1">0</td>
-<td id="T_a41b1_row3_col2" class="data row3 col2">0</td>
-<td id="T_a41b1_row3_col3" class="data row3 col3">0</td>
-<td id="T_a41b1_row3_col4" class="data row3 col4">0</td>
-<td id="T_a41b1_row3_col5" class="data row3 col5">0</td>
-<td id="T_a41b1_row3_col6" class="data row3 col6">0</td>
-<td id="T_a41b1_row3_col7" class="data row3 col7">0</td>
-<td id="T_a41b1_row3_col8" class="data row3 col8">0</td>
-<td id="T_a41b1_row3_col9" class="data row3 col9">0</td>
-<td id="T_a41b1_row3_col10" class="data row3 col10">0</td>
-<td id="T_a41b1_row3_col11" class="data row3 col11">0</td>
-<td id="T_a41b1_row3_col12" class="data row3 col12">0</td>
-<td id="T_a41b1_row3_col13" class="data row3 col13">0</td>
-<td id="T_a41b1_row3_col14" class="data row3 col14">0</td>
-<td id="T_a41b1_row3_col15" class="data row3 col15">0</td>
-<td id="T_a41b1_row3_col16" class="data row3 col16">0</td>
-<td id="T_a41b1_row3_col17" class="data row3 col17">0</td>
-<td id="T_a41b1_row3_col18" class="data row3 col18">0</td>
-<td id="T_a41b1_row3_col19" class="data row3 col19">0</td>
-<td id="T_a41b1_row3_col20" class="data row3 col20">0</td>
-<td id="T_a41b1_row3_col21" class="data row3 col21">0</td>
-<td id="T_a41b1_row3_col22" class="data row3 col22">0</td>
-<td id="T_a41b1_row3_col23" class="data row3 col23">0</td>
-<td id="T_a41b1_row3_col24" class="data row3 col24">0</td>
-<td id="T_a41b1_row3_col25" class="data row3 col25">0</td>
-<td id="T_a41b1_row3_col26" class="data row3 col26">0</td>
-<td id="T_a41b1_row3_col27" class="data row3 col27">0</td>
+<td id="T_d7cc7_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_d7cc7_row3_col0" class="data row3 col0">0</td>
+<td id="T_d7cc7_row3_col1" class="data row3 col1">0</td>
+<td id="T_d7cc7_row3_col2" class="data row3 col2">0</td>
+<td id="T_d7cc7_row3_col3" class="data row3 col3">0</td>
+<td id="T_d7cc7_row3_col4" class="data row3 col4">0</td>
+<td id="T_d7cc7_row3_col5" class="data row3 col5">0</td>
+<td id="T_d7cc7_row3_col6" class="data row3 col6">0</td>
+<td id="T_d7cc7_row3_col7" class="data row3 col7">0</td>
+<td id="T_d7cc7_row3_col8" class="data row3 col8">0</td>
+<td id="T_d7cc7_row3_col9" class="data row3 col9">0</td>
+<td id="T_d7cc7_row3_col10" class="data row3 col10">0</td>
+<td id="T_d7cc7_row3_col11" class="data row3 col11">0</td>
+<td id="T_d7cc7_row3_col12" class="data row3 col12">0</td>
+<td id="T_d7cc7_row3_col13" class="data row3 col13">0</td>
+<td id="T_d7cc7_row3_col14" class="data row3 col14">0</td>
+<td id="T_d7cc7_row3_col15" class="data row3 col15">0</td>
+<td id="T_d7cc7_row3_col16" class="data row3 col16">0</td>
+<td id="T_d7cc7_row3_col17" class="data row3 col17">0</td>
+<td id="T_d7cc7_row3_col18" class="data row3 col18">0</td>
+<td id="T_d7cc7_row3_col19" class="data row3 col19">0</td>
+<td id="T_d7cc7_row3_col20" class="data row3 col20">0</td>
+<td id="T_d7cc7_row3_col21" class="data row3 col21">0</td>
+<td id="T_d7cc7_row3_col22" class="data row3 col22">0</td>
+<td id="T_d7cc7_row3_col23" class="data row3 col23">0</td>
+<td id="T_d7cc7_row3_col24" class="data row3 col24">0</td>
+<td id="T_d7cc7_row3_col25" class="data row3 col25">0</td>
+<td id="T_d7cc7_row3_col26" class="data row3 col26">0</td>
+<td id="T_d7cc7_row3_col27" class="data row3 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_a41b1_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_a41b1_row4_col0" class="data row4 col0">0</td>
-<td id="T_a41b1_row4_col1" class="data row4 col1">0</td>
-<td id="T_a41b1_row4_col2" class="data row4 col2">0</td>
-<td id="T_a41b1_row4_col3" class="data row4 col3">0</td>
-<td id="T_a41b1_row4_col4" class="data row4 col4">0</td>
-<td id="T_a41b1_row4_col5" class="data row4 col5">0</td>
-<td id="T_a41b1_row4_col6" class="data row4 col6">0</td>
-<td id="T_a41b1_row4_col7" class="data row4 col7">0</td>
-<td id="T_a41b1_row4_col8" class="data row4 col8">0</td>
-<td id="T_a41b1_row4_col9" class="data row4 col9">0</td>
-<td id="T_a41b1_row4_col10" class="data row4 col10">0</td>
-<td id="T_a41b1_row4_col11" class="data row4 col11">0</td>
-<td id="T_a41b1_row4_col12" class="data row4 col12">0</td>
-<td id="T_a41b1_row4_col13" class="data row4 col13">0</td>
-<td id="T_a41b1_row4_col14" class="data row4 col14">0</td>
-<td id="T_a41b1_row4_col15" class="data row4 col15">0</td>
-<td id="T_a41b1_row4_col16" class="data row4 col16">0</td>
-<td id="T_a41b1_row4_col17" class="data row4 col17">0</td>
-<td id="T_a41b1_row4_col18" class="data row4 col18">0</td>
-<td id="T_a41b1_row4_col19" class="data row4 col19">0</td>
-<td id="T_a41b1_row4_col20" class="data row4 col20">0</td>
-<td id="T_a41b1_row4_col21" class="data row4 col21">0</td>
-<td id="T_a41b1_row4_col22" class="data row4 col22">0</td>
-<td id="T_a41b1_row4_col23" class="data row4 col23">0</td>
-<td id="T_a41b1_row4_col24" class="data row4 col24">0</td>
-<td id="T_a41b1_row4_col25" class="data row4 col25">0</td>
-<td id="T_a41b1_row4_col26" class="data row4 col26">0</td>
-<td id="T_a41b1_row4_col27" class="data row4 col27">0</td>
+<td id="T_d7cc7_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_d7cc7_row4_col0" class="data row4 col0">0</td>
+<td id="T_d7cc7_row4_col1" class="data row4 col1">0</td>
+<td id="T_d7cc7_row4_col2" class="data row4 col2">0</td>
+<td id="T_d7cc7_row4_col3" class="data row4 col3">0</td>
+<td id="T_d7cc7_row4_col4" class="data row4 col4">0</td>
+<td id="T_d7cc7_row4_col5" class="data row4 col5">0</td>
+<td id="T_d7cc7_row4_col6" class="data row4 col6">0</td>
+<td id="T_d7cc7_row4_col7" class="data row4 col7">0</td>
+<td id="T_d7cc7_row4_col8" class="data row4 col8">0</td>
+<td id="T_d7cc7_row4_col9" class="data row4 col9">0</td>
+<td id="T_d7cc7_row4_col10" class="data row4 col10">0</td>
+<td id="T_d7cc7_row4_col11" class="data row4 col11">0</td>
+<td id="T_d7cc7_row4_col12" class="data row4 col12">0</td>
+<td id="T_d7cc7_row4_col13" class="data row4 col13">0</td>
+<td id="T_d7cc7_row4_col14" class="data row4 col14">0</td>
+<td id="T_d7cc7_row4_col15" class="data row4 col15">0</td>
+<td id="T_d7cc7_row4_col16" class="data row4 col16">0</td>
+<td id="T_d7cc7_row4_col17" class="data row4 col17">0</td>
+<td id="T_d7cc7_row4_col18" class="data row4 col18">0</td>
+<td id="T_d7cc7_row4_col19" class="data row4 col19">0</td>
+<td id="T_d7cc7_row4_col20" class="data row4 col20">0</td>
+<td id="T_d7cc7_row4_col21" class="data row4 col21">0</td>
+<td id="T_d7cc7_row4_col22" class="data row4 col22">0</td>
+<td id="T_d7cc7_row4_col23" class="data row4 col23">0</td>
+<td id="T_d7cc7_row4_col24" class="data row4 col24">0</td>
+<td id="T_d7cc7_row4_col25" class="data row4 col25">0</td>
+<td id="T_d7cc7_row4_col26" class="data row4 col26">0</td>
+<td id="T_d7cc7_row4_col27" class="data row4 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_a41b1_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_a41b1_row5_col0" class="data row5 col0">0</td>
-<td id="T_a41b1_row5_col1" class="data row5 col1">0</td>
-<td id="T_a41b1_row5_col2" class="data row5 col2">0</td>
-<td id="T_a41b1_row5_col3" class="data row5 col3">12</td>
-<td id="T_a41b1_row5_col4" class="data row5 col4">99</td>
-<td id="T_a41b1_row5_col5" class="data row5 col5">91</td>
-<td id="T_a41b1_row5_col6" class="data row5 col6">142</td>
-<td id="T_a41b1_row5_col7" class="data row5 col7">155</td>
-<td id="T_a41b1_row5_col8" class="data row5 col8">246</td>
-<td id="T_a41b1_row5_col9" class="data row5 col9">182</td>
-<td id="T_a41b1_row5_col10" class="data row5 col10">155</td>
-<td id="T_a41b1_row5_col11" class="data row5 col11">155</td>
-<td id="T_a41b1_row5_col12" class="data row5 col12">155</td>
-<td id="T_a41b1_row5_col13" class="data row5 col13">155</td>
-<td id="T_a41b1_row5_col14" class="data row5 col14">131</td>
-<td id="T_a41b1_row5_col15" class="data row5 col15">52</td>
-<td id="T_a41b1_row5_col16" class="data row5 col16">0</td>
-<td id="T_a41b1_row5_col17" class="data row5 col17">0</td>
-<td id="T_a41b1_row5_col18" class="data row5 col18">0</td>
-<td id="T_a41b1_row5_col19" class="data row5 col19">0</td>
-<td id="T_a41b1_row5_col20" class="data row5 col20">0</td>
-<td id="T_a41b1_row5_col21" class="data row5 col21">0</td>
-<td id="T_a41b1_row5_col22" class="data row5 col22">0</td>
-<td id="T_a41b1_row5_col23" class="data row5 col23">0</td>
-<td id="T_a41b1_row5_col24" class="data row5 col24">0</td>
-<td id="T_a41b1_row5_col25" class="data row5 col25">0</td>
-<td id="T_a41b1_row5_col26" class="data row5 col26">0</td>
-<td id="T_a41b1_row5_col27" class="data row5 col27">0</td>
+<td id="T_d7cc7_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_d7cc7_row5_col0" class="data row5 col0">0</td>
+<td id="T_d7cc7_row5_col1" class="data row5 col1">0</td>
+<td id="T_d7cc7_row5_col2" class="data row5 col2">0</td>
+<td id="T_d7cc7_row5_col3" class="data row5 col3">12</td>
+<td id="T_d7cc7_row5_col4" class="data row5 col4">99</td>
+<td id="T_d7cc7_row5_col5" class="data row5 col5">91</td>
+<td id="T_d7cc7_row5_col6" class="data row5 col6">142</td>
+<td id="T_d7cc7_row5_col7" class="data row5 col7">155</td>
+<td id="T_d7cc7_row5_col8" class="data row5 col8">246</td>
+<td id="T_d7cc7_row5_col9" class="data row5 col9">182</td>
+<td id="T_d7cc7_row5_col10" class="data row5 col10">155</td>
+<td id="T_d7cc7_row5_col11" class="data row5 col11">155</td>
+<td id="T_d7cc7_row5_col12" class="data row5 col12">155</td>
+<td id="T_d7cc7_row5_col13" class="data row5 col13">155</td>
+<td id="T_d7cc7_row5_col14" class="data row5 col14">131</td>
+<td id="T_d7cc7_row5_col15" class="data row5 col15">52</td>
+<td id="T_d7cc7_row5_col16" class="data row5 col16">0</td>
+<td id="T_d7cc7_row5_col17" class="data row5 col17">0</td>
+<td id="T_d7cc7_row5_col18" class="data row5 col18">0</td>
+<td id="T_d7cc7_row5_col19" class="data row5 col19">0</td>
+<td id="T_d7cc7_row5_col20" class="data row5 col20">0</td>
+<td id="T_d7cc7_row5_col21" class="data row5 col21">0</td>
+<td id="T_d7cc7_row5_col22" class="data row5 col22">0</td>
+<td id="T_d7cc7_row5_col23" class="data row5 col23">0</td>
+<td id="T_d7cc7_row5_col24" class="data row5 col24">0</td>
+<td id="T_d7cc7_row5_col25" class="data row5 col25">0</td>
+<td id="T_d7cc7_row5_col26" class="data row5 col26">0</td>
+<td id="T_d7cc7_row5_col27" class="data row5 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_a41b1_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_a41b1_row6_col0" class="data row6 col0">0</td>
-<td id="T_a41b1_row6_col1" class="data row6 col1">0</td>
-<td id="T_a41b1_row6_col2" class="data row6 col2">0</td>
-<td id="T_a41b1_row6_col3" class="data row6 col3">138</td>
-<td id="T_a41b1_row6_col4" class="data row6 col4">254</td>
-<td id="T_a41b1_row6_col5" class="data row6 col5">254</td>
-<td id="T_a41b1_row6_col6" class="data row6 col6">254</td>
-<td id="T_a41b1_row6_col7" class="data row6 col7">254</td>
-<td id="T_a41b1_row6_col8" class="data row6 col8">254</td>
-<td id="T_a41b1_row6_col9" class="data row6 col9">254</td>
-<td id="T_a41b1_row6_col10" class="data row6 col10">254</td>
-<td id="T_a41b1_row6_col11" class="data row6 col11">254</td>
-<td id="T_a41b1_row6_col12" class="data row6 col12">254</td>
-<td id="T_a41b1_row6_col13" class="data row6 col13">254</td>
-<td id="T_a41b1_row6_col14" class="data row6 col14">254</td>
-<td id="T_a41b1_row6_col15" class="data row6 col15">252</td>
-<td id="T_a41b1_row6_col16" class="data row6 col16">210</td>
-<td id="T_a41b1_row6_col17" class="data row6 col17">122</td>
-<td id="T_a41b1_row6_col18" class="data row6 col18">33</td>
-<td id="T_a41b1_row6_col19" class="data row6 col19">0</td>
-<td id="T_a41b1_row6_col20" class="data row6 col20">0</td>
-<td id="T_a41b1_row6_col21" class="data row6 col21">0</td>
-<td id="T_a41b1_row6_col22" class="data row6 col22">0</td>
-<td id="T_a41b1_row6_col23" class="data row6 col23">0</td>
-<td id="T_a41b1_row6_col24" class="data row6 col24">0</td>
-<td id="T_a41b1_row6_col25" class="data row6 col25">0</td>
-<td id="T_a41b1_row6_col26" class="data row6 col26">0</td>
-<td id="T_a41b1_row6_col27" class="data row6 col27">0</td>
+<td id="T_d7cc7_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_d7cc7_row6_col0" class="data row6 col0">0</td>
+<td id="T_d7cc7_row6_col1" class="data row6 col1">0</td>
+<td id="T_d7cc7_row6_col2" class="data row6 col2">0</td>
+<td id="T_d7cc7_row6_col3" class="data row6 col3">138</td>
+<td id="T_d7cc7_row6_col4" class="data row6 col4">254</td>
+<td id="T_d7cc7_row6_col5" class="data row6 col5">254</td>
+<td id="T_d7cc7_row6_col6" class="data row6 col6">254</td>
+<td id="T_d7cc7_row6_col7" class="data row6 col7">254</td>
+<td id="T_d7cc7_row6_col8" class="data row6 col8">254</td>
+<td id="T_d7cc7_row6_col9" class="data row6 col9">254</td>
+<td id="T_d7cc7_row6_col10" class="data row6 col10">254</td>
+<td id="T_d7cc7_row6_col11" class="data row6 col11">254</td>
+<td id="T_d7cc7_row6_col12" class="data row6 col12">254</td>
+<td id="T_d7cc7_row6_col13" class="data row6 col13">254</td>
+<td id="T_d7cc7_row6_col14" class="data row6 col14">254</td>
+<td id="T_d7cc7_row6_col15" class="data row6 col15">252</td>
+<td id="T_d7cc7_row6_col16" class="data row6 col16">210</td>
+<td id="T_d7cc7_row6_col17" class="data row6 col17">122</td>
+<td id="T_d7cc7_row6_col18" class="data row6 col18">33</td>
+<td id="T_d7cc7_row6_col19" class="data row6 col19">0</td>
+<td id="T_d7cc7_row6_col20" class="data row6 col20">0</td>
+<td id="T_d7cc7_row6_col21" class="data row6 col21">0</td>
+<td id="T_d7cc7_row6_col22" class="data row6 col22">0</td>
+<td id="T_d7cc7_row6_col23" class="data row6 col23">0</td>
+<td id="T_d7cc7_row6_col24" class="data row6 col24">0</td>
+<td id="T_d7cc7_row6_col25" class="data row6 col25">0</td>
+<td id="T_d7cc7_row6_col26" class="data row6 col26">0</td>
+<td id="T_d7cc7_row6_col27" class="data row6 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_a41b1_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_a41b1_row7_col0" class="data row7 col0">0</td>
-<td id="T_a41b1_row7_col1" class="data row7 col1">0</td>
-<td id="T_a41b1_row7_col2" class="data row7 col2">0</td>
-<td id="T_a41b1_row7_col3" class="data row7 col3">220</td>
-<td id="T_a41b1_row7_col4" class="data row7 col4">254</td>
-<td id="T_a41b1_row7_col5" class="data row7 col5">254</td>
-<td id="T_a41b1_row7_col6" class="data row7 col6">254</td>
-<td id="T_a41b1_row7_col7" class="data row7 col7">235</td>
-<td id="T_a41b1_row7_col8" class="data row7 col8">189</td>
-<td id="T_a41b1_row7_col9" class="data row7 col9">189</td>
-<td id="T_a41b1_row7_col10" class="data row7 col10">189</td>
-<td id="T_a41b1_row7_col11" class="data row7 col11">189</td>
-<td id="T_a41b1_row7_col12" class="data row7 col12">150</td>
-<td id="T_a41b1_row7_col13" class="data row7 col13">189</td>
-<td id="T_a41b1_row7_col14" class="data row7 col14">205</td>
-<td id="T_a41b1_row7_col15" class="data row7 col15">254</td>
-<td id="T_a41b1_row7_col16" class="data row7 col16">254</td>
-<td id="T_a41b1_row7_col17" class="data row7 col17">254</td>
-<td id="T_a41b1_row7_col18" class="data row7 col18">75</td>
-<td id="T_a41b1_row7_col19" class="data row7 col19">0</td>
-<td id="T_a41b1_row7_col20" class="data row7 col20">0</td>
-<td id="T_a41b1_row7_col21" class="data row7 col21">0</td>
-<td id="T_a41b1_row7_col22" class="data row7 col22">0</td>
-<td id="T_a41b1_row7_col23" class="data row7 col23">0</td>
-<td id="T_a41b1_row7_col24" class="data row7 col24">0</td>
-<td id="T_a41b1_row7_col25" class="data row7 col25">0</td>
-<td id="T_a41b1_row7_col26" class="data row7 col26">0</td>
-<td id="T_a41b1_row7_col27" class="data row7 col27">0</td>
+<td id="T_d7cc7_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_d7cc7_row7_col0" class="data row7 col0">0</td>
+<td id="T_d7cc7_row7_col1" class="data row7 col1">0</td>
+<td id="T_d7cc7_row7_col2" class="data row7 col2">0</td>
+<td id="T_d7cc7_row7_col3" class="data row7 col3">220</td>
+<td id="T_d7cc7_row7_col4" class="data row7 col4">254</td>
+<td id="T_d7cc7_row7_col5" class="data row7 col5">254</td>
+<td id="T_d7cc7_row7_col6" class="data row7 col6">254</td>
+<td id="T_d7cc7_row7_col7" class="data row7 col7">235</td>
+<td id="T_d7cc7_row7_col8" class="data row7 col8">189</td>
+<td id="T_d7cc7_row7_col9" class="data row7 col9">189</td>
+<td id="T_d7cc7_row7_col10" class="data row7 col10">189</td>
+<td id="T_d7cc7_row7_col11" class="data row7 col11">189</td>
+<td id="T_d7cc7_row7_col12" class="data row7 col12">150</td>
+<td id="T_d7cc7_row7_col13" class="data row7 col13">189</td>
+<td id="T_d7cc7_row7_col14" class="data row7 col14">205</td>
+<td id="T_d7cc7_row7_col15" class="data row7 col15">254</td>
+<td id="T_d7cc7_row7_col16" class="data row7 col16">254</td>
+<td id="T_d7cc7_row7_col17" class="data row7 col17">254</td>
+<td id="T_d7cc7_row7_col18" class="data row7 col18">75</td>
+<td id="T_d7cc7_row7_col19" class="data row7 col19">0</td>
+<td id="T_d7cc7_row7_col20" class="data row7 col20">0</td>
+<td id="T_d7cc7_row7_col21" class="data row7 col21">0</td>
+<td id="T_d7cc7_row7_col22" class="data row7 col22">0</td>
+<td id="T_d7cc7_row7_col23" class="data row7 col23">0</td>
+<td id="T_d7cc7_row7_col24" class="data row7 col24">0</td>
+<td id="T_d7cc7_row7_col25" class="data row7 col25">0</td>
+<td id="T_d7cc7_row7_col26" class="data row7 col26">0</td>
+<td id="T_d7cc7_row7_col27" class="data row7 col27">0</td>
 </tr>
 <tr class="odd">
-<td id="T_a41b1_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_a41b1_row8_col0" class="data row8 col0">0</td>
-<td id="T_a41b1_row8_col1" class="data row8 col1">0</td>
-<td id="T_a41b1_row8_col2" class="data row8 col2">0</td>
-<td id="T_a41b1_row8_col3" class="data row8 col3">35</td>
-<td id="T_a41b1_row8_col4" class="data row8 col4">74</td>
-<td id="T_a41b1_row8_col5" class="data row8 col5">35</td>
-<td id="T_a41b1_row8_col6" class="data row8 col6">35</td>
-<td id="T_a41b1_row8_col7" class="data row8 col7">25</td>
-<td id="T_a41b1_row8_col8" class="data row8 col8">0</td>
-<td id="T_a41b1_row8_col9" class="data row8 col9">0</td>
-<td id="T_a41b1_row8_col10" class="data row8 col10">0</td>
-<td id="T_a41b1_row8_col11" class="data row8 col11">0</td>
-<td id="T_a41b1_row8_col12" class="data row8 col12">0</td>
-<td id="T_a41b1_row8_col13" class="data row8 col13">0</td>
-<td id="T_a41b1_row8_col14" class="data row8 col14">13</td>
-<td id="T_a41b1_row8_col15" class="data row8 col15">224</td>
-<td id="T_a41b1_row8_col16" class="data row8 col16">254</td>
-<td id="T_a41b1_row8_col17" class="data row8 col17">254</td>
-<td id="T_a41b1_row8_col18" class="data row8 col18">153</td>
-<td id="T_a41b1_row8_col19" class="data row8 col19">0</td>
-<td id="T_a41b1_row8_col20" class="data row8 col20">0</td>
-<td id="T_a41b1_row8_col21" class="data row8 col21">0</td>
-<td id="T_a41b1_row8_col22" class="data row8 col22">0</td>
-<td id="T_a41b1_row8_col23" class="data row8 col23">0</td>
-<td id="T_a41b1_row8_col24" class="data row8 col24">0</td>
-<td id="T_a41b1_row8_col25" class="data row8 col25">0</td>
-<td id="T_a41b1_row8_col26" class="data row8 col26">0</td>
-<td id="T_a41b1_row8_col27" class="data row8 col27">0</td>
+<td id="T_d7cc7_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_d7cc7_row8_col0" class="data row8 col0">0</td>
+<td id="T_d7cc7_row8_col1" class="data row8 col1">0</td>
+<td id="T_d7cc7_row8_col2" class="data row8 col2">0</td>
+<td id="T_d7cc7_row8_col3" class="data row8 col3">35</td>
+<td id="T_d7cc7_row8_col4" class="data row8 col4">74</td>
+<td id="T_d7cc7_row8_col5" class="data row8 col5">35</td>
+<td id="T_d7cc7_row8_col6" class="data row8 col6">35</td>
+<td id="T_d7cc7_row8_col7" class="data row8 col7">25</td>
+<td id="T_d7cc7_row8_col8" class="data row8 col8">0</td>
+<td id="T_d7cc7_row8_col9" class="data row8 col9">0</td>
+<td id="T_d7cc7_row8_col10" class="data row8 col10">0</td>
+<td id="T_d7cc7_row8_col11" class="data row8 col11">0</td>
+<td id="T_d7cc7_row8_col12" class="data row8 col12">0</td>
+<td id="T_d7cc7_row8_col13" class="data row8 col13">0</td>
+<td id="T_d7cc7_row8_col14" class="data row8 col14">13</td>
+<td id="T_d7cc7_row8_col15" class="data row8 col15">224</td>
+<td id="T_d7cc7_row8_col16" class="data row8 col16">254</td>
+<td id="T_d7cc7_row8_col17" class="data row8 col17">254</td>
+<td id="T_d7cc7_row8_col18" class="data row8 col18">153</td>
+<td id="T_d7cc7_row8_col19" class="data row8 col19">0</td>
+<td id="T_d7cc7_row8_col20" class="data row8 col20">0</td>
+<td id="T_d7cc7_row8_col21" class="data row8 col21">0</td>
+<td id="T_d7cc7_row8_col22" class="data row8 col22">0</td>
+<td id="T_d7cc7_row8_col23" class="data row8 col23">0</td>
+<td id="T_d7cc7_row8_col24" class="data row8 col24">0</td>
+<td id="T_d7cc7_row8_col25" class="data row8 col25">0</td>
+<td id="T_d7cc7_row8_col26" class="data row8 col26">0</td>
+<td id="T_d7cc7_row8_col27" class="data row8 col27">0</td>
 </tr>
 <tr class="even">
-<td id="T_a41b1_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_a41b1_row9_col0" class="data row9 col0">0</td>
-<td id="T_a41b1_row9_col1" class="data row9 col1">0</td>
-<td id="T_a41b1_row9_col2" class="data row9 col2">0</td>
-<td id="T_a41b1_row9_col3" class="data row9 col3">0</td>
-<td id="T_a41b1_row9_col4" class="data row9 col4">0</td>
-<td id="T_a41b1_row9_col5" class="data row9 col5">0</td>
-<td id="T_a41b1_row9_col6" class="data row9 col6">0</td>
-<td id="T_a41b1_row9_col7" class="data row9 col7">0</td>
-<td id="T_a41b1_row9_col8" class="data row9 col8">0</td>
-<td id="T_a41b1_row9_col9" class="data row9 col9">0</td>
-<td id="T_a41b1_row9_col10" class="data row9 col10">0</td>
-<td id="T_a41b1_row9_col11" class="data row9 col11">0</td>
-<td id="T_a41b1_row9_col12" class="data row9 col12">0</td>
-<td id="T_a41b1_row9_col13" class="data row9 col13">0</td>
-<td id="T_a41b1_row9_col14" class="data row9 col14">90</td>
-<td id="T_a41b1_row9_col15" class="data row9 col15">254</td>
-<td id="T_a41b1_row9_col16" class="data row9 col16">254</td>
-<td id="T_a41b1_row9_col17" class="data row9 col17">247</td>
-<td id="T_a41b1_row9_col18" class="data row9 col18">53</td>
-<td id="T_a41b1_row9_col19" class="data row9 col19">0</td>
-<td id="T_a41b1_row9_col20" class="data row9 col20">0</td>
-<td id="T_a41b1_row9_col21" class="data row9 col21">0</td>
-<td id="T_a41b1_row9_col22" class="data row9 col22">0</td>
-<td id="T_a41b1_row9_col23" class="data row9 col23">0</td>
-<td id="T_a41b1_row9_col24" class="data row9 col24">0</td>
-<td id="T_a41b1_row9_col25" class="data row9 col25">0</td>
-<td id="T_a41b1_row9_col26" class="data row9 col26">0</td>
-<td id="T_a41b1_row9_col27" class="data row9 col27">0</td>
+<td id="T_d7cc7_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_d7cc7_row9_col0" class="data row9 col0">0</td>
+<td id="T_d7cc7_row9_col1" class="data row9 col1">0</td>
+<td id="T_d7cc7_row9_col2" class="data row9 col2">0</td>
+<td id="T_d7cc7_row9_col3" class="data row9 col3">0</td>
+<td id="T_d7cc7_row9_col4" class="data row9 col4">0</td>
+<td id="T_d7cc7_row9_col5" class="data row9 col5">0</td>
+<td id="T_d7cc7_row9_col6" class="data row9 col6">0</td>
+<td id="T_d7cc7_row9_col7" class="data row9 col7">0</td>
+<td id="T_d7cc7_row9_col8" class="data row9 col8">0</td>
+<td id="T_d7cc7_row9_col9" class="data row9 col9">0</td>
+<td id="T_d7cc7_row9_col10" class="data row9 col10">0</td>
+<td id="T_d7cc7_row9_col11" class="data row9 col11">0</td>
+<td id="T_d7cc7_row9_col12" class="data row9 col12">0</td>
+<td id="T_d7cc7_row9_col13" class="data row9 col13">0</td>
+<td id="T_d7cc7_row9_col14" class="data row9 col14">90</td>
+<td id="T_d7cc7_row9_col15" class="data row9 col15">254</td>
+<td id="T_d7cc7_row9_col16" class="data row9 col16">254</td>
+<td id="T_d7cc7_row9_col17" class="data row9 col17">247</td>
+<td id="T_d7cc7_row9_col18" class="data row9 col18">53</td>
+<td id="T_d7cc7_row9_col19" class="data row9 col19">0</td>
+<td id="T_d7cc7_row9_col20" class="data row9 col20">0</td>
+<td id="T_d7cc7_row9_col21" class="data row9 col21">0</td>
+<td id="T_d7cc7_row9_col22" class="data row9 col22">0</td>
+<td id="T_d7cc7_row9_col23" class="data row9 col23">0</td>
+<td id="T_d7cc7_row9_col24" class="data row9 col24">0</td>
+<td id="T_d7cc7_row9_col25" class="data row9 col25">0</td>
+<td id="T_d7cc7_row9_col26" class="data row9 col26">0</td>
+<td id="T_d7cc7_row9_col27" class="data row9 col27">0</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>Let’s define a kernel that detects horizontal edges in the image. The kernel is a 3x3 matrix with values that are designed to highlight horizontal edges.</p>
-<div id="5eb758f1" class="cell" data-execution_count="3">
+<div id="e123abf1" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> tensor([[<span class="op">-</span><span class="fl">1.</span>, <span class="op">-</span><span class="fl">1.</span>, <span class="op">-</span><span class="fl">1.</span>],</span>
@@ -778,7 +794,7 @@ Figure&nbsp;1: An example of kernel
 </details>
 </div>
 <p>This kernel will detect horizontal edges in the image by emphasizing the differences between the pixel values in the top and bottom rows of the kernel, we can also change the kernel to have the row of 1s at the top and -1s at the bottom, we can detect horizontal edges that go from dark to light, putting 1s and -1s in columns versus rows give us filters that detect vertical edges.</p>
-<div id="28a0cecf" class="cell" data-execution_count="4">
+<div id="661340c5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_kernel(row, col, kernel):</span>
@@ -816,7 +832,7 @@ p = ks//2
 <p>In this example, we create a convolution layer with 1 input channel (grayscale image), 30 output channels (feature maps), a kernel size of 3x3, a stride of 1, and padding of 1. We also apply the ReLU activation function after the first convolution layer. One interesting property to note here is that we do not need to specify the input size when creating the convolution layer because a convolution is applied over each pixel automatically.</p>
 <p>When creating <code>cnn</code> as above, we see that the output shape is the same as the input shape, which is (28, 28) (This is because we have used padding to preserve the spatial dimensions of the input image in the output feature map). It is not interesting for classification task since we need only single output activation per input image.</p>
 <p>To deal with this, we can use several stride-2 convolution layers to reduce the spatial dimensions of the input image in the output feature map. For example, we can use two stride-2 convolution layers to reduce the spatial dimensions of the input image from (28, 28) to (7, 7), (4x4), (2x2) and then 1.</p>
-<div id="ca62e873" class="cell" data-execution_count="7">
+<div id="bfaa4d48" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conv(ni, nf, ks<span class="op">=</span><span class="dv">3</span>, act<span class="op">=</span><span class="va">True</span>):</span>
@@ -826,7 +842,7 @@ p = ks//2
 </details>
 </div>
 <p>Then, we create a simple <code>cnn</code> which consists of several convolution layers with stride of 2, kernel size of 3 to reduce the spatial dimensions of the input image in the output feature map. We also flatten the output feature map before passing it to the final classification layer.:</p>
-<div id="7912f557" class="cell" data-execution_count="8">
+<div id="4f31a0a3" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>simple_cnn <span class="op">=</span> sequential(</span>
@@ -840,7 +856,7 @@ p = ks//2
 </details>
 </div>
 <p>To test our <code>simple_cnn</code>, we can train a classification model from a batch of images from the MNIST dataset to see how effective of the feature extraction it is. To do this, we build a <code>Learner</code> from <code>simple_cnn</code> and dataset <code>dls</code> as follows:</p>
-<div id="54544f4d" class="cell" data-execution_count="9">
+<div id="e8793ba2" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, simple_cnn, loss_func<span class="op">=</span>F.cross_entropy, metrics<span class="op">=</span>accuracy)</span>
@@ -899,8 +915,8 @@ Total params: 6,722
 Total trainable params: 6,722
 Total non-trainable params: 0
 
-Optimizer used: &lt;function Adam at 0x7f2791719a80&gt;
-Loss function: &lt;function cross_entropy at 0x7f2801519120&gt;
+Optimizer used: &lt;function Adam at 0x7fcb660a9ee0&gt;
+Loss function: &lt;function cross_entropy at 0x7fcbffd09580&gt;
 
 Callbacks:
   - TrainEvalCallback
@@ -911,7 +927,7 @@ Callbacks:
 </div>
 <p>As we can see, the output of the final Conv2D layer is 64x2x1x1, that’s why we need to flatten it before passing it to the final classification layer.</p>
 <p>Afterwards, let’s train the model with low learning rate and 2 epochs using <code>fit_one_cycle</code> function.</p>
-<div id="18353b84" class="cell" data-execution_count="10">
+<div id="5b730138" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="fl">1e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -948,16 +964,16 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.065424</td>
-<td>0.048044</td>
-<td>0.984789</td>
-<td>00:01</td>
+<td>0.072184</td>
+<td>0.039032</td>
+<td>0.988224</td>
+<td>00:03</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.019719</td>
-<td>0.021269</td>
-<td>0.993131</td>
+<td>0.020647</td>
+<td>0.024379</td>
+<td>0.994112</td>
 <td>00:01</td>
 </tr>
 </tbody>
@@ -969,7 +985,7 @@ Callbacks:
 <section id="improving-training-stability" class="level2">
 <h2 class="anchored" data-anchor-id="improving-training-stability">Improving Training Stability</h2>
 <p>So far, we have created a simple 2D CNN for image classification task over the MNIST dataset and achieved around 98% accuracy. In this section, we will talk about several techniques that we can use to improve the training stability and performance of our model. To make it more interesting, we will train a CNN model to recognize 10 digits from the MNIST dataset and apply several techniques to improve its performance.</p>
-<div id="81a4053f" class="cell" data-cache="true" data-message="false" data-execution_count="11">
+<div id="e2224d10" class="cell" data-cache="true" data-message="false" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -983,7 +999,7 @@ Callbacks:
 <p>One simple tweak that we can apply to improve recognition accuracy is to use more activation functions in our <code>CNN</code>, as we need more <code>filters</code> to learn more complex patterns in 10-digit MNIST samples. To achieve this, we add one more activation function after each convolution layer in our <code>simple_cnn</code> architecture. As a result, the number of activations ends up being doubled.</p>
 <p>However, adding more activation functions can lead to a subtle (training) problem. Specifically, when we apply 3x3-pixel kernel to the first convolution layer with 4 output filters, we embed information from 9 input pixels into 4 output pixels. While doubling the number of activation functions, we have the computation of 8 output pixels from 9 input pixels. It makes neural networks more difficult to learn the features while mapping from 9 input pixels to 8 output pixels than from 9 input pixels to 4 output pixels.</p>
 <p>To deal with this issue, we can increase the kernel size from 3 to 5, which allows us to embed information from 25 input pixels into 8 output pixels. This makes it easier for the neural network to learn the features while mapping from 25 input pixels to 8 output pixels.</p>
-<div id="5a621742" class="cell" data-execution_count="12">
+<div id="da3dc299" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simple_cnn():</span>
@@ -998,7 +1014,7 @@ Callbacks:
 </details>
 </div>
 <p>To train the model more quickly, we can set learning rate to 0.06 and use <code>ActivationStats</code> callback to monitor the activation statistics during training.</p>
-<div id="1874dee3" class="cell" data-execution_count="13">
+<div id="f90a5efa" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit(epochs<span class="op">=</span><span class="dv">1</span>):</span>
@@ -1044,9 +1060,9 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.745531</td>
-<td>0.789573</td>
-<td>0.738500</td>
+<td>2.308595</td>
+<td>2.306522</td>
+<td>0.098000</td>
 <td>00:08</td>
 </tr>
 </tbody>
@@ -1054,7 +1070,7 @@ Callbacks:
 </div>
 </div>
 <p>Surprisingly, the model is not trained at all, the accuracy is just around 10% (random guess). To findout what went wrong, we can plot the activation statistics of the first/penultimate convolution layers using <code>ActivationStats</code> callback. It shows that the activations of the first convolution layer are all zeros, and it carries over the next layer, meaning that the model is not learning anything.</p>
-<div id="7c31f5ed" class="cell" data-execution_count="14">
+<div id="85e03e6a" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.callback.hook <span class="im">import</span> <span class="op">*</span></span>
@@ -1072,13 +1088,13 @@ Callbacks:
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-2.png" width="941" height="283" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-15-output-2.png" width="954" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>To fix this issue, we can try several techniques to improve the training stability of our model. ### Increase Batch Size To make training more stable, we can try to increase the batch size, because larger batch sizes prodive more accurate estimates of the gradients, which can help to reduce the noise in the training process. On the downside, larger batch sizes require more memory and less batches per epochs, which bring less opportunities for the model to update its weights, and also it is subject to hardware capabilities.</p>
-<div id="c813ec7b" class="cell" data-execution_count="15">
+<div id="d1a8deb0" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> get_dls(bs<span class="op">=</span><span class="dv">512</span>)</span>
@@ -1116,20 +1132,20 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.333724</td>
-<td>0.179789</td>
-<td>0.946100</td>
+<td>0.562468</td>
+<td>0.274221</td>
+<td>0.912100</td>
 <td>00:06</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="39381117" class="cell" data-execution_count="16">
+<div id="811cea14" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-17-output-1.png" width="941" height="283" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-17-output-1.png" width="954" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1145,7 +1161,7 @@ Callbacks:
 <li><p>Improve generalization. Based on the fact that the training model with high learning rate tends to have diverging loss. If it is trained with that high learning rate for a while and it can find a good loss, it will find an area that generalizes well. Thus, a good strategy is to start with a low learning rate, where the loss does not diverge, and then allow optimizer to find smoother areas of parameters by going to higher learning rates. When the smoother areas are found, we can bring the learning rate down again to refine the weights. (i.e.&nbsp;<code>MomentumSGD</code> <a href="https://arxiv.org/pdf/1803.09820">A Disciplined Approach to Neural Network Hyper-Parameters: Part 1– LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY</a> (Smith, 2017)<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>)</p></li>
 </ul>
 <p>It is implemeted in <code>fastai</code> library as <code>fit_one_cycle</code> function.</p>
-<div id="fdebe398" class="cell" data-execution_count="17">
+<div id="9f9ed47a" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit(epochs<span class="op">=</span><span class="dv">1</span>, lr<span class="op">=</span><span class="fl">0.06</span>):</span>
@@ -1187,9 +1203,9 @@ Callbacks:
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.221975</td>
-<td>0.078908</td>
-<td>0.975000</td>
+<td>0.220897</td>
+<td>0.083596</td>
+<td>0.973100</td>
 <td>00:06</td>
 </tr>
 </tbody>
@@ -1197,7 +1213,7 @@ Callbacks:
 </div>
 </div>
 <p>We can view the learning rate schedule and momentum during training by plotting the learning rate using <code>recorder.plot_sched</code> function.</p>
-<div id="526bec81" class="cell" data-execution_count="18">
+<div id="1b088245" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>learn.recorder.plot_sched()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1212,7 +1228,7 @@ Callbacks:
 </div>
 <p>For <code>fit_one_cycle</code> function, there are several parameters that we can tune to improve the training stability and performance of our model, such as <code>lr_max</code>,<code>pct_start</code>, <code>div_factor</code>, and <code>final_div_factor</code>. For more details, see the <a href="https://docs.fast.ai/callback.schedule.html#fastai.callback.schedule.fit_one_cycle">fastai documentation</a>.</p>
 <p>To see what is happening to the activations of the penultimate convolution layer, we can plot the activation statistics again. Now, the percentage of dead activations (all zeros) is significantly reduced, and the model is finally learning.</p>
-<div id="8d33fd37" class="cell" data-execution_count="19">
+<div id="9fb8ff70" class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1230,7 +1246,10 @@ Callbacks:
 <blockquote class="blockquote">
 <p>“Training Deep Neural Networks is complicated by the fact that the distribution of each layer’s inputs changes during training, as the parameters of the previous layers change. This slows down the training by requiring lower learning rates and careful parameter initialization, and makes it notoriously hard to train models with saturating nonlinearities.”</p>
 </blockquote>
-<p>To address this issue, they proposed a technique called <strong>batch normalization</strong>. &gt; “Making normalization a part of the model architecture and performing the normalization for each training mini-batch. Batch Normalization allows us to use much higher learning rates and be less careful about initialization.”</p>
+<p>To address this issue, they proposed a technique called <strong>batch normalization</strong>.</p>
+<blockquote class="blockquote">
+<p>“Making normalization a part of the model architecture and performing the normalization for each training mini-batch. Batch Normalization allows us to use much higher learning rates and be less careful about initialization.”</p>
+</blockquote>
 <p><strong>Batch normalization</strong> normalizes** the activations of each layer by averaging the means and standard deviations of the activations of a layer use those to normalize the activations. To further deal with situation when we need activation is high to make accurate prediction, they also introduced two learnable parameters per activation (i.e., <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\beta\)</span>), which are used to scale and shift the normalized activations. After normalization, the activations get a vector <span class="math inline">\(y\)</span>, and a batch normalization layer computes the output as follows: <span class="math inline">\(\gamma*y + \beta\)</span></p>
 <p>By doing so, our activations can have any mean and standard deviation, which are independent from the previous layer.</p>
 <div id="fig-bn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1244,7 +1263,7 @@ Figure&nbsp;3: Batch Normalization
 </figure>
 </div>
 <p>To add batch normalization to our <code>simple_cnn</code>, we can use <code>nn.BatchNorm2d</code> class from PyTorch. We can add a batch normalization layer after each convolution layer in our <code>simple_cnn</code> architecture as follows:</p>
-<div id="a5d76de9" class="cell" data-execution_count="20">
+<div id="37d210ad" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conv(ni, nf, ks<span class="op">=</span><span class="dv">3</span>, act<span class="op">=</span><span class="va">True</span>):</span>
@@ -1254,7 +1273,7 @@ Figure&nbsp;3: Batch Normalization
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> nn.Sequential(<span class="op">*</span>layers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="f59959e1" class="cell" data-execution_count="21">
+<div id="886a82ab" class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display">
 
 <style>
@@ -1287,9 +1306,9 @@ Figure&nbsp;3: Batch Normalization
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.134114</td>
-<td>0.057422</td>
-<td>0.986200</td>
+<td>0.136537</td>
+<td>0.058968</td>
+<td>0.985300</td>
 <td>00:06</td>
 </tr>
 </tbody>
@@ -1298,7 +1317,7 @@ Figure&nbsp;3: Batch Normalization
 </div>
 <p>As a result, the accuracy is improved and the model is able to achieve around 98.6% accuracy on the MNIST dataset. Compared to the previous results, we observe that the model tends to generalize better with batch normalization. One possible reason is that batch normalization adds some noise to the activations during training, which can force the model learning more robust to these variations.</p>
 <p>As some paper claimed that we should train with more epochs and larger learning rate when using batch normalization, we can try to train the model with 5 epochs and learning rate of 0.1.</p>
-<div id="ba30e735" class="cell" data-execution_count="22">
+<div id="97a3823c" class="cell" data-execution_count="22">
 <div class="cell-output cell-output-display">
 
 <style>
@@ -1331,37 +1350,37 @@ Figure&nbsp;3: Batch Normalization
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.194603</td>
-<td>0.098067</td>
-<td>0.967400</td>
+<td>0.185419</td>
+<td>0.132232</td>
+<td>0.962600</td>
 <td>00:06</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>0.083216</td>
-<td>0.070085</td>
-<td>0.976700</td>
+<td>0.081819</td>
+<td>0.065416</td>
+<td>0.980900</td>
 <td>00:06</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>0.053030</td>
-<td>0.049988</td>
-<td>0.984000</td>
+<td>0.051609</td>
+<td>0.045457</td>
+<td>0.985800</td>
 <td>00:06</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>0.032268</td>
-<td>0.028644</td>
-<td>0.991300</td>
+<td>0.033401</td>
+<td>0.027551</td>
+<td>0.990400</td>
 <td>00:06</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>0.016631</td>
-<td>0.023865</td>
-<td>0.992200</td>
+<td>0.018095</td>
+<td>0.023659</td>
+<td>0.991700</td>
 <td>00:06</td>
 </tr>
 </tbody>
@@ -1374,11 +1393,1412 @@ Figure&nbsp;3: Batch Normalization
 </section>
 <section id="residual-networks-resnet" class="level1">
 <h1>Residual Networks (ResNet)</h1>
+<p>In the digit recognition task performed in MNIST dataset, we need to apply several convolution layers to reduce the spatial dimensions of the input image, which is 28x28 pixels, to a single output activation (using <code>Flatten()</code>).</p>
+<p>What would happen if we have a larger input image, for example, 128x128 or 224x224 pixels (<code>Imagenette</code> or <code>ImageNet</code> datasets)? We would need to apply more convolution layers to reduce the spatial dimensions of the input image to a single output activation. However, as we add more convolution layers, the model becomes more difficult to train. This is because the gradients become smaller as they are propagated back through the layers, which can lead to the problem of <strong>vanishing gradients</strong>.</p>
+<p>To address this issue, we can think of flattening the final convolution layer so that we can handle the grid size other than 1x1. For example, if the final convolution layer has a grid size of 2x2, we can flatten it to a vector of size 4 and then pass it to the final classification layer. However, this approach has several drawbacks: (1) it does not work with images of different sizes, (2) it requires more hardware resources as the number of activations fed to the final classification layer increases. This problem can be solved using <strong>fully connected networks</strong> to take the average of the activations across convolutional grid (it is implemented in <code>AdaptiveAvgPool2d</code> in PyTorch).</p>
+<div id="60a32bbd" class="cell" data-execution_count="24">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> block(ni ,nf): <span class="cf">return</span> ConvLayer(ni, nf, stride<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_model():</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sequential(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">3</span>, <span class="dv">16</span>),   </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">16</span>, <span class="dv">32</span>),  </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">32</span>, <span class="dv">64</span>), </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">64</span>, <span class="dv">128</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">128</span>, <span class="dv">256</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    nn.AdaptiveAvgPool2d(<span class="dv">1</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    Flatten(),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">256</span>, dls.c)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In the above <code>get_model</code> function, we create a CNN model with several convolution layers to reduce the spatial dimensions of the input image to a single output activation. We also use <code>AdaptiveAvgPool2d</code> to take the average of the activations across convolutional grid before passing it to the final classification layer.</p>
+<p>Prior to training the model, we can use learning rate finder to find a good learning rate to start with. It appears that a learning rate of around 3e-3 is a good choice to start with.</p>
+<div id="4b4c87f8" class="cell" data-execution_count="25">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_learner(model):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>nn.CrossEntropyLoss(), metrics<span class="op">=</span>accuracy, cbs<span class="op">=</span>ActivationStats(with_hist<span class="op">=</span><span class="va">True</span>)).to_fp16()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> learn</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(get_model())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="c8114566" class="cell" data-execution_count="26">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ec2-user/perso/.perso/lib/python3.11/site-packages/fastai/callback/core.py:71: UserWarning: You are shadowing an attribute (modules) that exists in the learner. Use `self.learn.modules` to avoid this
+  warn(f"You are shadowing an attribute ({name}) that exists in the learner. Use `self.learn.{name}` to avoid this")
+/home/ec2-user/perso/.perso/lib/python3.11/site-packages/fastai/callback/fp16.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()
+/home/ec2-user/perso/.perso/lib/python3.11/site-packages/fastai/callback/fp16.py:47: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>SuggestedLRs(valley=0.009120108559727669)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-27-output-5.png" width="597" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s a good start, when the model is able to achieve around 70% accuracy on the <code>Imagenette</code> dataset after 5 epochs of training. Let’s try to stack more convolution layers to see if we can improve the accuracy further.</p>
+<div id="3fa808d9" class="cell" data-execution_count="28">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_model():</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sequential(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">3</span>, <span class="dv">16</span>),   </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">16</span>, <span class="dv">32</span>),  </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">32</span>, <span class="dv">64</span>), </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">64</span>, <span class="dv">128</span>),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">128</span>, <span class="dv">256</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">256</span>, <span class="dv">512</span>),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">512</span>, <span class="dv">1024</span>),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    nn.AdaptiveAvgPool2d(<span class="dv">1</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    Flatten(),</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">1024</span>, dls.c)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(get_model())</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1.764669</td>
+<td>1.776620</td>
+<td>0.450446</td>
+<td>00:24</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1.411291</td>
+<td>1.578323</td>
+<td>0.521274</td>
+<td>00:23</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1.169157</td>
+<td>1.203416</td>
+<td>0.603822</td>
+<td>00:23</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0.966300</td>
+<td>1.020952</td>
+<td>0.673121</td>
+<td>00:23</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.816451</td>
+<td>0.856801</td>
+<td>0.722803</td>
+<td>00:24</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="825d8b64" class="cell" data-execution_count="29">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_model():</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sequential(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">3</span>, <span class="dv">16</span>),   </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">16</span>, <span class="dv">32</span>),  </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">32</span>, <span class="dv">64</span>), </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">64</span>, <span class="dv">128</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">128</span>, <span class="dv">256</span>),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">256</span>, <span class="dv">512</span>),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">512</span>, <span class="dv">1024</span>),</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">1024</span>, <span class="dv">2056</span>),</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    block(<span class="dv">2056</span>, <span class="dv">4096</span>),</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    nn.AdaptiveAvgPool2d(<span class="dv">1</span>),</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    Flatten(),</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">4096</span>, dls.c)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(get_model())</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>2.012247</td>
+<td>3.544601</td>
+<td>0.370191</td>
+<td>00:28</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1.733105</td>
+<td>1.717752</td>
+<td>0.448408</td>
+<td>00:25</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1.383746</td>
+<td>1.252121</td>
+<td>0.590828</td>
+<td>00:25</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>1.150297</td>
+<td>1.057208</td>
+<td>0.664204</td>
+<td>00:27</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.944501</td>
+<td>0.933837</td>
+<td>0.712611</td>
+<td>00:27</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>As we can see, we can improve the accuracy of the model by stacking few more convolution layers. However, as we add more convolution layers, the performance of the model starts to degrade. To work around this issue, we can use <strong>Residual Networks (ResNet)</strong> architecture, which was proposed by Kaiming He et al.&nbsp;in their paper <a href="https://arxiv.org/abs/1512.03385">Deep Residual Learning for Image Recognition</a> (He, 2015)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. As illustrated in the paper, adding more layers does not necessarily lead to better performance.</p>
+<blockquote class="blockquote">
+<p>“Unexpectedly, such degradation is not caused by overfitting, and adding more layers to a suitably deep model leads to higher training error, as [previously reported] and thoroughly verified by our experiments.”</p>
+</blockquote>
+<div id="fig-te" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-te-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./imgs/training_performance_layer.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-te-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Training error w.r.t different layer depth from He et al.&nbsp;paper
+</figcaption>
+</figure>
+</div>
+<section id="skip-connections-in-residual-networks-resnet" class="level2">
+<h2 class="anchored" data-anchor-id="skip-connections-in-residual-networks-resnet">Skip Connections in Residual Networks (ResNet)</h2>
+<p>The main idea behind ResNet is to use <strong>skip connections</strong> to allow the gradients to flow directly through the network, bypassing one or more layers as illustrated in <a href="#fig-resnet" class="quarto-xref">Figure&nbsp;5</a>.</p>
+<div id="fig-resnet" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-resnet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./imgs/resnet_block.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-resnet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: An illustration of ResNet block
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The key idea of ResNet is to learn a <strong>residual mapping</strong>. Specifically, as the outcome of a given layer is <span class="math inline">\(x\)</span> and a ResNet block returns <span class="math inline">\(y = x + block(x)\)</span>, instead of trying to predict the original mapping <span class="math inline">\(block(x)\)</span>, which is <strong>harder to learn</strong>, the network learns the <strong>residual</strong> mapping, which minimizes the error between <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. It enables deeper networks to be trained effectively.</p>
+</div>
+</div>
+<p>The code block below shows how to implement a ResNet block in PyTorch. We use <code>ConvLayer</code> from <code>fastai</code> library to create the convolution layers in the ResNet block. The first convolution layer has a ReLU activation function, while the second convolution layer uses batch normalization with zero initialization (<code>NormType.BatchZero</code>) to ensure that the initial state of the block is an <strong>identity mapping</strong>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Identity Mapping
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>By setting the weights of the second convolution layer’s last batch normalization layer to zero, we ensure that the block output is initially equal to its input, i.e., <span class="math inline">\(y = x + block(x) \approx x + 0 = x\)</span>. By doing so, we take the advantage of adding more layers without degrading the performance of the model (i.e., when deeper network does not bring any advantage, the network can set <span class="math inline">\(y \approx x\)</span> and does not yield any degradation).</p>
+</div>
+</div>
+<div id="fc0705df" class="cell" data-execution_count="30">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _conv_block(ni, nf, stride):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nn.Sequential(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        ConvLayer(ni, nf,  stride<span class="op">=</span>stride),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        ConvLayer(nf, nf, act_cls<span class="op">=</span><span class="va">None</span>, norm_type<span class="op">=</span>NormType.BatchZero)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ResBlock(Module):</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ni, nf, stride<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.convs <span class="op">=</span> _conv_block(ni, nf, stride)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.idconv <span class="op">=</span> noop <span class="cf">if</span> ni<span class="op">==</span>nf <span class="cf">else</span> ConvLayer(ni, nf, <span class="dv">1</span>, act_cls<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pool <span class="op">=</span> noop <span class="cf">if</span> stride<span class="op">==</span><span class="dv">1</span> <span class="cf">else</span> nn.AvgPool2d(<span class="dv">2</span>, ceil_mode<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x): <span class="cf">return</span> F.relu(<span class="va">self</span>.convs(x) <span class="op">+</span> <span class="va">self</span>.idconv(<span class="va">self</span>.pool(x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now, lets create a deeper CNN model using ResNet blocks (twice deeper). We will use the same architecture as before, but we will replace the convolution layers with ResNet blocks.</p>
+<div id="7535daeb" class="cell" data-execution_count="31">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> block(ni ,nf): <span class="cf">return</span> nn.Sequential(ResBlock(ni, nf, stride<span class="op">=</span><span class="dv">2</span>), ResBlock(nf, nf))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(get_model())</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1.974207</td>
+<td>1.803903</td>
+<td>0.404841</td>
+<td>02:02</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1.811577</td>
+<td>1.841807</td>
+<td>0.473121</td>
+<td>01:59</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1.640894</td>
+<td>1.502047</td>
+<td>0.533758</td>
+<td>01:58</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>1.302015</td>
+<td>1.128689</td>
+<td>0.638217</td>
+<td>01:57</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>1.086707</td>
+<td>1.050008</td>
+<td>0.668025</td>
+<td>01:58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="state-of-the-art-resnet" class="level2">
+<h2 class="anchored" data-anchor-id="state-of-the-art-resnet">State-of-the-art ResNet</h2>
+<p>Coming from “Bags of Tricks for Image Classification with Convolutional Neural Networks” (He, 2019)<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, the authors proposed several techniques to improve the performance of ResNet architecture, including tweaking ResNet-50 architecture and Mixup.</p>
+<p>Then, we can create a state-of-the-art ResNet model with the following tweaks:</p>
+<ul>
+<li><p>Use <code>stem</code> to enhance computational efficiency</p></li>
+<li><p>Use <code>Bottleneck Layer</code> in ResNet block to reduce the computational cost and time significantly</p></li>
+<li><p>Train with larger images (e.g., 224x224 pixels) and more epochs (e.g., 25 epochs)</p></li>
+<li><p>Use <code>Mixup</code> technique (data augmentation) to further improve the performance of the model.</p></li>
+</ul>
+<section id="stem" class="level3">
+<h3 class="anchored" data-anchor-id="stem">Stem</h3>
+<p>The difference compared to our previous ResNet architecture is that they used the <strong>stem</strong> of the network in the first layer, which consists of few convolution layers followed by a max pooling layer. The stem is considered instead of ResNet block because the vast majority of computatation is in the first few layers of the network, and using a stem can reduce the computational cost and time.</p>
+<p>There are four ResNet blocks with 64, 128, 256, and 512 output filters, respectively. Each group starts with a stride-2 block, exept the first group, which is after the MaxPooing layer (<code>stem</code>).</p>
+<div id="adebc095" class="cell" data-execution_count="32">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _resnet_stem(<span class="op">*</span>sizes):</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [ConvLayer(sizes[i], sizes[i<span class="op">+</span><span class="dv">1</span>], stride<span class="op">=</span><span class="dv">2</span> <span class="cf">if</span> i<span class="op">==</span><span class="dv">0</span> <span class="cf">else</span> <span class="dv">1</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(sizes)<span class="op">-</span><span class="dv">1</span>)] <span class="op">+</span> [nn.MaxPool2d(<span class="dv">3</span>, stride<span class="op">=</span><span class="dv">2</span>, padding<span class="op">=</span><span class="dv">1</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="48d57613" class="cell" data-execution_count="33">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ResNet(nn.Sequential):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_out, layers, expansion<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    stem <span class="op">=</span> _resnet_stem(<span class="dv">3</span>, <span class="dv">32</span>, <span class="dv">32</span>, <span class="dv">64</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.block_size <span class="op">=</span> [<span class="dv">64</span>, <span class="dv">64</span>, <span class="dv">128</span>, <span class="dv">256</span>, <span class="dv">512</span>]</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">5</span>):</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.block_size[i] <span class="op">*=</span> expansion</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    blocks <span class="op">=</span> [<span class="va">self</span>._make_layer(<span class="op">*</span>o) <span class="cf">for</span> o <span class="kw">in</span> <span class="bu">enumerate</span>(layers)]</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">*</span>stem, <span class="op">*</span>blocks, nn.AdaptiveAvgPool2d(<span class="dv">1</span>), Flatten(), nn.Linear(<span class="va">self</span>.block_size[<span class="op">-</span><span class="dv">1</span>], n_out))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> _make_layer(<span class="va">self</span>, i, n_layers):</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    stride <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> i<span class="op">==</span><span class="dv">0</span> <span class="cf">else</span> <span class="dv">2</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    ch_in, ch_out <span class="op">=</span> <span class="va">self</span>.block_size[i:i<span class="op">+</span><span class="dv">2</span>]</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nn.Sequential(<span class="op">*</span>[ResBlock(ch_in <span class="cf">if</span> l<span class="op">==</span><span class="dv">0</span> <span class="cf">else</span> ch_out, ch_out, stride <span class="cf">if</span> l<span class="op">==</span><span class="dv">0</span> <span class="cf">else</span> <span class="dv">1</span>) <span class="cf">for</span> l <span class="kw">in</span> <span class="bu">range</span>(n_layers)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="af722e67" class="cell" data-execution_count="34">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rn <span class="op">=</span> ResNet(dls.c, [<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>], expansion<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="da3ddbb9" class="cell" data-execution_count="35">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(rn)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">5</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1.622679</td>
+<td>4.346494</td>
+<td>0.274395</td>
+<td>02:43</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1.261581</td>
+<td>1.541344</td>
+<td>0.538599</td>
+<td>02:18</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.991201</td>
+<td>0.974844</td>
+<td>0.688917</td>
+<td>02:16</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0.789868</td>
+<td>0.778324</td>
+<td>0.751847</td>
+<td>02:18</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.659463</td>
+<td>0.650354</td>
+<td>0.783949</td>
+<td>02:18</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="bottleneck-layer" class="level3">
+<h3 class="anchored" data-anchor-id="bottleneck-layer">Bottleneck Layer</h3>
+<p>Another inmprovement we can apply is <strong>Bottleneck Layer</strong>. Instead of using two 3x3 convolution layers in the ResNet block, we can use a 1x1 convolution layer to reduce the number of filters, followed by a 3x3 convolution layer, and then another 1x1 convolution layer to increase the number of filters back. This reduces the computational cost and time significantly.</p>
+<div id="e23539d1" class="cell" data-execution_count="36">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _conv_block(ni, nf, stride):</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nn.Sequential(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        ConvLayer(ni, nf<span class="op">//</span><span class="dv">4</span>,  <span class="dv">1</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        ConvLayer(nf<span class="op">//</span><span class="dv">4</span>, nf<span class="op">//</span><span class="dv">4</span>,  stride<span class="op">=</span>stride),</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        ConvLayer(nf<span class="op">//</span><span class="dv">4</span>, nf, <span class="dv">1</span>, act_cls<span class="op">=</span><span class="va">None</span>, norm_type<span class="op">=</span>NormType.BatchZero)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can also create ResNet-50 architecture with 4 groups, of which the sizes are [3,4,6,3] and expansion factor of 4 (we need to start with 4 times fewer channels and end up 4 times more channels).</p>
+</section>
+<section id="training-with-larger-images-and-more-epochs" class="level3">
+<h3 class="anchored" data-anchor-id="training-with-larger-images-and-more-epochs">Training with Larger Images and More Epochs</h3>
+<p>To really show the benefit of training deeper networks with bottleneck layers (i.e., higher parameters), we should consider more epochs of training (e.g., 20 epochs) And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x224 pixels) to see how well it performs. In this case, we can try with resizing <code>Imagenette_320</code> dataset with 320x320 pixel images to 224-pixel image dataset.</p>
+<div id="e22a76ae" class="cell" data-execution_count="37">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> get_data(URLs.IMAGENETTE_320, <span class="dv">320</span>, <span class="dv">224</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># learn = get_learner(rn50)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="e09a6724" class="cell" data-execution_count="38">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rn50 <span class="op">=</span> ResNet(dls.c, [<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">3</span>], expansion<span class="op">=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="736e7212" class="cell" data-execution_count="39">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> get_learner(rn50)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="d9115e1c" class="cell" data-execution_count="40">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">25</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1.627197</td>
+<td>1.502427</td>
+<td>0.504713</td>
+<td>33:47</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1.354069</td>
+<td>1.229697</td>
+<td>0.612484</td>
+<td>33:19</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1.218308</td>
+<td>4.347446</td>
+<td>0.375032</td>
+<td>33:07</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>1.122411</td>
+<td>1.623701</td>
+<td>0.446115</td>
+<td>31:33</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>1.017700</td>
+<td>3.208984</td>
+<td>0.344459</td>
+<td>31:11</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>0.938821</td>
+<td>1.379338</td>
+<td>0.613503</td>
+<td>31:10</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>0.847329</td>
+<td>1.736504</td>
+<td>0.539873</td>
+<td>31:02</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>0.756998</td>
+<td>0.826767</td>
+<td>0.738854</td>
+<td>31:00</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>0.680867</td>
+<td>1.155634</td>
+<td>0.630828</td>
+<td>30:49</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>0.630052</td>
+<td>0.871321</td>
+<td>0.721783</td>
+<td>30:44</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td>0.583287</td>
+<td>0.833179</td>
+<td>0.739363</td>
+<td>30:50</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>0.529576</td>
+<td>0.673555</td>
+<td>0.783949</td>
+<td>30:54</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td>0.481882</td>
+<td>0.713634</td>
+<td>0.789299</td>
+<td>30:59</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td>0.445968</td>
+<td>0.566234</td>
+<td>0.825732</td>
+<td>30:51</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td>0.405787</td>
+<td>0.496367</td>
+<td>0.844331</td>
+<td>30:54</td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td>0.357518</td>
+<td>0.629096</td>
+<td>0.822420</td>
+<td>30:59</td>
+</tr>
+<tr class="odd">
+<td>16</td>
+<td>0.309230</td>
+<td>0.484107</td>
+<td>0.858089</td>
+<td>30:59</td>
+</tr>
+<tr class="even">
+<td>17</td>
+<td>0.265799</td>
+<td>0.470109</td>
+<td>0.859618</td>
+<td>30:59</td>
+</tr>
+<tr class="odd">
+<td>18</td>
+<td>0.229641</td>
+<td>0.396109</td>
+<td>0.883567</td>
+<td>31:02</td>
+</tr>
+<tr class="even">
+<td>19</td>
+<td>0.204300</td>
+<td>0.374992</td>
+<td>0.887643</td>
+<td>30:59</td>
+</tr>
+<tr class="odd">
+<td>20</td>
+<td>0.172740</td>
+<td>0.366842</td>
+<td>0.889172</td>
+<td>31:01</td>
+</tr>
+<tr class="even">
+<td>21</td>
+<td>0.155859</td>
+<td>0.359495</td>
+<td>0.890191</td>
+<td>31:02</td>
+</tr>
+<tr class="odd">
+<td>22</td>
+<td>0.138238</td>
+<td>0.347319</td>
+<td>0.900382</td>
+<td>31:04</td>
+</tr>
+<tr class="even">
+<td>23</td>
+<td>0.125465</td>
+<td>0.344706</td>
+<td>0.896815</td>
+<td>31:05</td>
+</tr>
+<tr class="odd">
+<td>24</td>
+<td>0.122412</td>
+<td>0.343550</td>
+<td>0.898089</td>
+<td>31:03</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The results that we have achieved is great with ResNet-50 model built from scratch (around 86% accuracy on <code>Imagenette</code> dataset with 224x224 pixel images after 25 epochs of training).</p>
+</section>
+<section id="mixup-technique" class="level3">
+<h3 class="anchored" data-anchor-id="mixup-technique">Mixup Technique</h3>
+<p>Finally, we can add <code>Mixup</code> technique to further improve the performance of our model. <code>Mixup</code> is a data augmentation technique that creates new training samples by mixing two random samples from the training set. This can help to improve the generalization of the model and reduce overfitting. It is implemented in <code>fastai</code> library as <code>MixUp</code> callback.</p>
+<div id="20a47d4d" class="cell" data-execution_count="41">
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1.076383</td>
+<td>0.417829</td>
+<td>0.868535</td>
+<td>01:03</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.960590</td>
+<td>0.414338</td>
+<td>0.876178</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.891785</td>
+<td>0.401639</td>
+<td>0.882803</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0.875051</td>
+<td>0.399207</td>
+<td>0.882293</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>0.856244</td>
+<td>0.390567</td>
+<td>0.886624</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>0.852165</td>
+<td>0.407437</td>
+<td>0.884841</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>0.843358</td>
+<td>0.490117</td>
+<td>0.860892</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>0.864377</td>
+<td>0.474227</td>
+<td>0.858089</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>0.863862</td>
+<td>0.478032</td>
+<td>0.856815</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>0.868507</td>
+<td>0.459131</td>
+<td>0.867771</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td>0.873308</td>
+<td>0.477326</td>
+<td>0.850701</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>0.888151</td>
+<td>0.441987</td>
+<td>0.863440</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td>0.880633</td>
+<td>0.589767</td>
+<td>0.831592</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td>0.894492</td>
+<td>0.629278</td>
+<td>0.804331</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td>0.890282</td>
+<td>0.771523</td>
+<td>0.768408</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td>0.895088</td>
+<td>0.812169</td>
+<td>0.746497</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>16</td>
+<td>0.875019</td>
+<td>0.540534</td>
+<td>0.833885</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>17</td>
+<td>0.864673</td>
+<td>0.546930</td>
+<td>0.832102</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>18</td>
+<td>0.864394</td>
+<td>0.450540</td>
+<td>0.863185</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>19</td>
+<td>0.859060</td>
+<td>0.648650</td>
+<td>0.807389</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>20</td>
+<td>0.856709</td>
+<td>0.499214</td>
+<td>0.850701</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>21</td>
+<td>0.834355</td>
+<td>0.833135</td>
+<td>0.750573</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>22</td>
+<td>0.825142</td>
+<td>0.526650</td>
+<td>0.844076</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>23</td>
+<td>0.819283</td>
+<td>0.611156</td>
+<td>0.804586</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>24</td>
+<td>0.802246</td>
+<td>0.529691</td>
+<td>0.842548</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>25</td>
+<td>0.793388</td>
+<td>0.476981</td>
+<td>0.855287</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>26</td>
+<td>0.789015</td>
+<td>0.465054</td>
+<td>0.862675</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>27</td>
+<td>0.788550</td>
+<td>0.396814</td>
+<td>0.887643</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>28</td>
+<td>0.771542</td>
+<td>0.505263</td>
+<td>0.856051</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>29</td>
+<td>0.773788</td>
+<td>0.579920</td>
+<td>0.828280</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>30</td>
+<td>0.756693</td>
+<td>0.399785</td>
+<td>0.881783</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>31</td>
+<td>0.756351</td>
+<td>0.576783</td>
+<td>0.826242</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>32</td>
+<td>0.744784</td>
+<td>0.484920</td>
+<td>0.855032</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>33</td>
+<td>0.734259</td>
+<td>0.438864</td>
+<td>0.867771</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>34</td>
+<td>0.729415</td>
+<td>0.400121</td>
+<td>0.887389</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>35</td>
+<td>0.717360</td>
+<td>0.343538</td>
+<td>0.905223</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>36</td>
+<td>0.705044</td>
+<td>0.383065</td>
+<td>0.883312</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>37</td>
+<td>0.703855</td>
+<td>0.358596</td>
+<td>0.896051</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>38</td>
+<td>0.696333</td>
+<td>0.376555</td>
+<td>0.888917</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>39</td>
+<td>0.704105</td>
+<td>0.337198</td>
+<td>0.900127</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>40</td>
+<td>0.684179</td>
+<td>0.407498</td>
+<td>0.884076</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>41</td>
+<td>0.677703</td>
+<td>0.365235</td>
+<td>0.896306</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>42</td>
+<td>0.676897</td>
+<td>0.388865</td>
+<td>0.889427</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>43</td>
+<td>0.671353</td>
+<td>0.383898</td>
+<td>0.892484</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>44</td>
+<td>0.670177</td>
+<td>0.404999</td>
+<td>0.877452</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>45</td>
+<td>0.655256</td>
+<td>0.348117</td>
+<td>0.898853</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>46</td>
+<td>0.647936</td>
+<td>0.362877</td>
+<td>0.898089</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>47</td>
+<td>0.636477</td>
+<td>0.316644</td>
+<td>0.912866</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>48</td>
+<td>0.640940</td>
+<td>0.345077</td>
+<td>0.899873</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>49</td>
+<td>0.646864</td>
+<td>0.309184</td>
+<td>0.915669</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>50</td>
+<td>0.633968</td>
+<td>0.328193</td>
+<td>0.909809</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>51</td>
+<td>0.630294</td>
+<td>0.296495</td>
+<td>0.913376</td>
+<td>01:05</td>
+</tr>
+<tr class="odd">
+<td>52</td>
+<td>0.622971</td>
+<td>0.302833</td>
+<td>0.913885</td>
+<td>01:06</td>
+</tr>
+<tr class="even">
+<td>53</td>
+<td>0.620615</td>
+<td>0.275679</td>
+<td>0.920000</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>54</td>
+<td>0.615475</td>
+<td>0.278919</td>
+<td>0.923567</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>55</td>
+<td>0.614358</td>
+<td>0.302620</td>
+<td>0.921019</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>56</td>
+<td>0.608725</td>
+<td>0.280068</td>
+<td>0.927898</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>57</td>
+<td>0.605329</td>
+<td>0.279165</td>
+<td>0.923057</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>58</td>
+<td>0.596212</td>
+<td>0.274784</td>
+<td>0.929682</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>59</td>
+<td>0.596100</td>
+<td>0.264216</td>
+<td>0.930191</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>60</td>
+<td>0.588320</td>
+<td>0.273936</td>
+<td>0.925096</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>61</td>
+<td>0.591248</td>
+<td>0.267072</td>
+<td>0.929682</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>62</td>
+<td>0.583914</td>
+<td>0.252701</td>
+<td>0.932739</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>63</td>
+<td>0.588252</td>
+<td>0.262455</td>
+<td>0.930191</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>64</td>
+<td>0.580045</td>
+<td>0.249681</td>
+<td>0.930701</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>65</td>
+<td>0.569828</td>
+<td>0.250459</td>
+<td>0.933248</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>66</td>
+<td>0.578020</td>
+<td>0.245884</td>
+<td>0.936561</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>67</td>
+<td>0.570124</td>
+<td>0.248304</td>
+<td>0.931210</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>68</td>
+<td>0.565883</td>
+<td>0.246466</td>
+<td>0.934777</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>69</td>
+<td>0.568636</td>
+<td>0.242280</td>
+<td>0.936051</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>70</td>
+<td>0.562572</td>
+<td>0.241285</td>
+<td>0.936051</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>71</td>
+<td>0.565922</td>
+<td>0.246041</td>
+<td>0.935032</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>72</td>
+<td>0.567071</td>
+<td>0.243530</td>
+<td>0.936051</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>73</td>
+<td>0.556484</td>
+<td>0.240612</td>
+<td>0.938344</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>74</td>
+<td>0.566044</td>
+<td>0.241003</td>
+<td>0.936815</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>75</td>
+<td>0.553854</td>
+<td>0.241658</td>
+<td>0.937070</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>76</td>
+<td>0.558913</td>
+<td>0.241693</td>
+<td>0.936051</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>77</td>
+<td>0.568402</td>
+<td>0.242162</td>
+<td>0.934268</td>
+<td>01:04</td>
+</tr>
+<tr class="odd">
+<td>78</td>
+<td>0.557442</td>
+<td>0.242682</td>
+<td>0.936561</td>
+<td>01:04</td>
+</tr>
+<tr class="even">
+<td>79</td>
+<td>0.558255</td>
+<td>0.242121</td>
+<td>0.935287</td>
+<td>01:04</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
 </section>
 <section id="conclusions" class="level1">
 <h1>Conclusions</h1>
+<p>In this post, we have learned about convolutional neural networks (CNNs) and how they can be used for image classification tasks. We have also learned about several techniques to improve the training stability and performance of our model, including batch normalization, residual networks (ResNet), and Mixup. By applying these techniques, we were able to achieve state-of-the-art performance on the <code>Imagenette</code> dataset using a ResNet-50 architecture built from scratch.</p>
+<section id="technical-insights" class="level2">
+<h2 class="anchored" data-anchor-id="technical-insights">Technical Insights</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Technical Learnings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Convolutional layers are the building blocks of CNNs, which are designed to process grid-like data such as images.</li>
+<li>Strides and padding are techniques used to control the spatial dimensions of the output feature map.</li>
+<li>Batch normalization is a technique used to improve the training stability and performance of deep neural networks by normalizing the activations of each layer.</li>
+<li>Residual networks (ResNet) are a type of CNN architecture that uses skip connections to allow the gradients to flow directly through the network, bypassing one or more layers.</li>
+<li>Mixup is a data augmentation technique that creates new training samples by mixing two random samples from the training set, which can help to improve the generalization of the model and reduce overfitting.</li>
+</ul>
+</div>
+</div>
 
 
+</section>
 </section>
 
 
@@ -1389,6 +2809,8 @@ Figure&nbsp;3: Batch Normalization
 <li id="fn2"><p>Smith, L. (2017). “Cyclical Learning Rates for Training Neural Networks”.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Smith, L. (2017). “A Disciplined Approach to Neural Network Hyper-Parameters: Part 1 LEARNING RATE, BATCH SIZE, MOMENTUM, AND WEIGHT DECAY .<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Sergey, Ioffe. (2015). “Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>He, K., Zhang, X., Ren, S., &amp; Sun, J. (2015). “Deep Residual Learning for Image Recognition”.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>He, K., Girshick, R., Dollár, P., &amp; He, K. (2019). “Bags of Tricks for Image Classification with Convolutional Neural Networks”.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
