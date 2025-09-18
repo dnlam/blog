@@ -414,6 +414,7 @@ In this blog, we explored collaborative filtering as a powerful recommendation s
 - Model Architecture: The use of a neural network with embedding layers allowed for better representation of users and items, capturing complex interactions.
 - Similarity Computation: Leveraging cosine similarity enabled effective identification of similar items, enhancing the recommendation process.
 :::
+
 ## Future Directions
 
 - Hybrid Approaches: Combining collaborative filtering with content-based methods could enhance recommendation quality

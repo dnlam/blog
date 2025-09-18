@@ -274,14 +274,11 @@ def get_dls(bs=64):
       get_y=parent_label,
       # item_tfms=Resize(28),
       batch_tfms=Normalize()
-  ).dataloaders(path, bs=bs)
+  ).dataloaders(path, bs=bs,num_workers=0)
 dls = get_dls()
-dls = dls.new(
-    num_workers=0,          
-    prefetch_factor=2,      
-    persistent_workers=False,
-    pin_memory=False
-)
+# dls = dls.new(
+#     num_workers=0, 
+# )
 dls.show_batch(max_n=9, figsize=(4,4))
 ```
 
@@ -475,7 +472,7 @@ learn = get_learner(get_model())
 
 ```{python}
 #| cache: true
-learn.lr_find()
+# learn.lr_find()
 ```
 
 ```{python}

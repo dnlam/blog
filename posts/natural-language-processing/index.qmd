@@ -278,6 +278,7 @@ Once the trainable parameters are stored, we can later load those parameter to t
 ## Implementation Note: PyTorch Model Loading
 When using `torch.load()`, be cautious about the `weights_only` parameter. For security reasons, consider using `weights_only=True` when loading models from untrusted sources to prevent execution of arbitrary code.
 :::
+
 ```{python}
 #| cache: true
 # Option 1: Use FastAI's load method
