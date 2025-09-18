@@ -276,6 +276,12 @@ def get_dls(bs=64):
       batch_tfms=Normalize()
   ).dataloaders(path, bs=bs)
 dls = get_dls()
+dls = dls.new(
+    num_workers=0,          
+    prefetch_factor=2,      
+    persistent_workers=False,
+    pin_memory=False
+)
 dls.show_batch(max_n=9, figsize=(4,4))
 ```
 

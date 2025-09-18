@@ -3,3 +3,4 @@
 /_book/
 /_freeze/
 .venv/
+**/*.quarto_ipynb

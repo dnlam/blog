@@ -175,3 +175,25 @@ button within your web browser to see changes after deployment.
 [33mNOTE: GitHub Pages deployments normally take a few minutes (your site updates
 will be visible once the deploy completes)
 [39m
+From github.com:dnlam/blog
+ * branch            gh-pages   -> FETCH_HEAD
+[1m[34mRendering for publish:
+[39m[22m
+[1m[34m[1/5] about.qmd[39m[22m
+[1m[34m[2/5] posts/convolution-neural-networks/index.qmd[39m[22m
+
+Starting python3 kernel...
+
+The jupyter-cache package is required for cached execution
+[33mWARN: Should not have arrived here:[39m
+[91mERROR: [non-error-thrown] undefined
+
+Stack trace:
+    at _Command.handleError (file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:10032:117)
+    at _Command.parseCommand (file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:9719:12)
+    at eventLoopTick (ext:core/01_core.js:178:7)
+    at async quarto (file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:175522:5)
+    at async file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:175550:5
+    at async file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:175405:14
+    at async mainRunner (file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:175407:5)
+    at async file:///home/ldinh/perso/perso/lib/python3.11/site-packages/quarto_cli/bin/quarto.js:175543:3[39m
