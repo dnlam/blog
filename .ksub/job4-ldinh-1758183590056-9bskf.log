@@ -1,0 +1,10 @@
+====================== Command =====================
+DISPLAY=10.254.20.64:1 XAUTHORITY=/home/ldinh/.Xauthority /usr/bin/xfce4-terminal -T RemoteShell--$(hostname)
+====================== Output ======================
+
+(xfce4-terminal:158): dbind-WARNING **: 13:49:57.368: Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-s4rZNwqbmk: Connection refused
+Failed to connect to session manager: Failed to connect to the session manager: SESSION_MANAGER environment variable not defined
+
+====================================================
+Run time: 10:06.99 sec
+==== Job Done @ Thu Sep 18 14:00:04 IST 2025 ====

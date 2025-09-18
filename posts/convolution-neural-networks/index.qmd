@@ -54,9 +54,53 @@ def get_data(url,presize,resize):
   ).dataloaders(path, bs=128)
 ```
 
+
+
 # Overview
 
 In this blog post, we will explore the architecture of Convolution Neural Networks (CNN) and how they have been used to achieve state-of-the-art performance in image recognition tasks. We will also discuss some of the key components of CNNs, such as convolution layers, pooling layers, and activation functions. Finally, we will look at one of the most popular CNN architectures: `ResNet`.
+
+Here is the environment that we applied to train the CNN model(s):
+
+```{python}
+#| cache: true
+
+import os
+import subprocess
+import torch
+
+def run_cmd(cmd):
+    try:
+        out = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, text=True)
+        return out.strip()
+    except Exception as e:
+        return f"(error running `{cmd}`: {e})"
+
+def print_cuda_info():
+    print("torch.cuda.is_available():", torch.cuda.is_available())
+    print("torch.version.cuda:", torch.version.cuda)
+    print("cudnn version:", torch.backends.cudnn.version() if torch.backends.cudnn.is_available() else "<cudnn not available>")
+    if torch.cuda.is_available():
+        print("torch.cuda.device_count():", torch.cuda.device_count())
+        for i in range(torch.cuda.device_count()):
+            try:
+                name = torch.cuda.get_device_name(i)
+            except Exception:
+                name = "<unknown>"
+            print(f"  GPU {i}: {name}")
+        try:
+            cur = torch.cuda.current_device()
+            print("torch.cuda.current_device():", cur)
+        except Exception:
+            pass
+    else:
+        print("No CUDA GPUs detected by torch.")
+    # print("\nnvidia-smi output (if available):")
+    print(run_cmd("nvidia-smi --query-gpu=index,name,memory.total,utilization.gpu --format=csv,noheader,nounits"))
+
+
+print_cuda_info()
+```
 
 # Overview of Convolution Neural Networks (CNN)
 In the context of computer vision, **feature engineering** is the process of using domain knowledge to extract distinctive attributes from images that can be used to improve the performance of machine learning algorithms. For instance, in image classification tasks, the number 7 is characterized by a horizontal edge near the top, and a diagonal line that goes down to the right. These features can be used to distinguish the number 7 from other digits.
@@ -194,6 +238,7 @@ simple_cnn = sequential(
 To test our `simple_cnn`, we can train a classification model from a batch of images from the MNIST dataset to see how effective of the feature extraction it is. To do this, we build a `Learner` from `simple_cnn` and dataset `dls` as follows:
 
 ```{python}
+#| cache: true
 learn = Learner(dls, simple_cnn, loss_func=F.cross_entropy, metrics=accuracy)
 learn.summary()
 ```
@@ -203,6 +248,7 @@ As we can see, the output of the final Conv2D layer is 64x2x1x1, that's why we n
 Afterwards, let's train the model with low learning rate and 2 epochs using `fit_one_cycle` function.
 
 ```{python}
+#| cache: true
 learn.fit_one_cycle(2, 1e-2)
 ```
 
@@ -255,6 +301,7 @@ def simple_cnn():
 
 To train the model more quickly, we can set learning rate to 0.06 and use `ActivationStats` callback to monitor the activation statistics during training.
 ```{python}
+#| cache: true
 def fit(epochs=1):
     learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
     learn.fit(epochs, 0.06)
@@ -276,6 +323,7 @@ To fix this issue, we can try several techniques to improve the training stabili
 To make training more stable, we can try to increase the batch size, because larger batch sizes prodive more accurate estimates of the gradients, which can help to reduce the noise in the training process. On the downside, larger batch sizes require more memory and less batches per epochs, which bring less opportunities for the model to update its weights, and also it is subject to hardware capabilities.
 
 ```{python}
+#| cache: true
 dls = get_dls(bs=512)
 learn = fit()
 ```
@@ -301,6 +349,7 @@ One way to deal with this issue has been proposed by Leslie Smith in his paper [
 It is implemeted in `fastai` library as `fit_one_cycle` function.
 
 ```{python}
+#| cache: true
 def fit(epochs=1, lr=0.06):
     learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
     learn.fit_one_cycle(epochs, lr)
@@ -346,6 +395,7 @@ By doing so, our activations can have any mean and standard deviation, which are
 To add batch normalization to our `simple_cnn`, we can use `nn.BatchNorm2d` class from PyTorch. We can add a batch normalization layer after each convolution layer in our `simple_cnn` architecture as follows:
 
 ```{python}
+#| cache: true
 def conv(ni, nf, ks=3, act=True):
   layers = [nn.Conv2d(ni, nf, stride=2, kernel_size=ks, padding=ks//2)]
   layers.append(nn.BatchNorm2d(nf))
@@ -356,6 +406,7 @@ def conv(ni, nf, ks=3, act=True):
 
 ```{python}
 #| echo: false
+#| cache: true
 learn=fit()
 ```
 As a result, the accuracy is improved and the model is able to achieve around 98.6% accuracy on the MNIST dataset. Compared to the previous results, we observe that the model tends to generalize better with batch normalization. One possible reason is that batch normalization adds some noise to the activations during training, which can force the model learning more robust to these variations.
@@ -363,6 +414,7 @@ As a result, the accuracy is improved and the model is able to achieve around 98
 As some paper claimed that we should train with more epochs and larger learning rate when using batch normalization, we can try to train the model with 5 epochs and learning rate of 0.1.
 
 ```{python}
+#| cache: true
 #| echo: false
 learn=fit(5, 0.1)
 ```
@@ -408,6 +460,7 @@ In the above `get_model` function, we create a CNN model with several convolutio
 Prior to training the model, we can use learning rate finder to find a good learning rate to start with. It appears that a learning rate of around 3e-3 is a good choice to start with.
 
 ```{python}
+#| cache: true
 def get_learner(model):
     learn = Learner(dls, model, loss_func=nn.CrossEntropyLoss(), metrics=accuracy, cbs=ActivationStats(with_hist=True)).to_fp16()
     return learn
@@ -415,6 +468,7 @@ learn = get_learner(get_model())
 ```
 
 ```{python}
+#| cache: true
 learn.lr_find()
 ```
 
@@ -430,6 +484,7 @@ learn.fit_one_cycle(5, 3e-3)
 It's a good start, when the model is able to achieve around 70% accuracy on the `Imagenette` dataset after 5 epochs of training. Let's try to stack more convolution layers to see if we can improve the accuracy further. 
 
 ```{python}
+#| cache: true
 def get_model():
   return sequential(
     block(3, 16),   
@@ -448,6 +503,7 @@ learn.fit_one_cycle(5, 3e-3)
 ```
 
 ```{python}
+#| cache: true
 def get_model():
   return sequential(
     block(3, 16),   
@@ -465,6 +521,22 @@ def get_model():
 )
 learn = get_learner(get_model())
 learn.fit_one_cycle(5, 3e-3)
+```
+
+```{python}
+#| cache: true
+#| echo: false
+def get_model():
+  return sequential(
+    block(3, 16),   
+    block(16, 32),  
+    block(32, 64), 
+    block(64, 128),
+    block(128, 256),
+    nn.AdaptiveAvgPool2d(1),
+    Flatten(),
+    nn.Linear(256, dls.c)
+)
 ```
 
 As we can see, we can improve the accuracy of the model by stacking few more convolution layers. However, as we add more convolution layers, the performance of the model starts to degrade. To work around this issue, we can use **Residual Networks (ResNet)** architecture, which was proposed by Kaiming He et al. in their paper [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) (He, 2015)^[He, K., Zhang, X., Ren, S., & Sun, J. (2015). "Deep Residual Learning for Image Recognition".]. As illustrated in the paper, adding more layers does not necessarily lead to better performance. 
@@ -492,6 +564,7 @@ By setting the weights of the second convolution layer's last batch normalizatio
 
 
 ```{python}
+#| cache: true
 def _conv_block(ni, nf, stride):
     return nn.Sequential(
         ConvLayer(ni, nf,  stride=stride),
@@ -511,6 +584,7 @@ class ResBlock(Module):
 Now, lets create a deeper CNN model using ResNet blocks (twice deeper). We will use the same architecture as before, but we will replace the convolution layers with ResNet blocks.
 
 ```{python}
+#| cache: true
 def block(ni ,nf): return nn.Sequential(ResBlock(ni, nf, stride=2), ResBlock(nf, nf))
 learn = get_learner(get_model())
 learn.fit_one_cycle(5, 3e-3)
@@ -535,11 +609,13 @@ The difference compared to our previous ResNet architecture is that they used th
 There are four ResNet blocks with 64, 128, 256, and 512 output filters, respectively. Each group starts with a stride-2 block, exept the first group, which is after the MaxPooing layer (`stem`).
 
 ```{python}
+#| cache: true
 def _resnet_stem(*sizes):
   return [ConvLayer(sizes[i], sizes[i+1], stride=2 if i==0 else 1) for i in range(len(sizes)-1)] + [nn.MaxPool2d(3, stride=2, padding=1)]
 ```
 
 ```{python}
+#| cache: true
 class ResNet(nn.Sequential):
   def __init__(self, n_out, layers, expansion=1):
     stem = _resnet_stem(3, 32, 32, 64)
@@ -555,10 +631,12 @@ class ResNet(nn.Sequential):
 ```
 
 ```{python}
+#| cache: true
 rn = ResNet(dls.c, [2, 2, 2, 2], expansion=1)
 ```
 
 ```{python}
+#| cache: true
 learn = get_learner(rn)
 learn.fit_one_cycle(5, 3e-3)
 ```
@@ -568,6 +646,7 @@ learn.fit_one_cycle(5, 3e-3)
 Another inmprovement we can apply is **Bottleneck Layer**. Instead of using two 3x3 convolution layers in the ResNet block, we can use a 1x1 convolution layer to reduce the number of filters, followed by a 3x3 convolution layer, and then another 1x1 convolution layer to increase the number of filters back. This reduces the computational cost and time significantly.
 
 ```{python}
+#| cache: true
 def _conv_block(ni, nf, stride):
     return nn.Sequential(
         ConvLayer(ni, nf//4,  1),
@@ -583,19 +662,27 @@ To really show the benefit of training deeper networks with bottleneck layers (i
 And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x224 pixels) to see how well it performs. In this case, we can try with resizing `Imagenette_320` dataset with 320x320 pixel images to 224-pixel image dataset.
 
 ```{python}
+#| cache: true
+#| echo: false
 dls = get_data(URLs.IMAGENETTE_320, 320, 224)
 # learn = get_learner(rn50)
 ```
 
 ```{python}
+#| cache: true
+#| echo: false
 rn50 = ResNet(dls.c, [3, 4, 6, 3], expansion=4)
 ```
 
 ```{python}
+#| cache: true
+#| echo: false
 learn = get_learner(rn50)
 ```
 
 ```{python}
+#| cache: true
+#| echo: false
 learn.fit_one_cycle(25, 3e-3)
 ```
 
@@ -607,6 +694,7 @@ It is implemented in `fastai` library as `MixUp` callback.
 
 ```{python}
 #| echo: false
+#| cache: true
 def get_learner(model):
     learn = Learner(dls, model, loss_func=CrossEntropyLossFlat(), metrics=accuracy)
     learn.add_cb(MixUp(alpha=0.4))
