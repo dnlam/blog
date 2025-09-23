@@ -24,6 +24,7 @@ execute:
   cache: true
   freeze: auto
 ---
+
 ```{python}
 #| echo: false
 #| output: false
@@ -51,7 +52,7 @@ def get_data(url,presize,resize):
       get_y=parent_label,
       item_tfms=Resize(presize),
       batch_tfms=[*aug_transforms(size=resize, max_warp=0), Normalize.from_stats(*imagenet_stats)]
-  ).dataloaders(path, bs=128)
+  ).dataloaders(path, num_workers=0, pin_memory=False, persistent_workers=False, bs=128)
 ```
 
 
@@ -68,7 +69,6 @@ Here is the environment that we applied to train the CNN model(s):
 import os
 import subprocess
 import torch
-
 def run_cmd(cmd):
     try:
         out = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, text=True)
@@ -208,6 +208,7 @@ mnist = DataBlock(
 )
 
 dls = mnist.dataloaders(path_mnist)
+# dls = dls.new(num_workers=0, persistent_workers=False)
 xb,yb = first(dls.valid) 
 ```
 
@@ -249,6 +250,7 @@ Afterwards, let's train the model with low learning rate and 2 epochs using `fit
 
 ```{python}
 #| cache: true
+
 learn.fit_one_cycle(2, 1e-2)
 ```
 
@@ -274,8 +276,9 @@ def get_dls(bs=64):
       get_y=parent_label,
       # item_tfms=Resize(28),
       batch_tfms=Normalize()
-  ).dataloaders(path, bs=bs,num_workers=0)
+  ).dataloaders(path, bs=bs)
 dls = get_dls()
+# dls = dls.new(num_workers=0, persistent_workers=False)
 # dls = dls.new(
 #     num_workers=0, 
 # )
@@ -308,6 +311,7 @@ To train the model more quickly, we can set learning rate to 0.06 and use `Activ
 def fit(epochs=1):
     learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
     learn.fit(epochs, 0.06)
+    
     return learn
 
 learn = fit()
@@ -356,6 +360,7 @@ It is implemeted in `fastai` library as `fit_one_cycle` function.
 def fit(epochs=1, lr=0.06):
     learn = Learner(dls, simple_cnn(), loss_func=F.cross_entropy, metrics=accuracy, cbs=ActivationStats(with_hist=True))
     learn.fit_one_cycle(epochs, lr)
+    
     return learn
 
 learn = fit()
@@ -437,6 +442,7 @@ What would happen if we have a larger input image, for example, 128x128 or 224x2
 #| cache: true
 
 dls = get_data(URLs.IMAGENETTE_160, 160, 128)
+# dls = dls.new(num_workers=2, persistent_workers=False)
 dls.show_batch(max_n=9, figsize=(6,6))
 ```
 
@@ -464,15 +470,18 @@ Prior to training the model, we can use learning rate finder to find a good lear
 
 ```{python}
 #| cache: true
+#| warning: false
 def get_learner(model):
     learn = Learner(dls, model, loss_func=nn.CrossEntropyLoss(), metrics=accuracy, cbs=ActivationStats(with_hist=True)).to_fp16()
+    
     return learn
 learn = get_learner(get_model())
 ```
 
 ```{python}
 #| cache: true
-# learn.lr_find()
+#| warning: false
+learn.lr_find()
 ```
 
 ```{python}
@@ -482,12 +491,14 @@ learn = get_learner(get_model())
 #| warning: false
 #| message: false
 #| cache: true
+
 learn.fit_one_cycle(5, 3e-3)
 ```
 It's a good start, when the model is able to achieve around 70% accuracy on the `Imagenette` dataset after 5 epochs of training. Let's try to stack more convolution layers to see if we can improve the accuracy further. 
 
 ```{python}
 #| cache: true
+#| warning: false
 def get_model():
   return sequential(
     block(3, 16),   
@@ -507,6 +518,7 @@ learn.fit_one_cycle(5, 3e-3)
 
 ```{python}
 #| cache: true
+#| warning: false
 def get_model():
   return sequential(
     block(3, 16),   
@@ -588,6 +600,7 @@ Now, lets create a deeper CNN model using ResNet blocks (twice deeper). We will 
 
 ```{python}
 #| cache: true
+#| warning: false
 def block(ni ,nf): return nn.Sequential(ResBlock(ni, nf, stride=2), ResBlock(nf, nf))
 learn = get_learner(get_model())
 learn.fit_one_cycle(5, 3e-3)
@@ -640,6 +653,7 @@ rn = ResNet(dls.c, [2, 2, 2, 2], expansion=1)
 
 ```{python}
 #| cache: true
+#| warning: false
 learn = get_learner(rn)
 learn.fit_one_cycle(5, 3e-3)
 ```
@@ -667,6 +681,7 @@ And lastly, we can perform ResNet-50 in a dataset with larger images (e.g., 224x
 ```{python}
 #| cache: true
 #| echo: false
+#| warning: false
 dls = get_data(URLs.IMAGENETTE_320, 320, 224)
 # learn = get_learner(rn50)
 ```
@@ -674,18 +689,21 @@ dls = get_data(URLs.IMAGENETTE_320, 320, 224)
 ```{python}
 #| cache: true
 #| echo: false
+#| warning: false
 rn50 = ResNet(dls.c, [3, 4, 6, 3], expansion=4)
 ```
 
 ```{python}
 #| cache: true
 #| echo: false
+#| warning: false
 learn = get_learner(rn50)
 ```
 
 ```{python}
 #| cache: true
 #| echo: false
+#| warning: false
 learn.fit_one_cycle(25, 3e-3)
 ```
 
@@ -698,11 +716,13 @@ It is implemented in `fastai` library as `MixUp` callback.
 ```{python}
 #| echo: false
 #| cache: true
+#| warning: false
 def get_learner(model):
     learn = Learner(dls, model, loss_func=CrossEntropyLossFlat(), metrics=accuracy)
     learn.add_cb(MixUp(alpha=0.4))
+    
     return learn
-learn = get_learner(rn50)
+learn = get_learner(rn50) 
 learn.fit_one_cycle(80, 3e-3)
 ```
 
